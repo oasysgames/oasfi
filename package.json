@@ -21,6 +21,7 @@
   },
   "type": "module",
   "dependencies": {
+    "dotenv": "^16.3.1",
     "ethers": "^5.7.2",
     "papaparse": "^5.4.1"
   }

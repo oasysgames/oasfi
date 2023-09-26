@@ -8,34 +8,26 @@ import { TokenTransfer } from "./module/TokenTransfer";
 
 interface CommandArgs {
   input: string;
-  address: string;
   output: string;
   chain: string;
 }
 
 async function processCsv(args: CommandArgs) {
-  const { chain, input, address, output } = args;
+  const { chain, input, output } = args;
   const tokenTransfer = new TokenTransfer(chain);
   const csvContent = await fsPromise.readFile(input, "utf-8");
   const result = Papa.parse(csvContent, { header: true });
-  const data = await tokenTransfer.handleDuplicateTokenTransfer(
-    result.data,
-    address
-  );
+  const data = await tokenTransfer.handleDuplicateTokenTransfer(result.data);
   await tokenTransfer.saveCsvToFile(output, Papa.unparse(data));
 }
 
 yargs(hideBin(process.argv))
   .command(
-    "distinct <input> <address> <output> <chain>",
+    "distinct <input> <output> <chain>",
     "Check token balance and remove duplicate records from a CSV",
     {
       input: {
         describe: "Input CSV file",
-        type: "string",
-      },
-      address: {
-        describe: "Input address",
         type: "string",
       },
       output: {

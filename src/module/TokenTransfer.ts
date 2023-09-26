@@ -1,18 +1,20 @@
 import * as fsPromise from "fs/promises";
 import * as path from "path";
 import { ethers } from "ethers";
-
+import { TokenTransferUtils } from "../utils/TokenTransferUtils";
+import * as dotenv from "dotenv";
+dotenv.config();
 const BASE_RPC_URL: Record<string, string> = {
-  tcgv_mainnet: "https://rep-rpc.tcgverse.xyz/",
-  tcgv_testnet: "https://testnet.rpc.tcgverse.xyz/",
-  sandv_testnet: "https://rpc.sandverse.oasys.games/",
+  tcgv_mainnet: process.env.TCGV_MAINNET_URL || "",
+  tcgv_testnet: process.env.TCGV_TESTNET_URL || "",
+  sandv_testnet: process.env.SANDV_TESTNET_URL || "",
+  hub_mainnet: process.env.HUB_MAINNET_URL || "",
+  eth_mainnet: process.env.ETH_MAINNET_URL || "",
+  mch_mainnet: process.env.MCH_MAINNET_URL || "",
+  mch_mainnet_csv: process.env.MCH_MAINNET_CSV_URL || "",
+  home_mainnet: process.env.HOME_MAINNET_URL || "",
+  saakuru_mainnet: process.env.SAAKURU_MAINNET_URL || "",
   hub_testnet: process.env.HUB_TESTNET_URL || "",
-  hub_mainnet: "https://rpc.mainnet.oasys.games/",
-  eth_mainnet: "https://rpc.ankr.com/eth",
-  mch_mainnet: "https://rpc.verse-replica.oasys.games/29548",
-  mch_mainnet_csv: "https://rpc.oasys.mycryptoheroes.net/",
-  home_mainnet: "https://rpc.mainnet.oasys.homeverse.games/",
-  saakuru_mainnet: "https://rpc.saakuru.network/",
 };
 
 export class TokenTransfer {
@@ -47,125 +49,70 @@ export class TokenTransfer {
       });
   }
 
-  private formatUnits(number: string): ethers.BigNumber {
-    return ethers.utils.parseEther(number);
-  }
+  public handleDuplicateTokenTransfer = async (data: any): Promise<{}[]> => {
+    let result: {}[] = [];
+    const transactionsByBlock = this.groupTransactionCsvByBlock(data);
 
-  public handleDuplicateTokenTransfer = async (
-    data: any,
-    address: string
-  ): Promise<{}[] | null> => {
-    let uniqueTransactions: {}[] = [];
-    let uniqueTransactionsByBlockForCheck: { [key: string]: {}[] } = {};
-    const dataSet = new Set<string>();
+    for (const blockNumber in transactionsByBlock) {
+      const transactions = transactionsByBlock[blockNumber];
+      const uniqueCsvData = new Set<string>();
 
-    for (const tx of data) {
-      const key = JSON.stringify(tx);
-      if (!dataSet.has(key)) {
-        dataSet.add(key);
-        uniqueTransactions.push(tx);
-        if (uniqueTransactionsByBlockForCheck[tx.BlockNumber]) {
-          uniqueTransactionsByBlockForCheck[tx.BlockNumber].push(tx);
+      for (let i = 0; i < transactions.length; i++) {
+        const tx = transactions[i];
+        const key = JSON.stringify(tx);
+        if (!uniqueCsvData.has(key)) {
+          uniqueCsvData.add(key);
+          result.push(tx);
         } else {
-          uniqueTransactionsByBlockForCheck[tx.BlockNumber] = [tx];
-        }
-      } else {
-        // This is a duplicate transaction
-      }
-    }
+          // This is a duplicate transaction
+          const txReceipts = await this.getTxReceipt(tx?.TxHash);
+          const rpcTransfers = txReceipts.logs.filter(
+            (item) => item.topics[0] == TokenTransferUtils.transfer
+          );
 
-    for (let i = 0; i < uniqueTransactions.length; i++) {
-      const tx: any = uniqueTransactions[i];
-      const { TokenContractAddress, BlockNumber, TokenSymbol } = tx;
-      const txsByBlock = uniqueTransactionsByBlockForCheck[BlockNumber];
-
-      let balanceBefore: string = "0";
-      let balanceAfter: string = "0";
-      let changeAmount: string = "0";
-      let condition = true;
-      //start log
-      balanceBefore = await this.getTokenBalance(
-        TokenContractAddress,
-        address,
-        parseInt(BlockNumber) - 1
-      );
-      balanceAfter = await this.getTokenBalance(
-        TokenContractAddress,
-        address,
-        parseInt(BlockNumber)
-      );
-
-      const updatedChangeAmount: any = txsByBlock.reduce(
-        (accumulator: ethers.BigNumber, element: any) => {
-          if (
-            element.ErrCode?.length == 0 &&
-            TokenSymbol == element.TokenSymbol
-          ) {
-            //if element?.TokensTransferred is null => that is NFT => always 1
-            if (element.FromAddress?.toLowerCase() == address?.toLowerCase()) {
-              return accumulator.sub(element?.TokensTransferred || 1);
-            } else if (
-              element.ToAddress?.toLowerCase() == address?.toLowerCase()
-            ) {
-              return accumulator.add(element?.TokensTransferred || 1);
+          //Wait until all transactions in 1 block have been run to get uniqueCsvData
+          if (transactions.length - 1 == i) {
+            if (rpcTransfers.length == uniqueCsvData.size) {
+              continue;
             }
+            result.push(tx);
           }
-          return accumulator;
-        },
-        this.formatUnits(changeAmount)
-      );
-
-      condition =
-        parseInt(
-          this.formatUnits(balanceBefore).add(updatedChangeAmount).toString()
-        ) == parseInt(this.formatUnits(balanceAfter).toString());
-
-      console.table([
-        {
-          token: tx.TokenSymbol,
-          before: this.formatUnits(balanceBefore).toString(),
-          change: updatedChangeAmount.toString(),
-          after: this.formatUnits(balanceAfter).toString(),
-          result: condition,
-        },
-      ]);
-
-      if (!condition) {
-        console.error("NOT MATCH");
-        console.log(txsByBlock);
-        process.exit(0);
+        }
       }
     }
-    return uniqueTransactions;
+    return result;
   };
 
+  public groupTransactionCsvByBlock = (data: any) => {
+    return data?.reduce((result, tx) => {
+      if (!result[tx.BlockNumber]) {
+        result[tx.BlockNumber] = [];
+      }
+      result[tx.BlockNumber].push(tx);
+      return result;
+    }, {});
+  };
   public saveCsvToFile = async (outputPath: string, csvData: string) => {
     const filePath = path.join(outputPath);
     await fsPromise.writeFile(filePath, csvData);
     console.log("DONE!");
   };
 
-  private getTokenBalance = async (
-    tokenAddress: string,
-    accountAddress: string,
-    blockNumber: number
-  ): Promise<string> => {
+  private getTxReceipt = async (
+    transaction_hash: string
+  ): Promise<ethers.providers.TransactionReceipt> => {
     try {
       const provider = new ethers.providers.JsonRpcProvider(this.baseRpcUrl);
-      const contract = new ethers.Contract(
-        tokenAddress,
-        ["function balanceOf(address) view returns (uint256)"],
-        provider
-      );
-      const balance = await contract.balanceOf(accountAddress, {
-        blockTag: blockNumber,
-      });
-      return ethers.utils.formatUnits(balance, 18);
-    } catch (error) {
-      console.error("Error:", error);
-      console.table([tokenAddress, accountAddress, blockNumber]);
 
-      return "0";
+      const receipt = await provider.getTransactionReceipt(transaction_hash);
+
+      if (receipt === null) {
+        console.log("Transaction not mined yet");
+      }
+      return receipt;
+    } catch (error) {
+      console.log(error);
+      return null;
     }
   };
 }
