@@ -1,4 +1,3 @@
-
 export class TokenTransferUtils {
   static creation =
     "0x2f8788117e7eff1d82e926ec794901d17c78024a50270940304540a733656f0d";
