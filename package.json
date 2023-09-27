@@ -11,17 +11,32 @@
   "author": "",
   "license": "ISC",
   "devDependencies": {
+    "@types/eslint": "8.40.2",
+    "@types/eslint-config-prettier": "^6.11.0",
+    "@types/eslint-plugin-prettier": "^3.1.0",
+    "@types/jest": "^29.0.3",
     "@types/node": "^20.6.3",
+    "@types/prettier": "^2.7.3",
     "@types/yargs": "^17.0.24",
+    "@typescript-eslint/eslint-plugin": "^5.37.0",
+    "@typescript-eslint/parser": "^5.37.0",
+    "axios-mock-adapter": "^1.21.2",
+    "dotenv": "^16.3.1",
+    "eslint": "8.22",
+    "eslint-config-prettier": "^8.5.0",
+    "eslint-plugin-prettier": "^5.0.0",
+    "jest": "^29.0.3",
+    "jest-jasmine2": "^29.0.3",
+    "prettier": "^3.0.3",
+    "ts-jest": "^29.0.1",
     "typescript": "^5.2.2",
     "yargs": "^17.7.2"
   },
   "bin": {
     "oasys-csv-cli": "./dist/index.js"
   },
-  "type": "module",
+  "type": "commonjs",
   "dependencies": {
-    "dotenv": "^16.3.1",
     "ethers": "^5.7.2",
     "papaparse": "^5.4.1"
   }

@@ -23,20 +23,23 @@ async function processCsv(args: CommandArgs) {
 
 yargs(hideBin(process.argv))
   .command(
-    "distinct <input> <output> <chain>",
+    "<input> <output> <chain>",
     "Check token balance and remove duplicate records from a CSV",
     {
       input: {
         describe: "Input CSV file",
         type: "string",
+        demandOption: true,
       },
       output: {
         describe: "Output CSV file",
         type: "string",
+        demandOption: true,
       },
       chain: {
         describe: "Chain name",
         type: "string",
+        demandOption: true,
       },
     },
     async (argv: Arguments<CommandArgs>) => {
@@ -47,5 +50,4 @@ yargs(hideBin(process.argv))
       }
     }
   )
-  .demandCommand(1, 'You need to specify the "distinct" command')
   .help().argv;

@@ -5,16 +5,34 @@ import { TokenTransferUtils } from "../utils/TokenTransferUtils";
 import * as dotenv from "dotenv";
 dotenv.config();
 const BASE_RPC_URL: Record<string, string> = {
-  tcgv_mainnet: process.env.TCGV_MAINNET_URL || "",
+  tcgv_mainnet: process.env.TCGV_MAINNET_URL || "https://rpc.tcgverse.xyz/",
   tcgv_testnet: process.env.TCGV_TESTNET_URL || "",
   sandv_testnet: process.env.SANDV_TESTNET_URL || "",
-  hub_mainnet: process.env.HUB_MAINNET_URL || "",
+  hub_mainnet: process.env.HUB_MAINNET_URL || "https://rpc.mainnet.oasys.games",
   eth_mainnet: process.env.ETH_MAINNET_URL || "",
-  mch_mainnet: process.env.MCH_MAINNET_URL || "",
-  mch_mainnet_csv: process.env.MCH_MAINNET_CSV_URL || "",
-  home_mainnet: process.env.HOME_MAINNET_URL || "",
-  saakuru_mainnet: process.env.SAAKURU_MAINNET_URL || "",
+  mch_mainnet:
+    process.env.MCH_MAINNET_URL || "https://rpc.oasys.mycryptoheroes.net/",
+  home_mainnet:
+    process.env.HOME_MAINNET_URL ||
+    "https://rpc.mainnet.oasys.homeverse.games/",
+  saakuru_mainnet:
+    process.env.SAAKURU_MAINNET_URL || "https://rpc.saakuru.network/",
   hub_testnet: process.env.HUB_TESTNET_URL || "",
+};
+
+export type TokenTransferData = {
+  TxHash: string;
+  BlockNumber: string;
+  UnixTimestamp: string;
+  FromAddress: string;
+  ToAddress: string;
+  TokenContractAddress: string;
+  Type: string;
+  TokenSymbol: string;
+  TokensTransferred: string;
+  TransactionFee: string;
+  Status: string;
+  ErrCode: string;
 };
 
 export class TokenTransfer {
@@ -33,34 +51,20 @@ export class TokenTransfer {
     return url;
   }
 
-  public csvToObject(dataArray: any): Record<string, string>[] {
-    const keys = dataArray.data[0];
-    return dataArray.data
-      .slice(1)
-      .filter((element: any) => element.length > 1)
-      .map((element: any) => {
-        return element.reduce(
-          (acc: Record<string, string>, value: string, index: number) => {
-            acc[keys[index]] = value;
-            return acc;
-          },
-          {}
-        );
-      });
-  }
-
-  public handleDuplicateTokenTransfer = async (data: any): Promise<{}[]> => {
-    let result: {}[] = [];
+  public handleDuplicateTokenTransfer = async (
+    data: TokenTransferData[]
+  ): Promise<TokenTransferData[]> => {
+    const result: TokenTransferData[] = [];
     const transactionsByBlock = this.groupTransactionCsvByBlock(data);
 
     for (const blockNumber in transactionsByBlock) {
       const transactions = transactionsByBlock[blockNumber];
       const uniqueCsvData = new Set<string>();
-      const duplicateTransactions: any[] = [];
-    
+      const duplicateTransactions: TokenTransferData[] = [];
+
       for (const tx of transactions) {
         const key = JSON.stringify(tx);
-    
+
         if (!uniqueCsvData.has(key)) {
           uniqueCsvData.add(key);
           result.push(tx);
@@ -68,16 +72,20 @@ export class TokenTransfer {
           duplicateTransactions.push(tx);
         }
       }
-    
+
       if (duplicateTransactions.length > 0) {
         console.log(duplicateTransactions);
-        
+
         const txReceipts = await Promise.all(
           duplicateTransactions.map((tx) => this.getTxReceipt(tx?.TxHash))
         );
-    
-        const rpcTransfers = txReceipts.map((receipt) =>receipt.logs.filter((item) => item.topics[0] == TokenTransferUtils.transfer));
-          
+
+        const rpcTransfers = txReceipts.map((receipt) =>
+          receipt.logs.filter(
+            (item) => item.topics[0] == TokenTransferUtils.transfer
+          )
+        );
+
         if (rpcTransfers.length != uniqueCsvData.size) {
           result.push(...duplicateTransactions);
         }
@@ -86,7 +94,7 @@ export class TokenTransfer {
     return result;
   };
 
-  public groupTransactionCsvByBlock = (data: any) => {
+  public groupTransactionCsvByBlock = (data: TokenTransferData[]) => {
     return data?.reduce((result, tx) => {
       if (!result[tx.BlockNumber]) {
         result[tx.BlockNumber] = [];

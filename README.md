@@ -1,2 +1,32 @@
-# explorer-csv-cli
-token transfer(wOAS) の record重複修正用の cliツール
+## 使い方 (How to use)
+
+#### 実行ファイル作成
+
+```bash
+npm i
+npm i -g pkg
+npx tsc
+pkg .
+```
+
+
+#### MacOS:
+
+```bash
+./oasys-csv-cli-macos input.csv address output.csv
+```
+
+#### Windows:
+
+```bash
+oasys-csv-cli-win.exe input.csv address output.csv
+```
+
+#### Linux:
+
+```bash
+./oasys-csv-cli-linux input.csv address output.csv 
+```
+
+ここで、input.csvは読み込むCSVファイルのパス、output.csvは出力されるCSVファイルのパスを指定します。
+
