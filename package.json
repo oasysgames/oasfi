@@ -1,0 +1,28 @@
+{
+  "name": "oasys-csv-cli",
+  "version": "1.0.0",
+  "description": "",
+  "main": "index.js",
+  "scripts": {
+    "test": "echo \"Error: no test specified\" && exit 1",
+    "compile": "npx tsc && pkg ."
+  },
+  "keywords": [],
+  "author": "",
+  "license": "ISC",
+  "devDependencies": {
+    "@types/node": "^20.6.3",
+    "@types/yargs": "^17.0.24",
+    "typescript": "^5.2.2",
+    "yargs": "^17.7.2"
+  },
+  "bin": {
+    "oasys-csv-cli": "./dist/index.js"
+  },
+  "type": "module",
+  "dependencies": {
+    "dotenv": "^16.3.1",
+    "ethers": "^5.7.2",
+    "papaparse": "^5.4.1"
+  }
+}
