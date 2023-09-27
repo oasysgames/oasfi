@@ -56,27 +56,30 @@ export class TokenTransfer {
     for (const blockNumber in transactionsByBlock) {
       const transactions = transactionsByBlock[blockNumber];
       const uniqueCsvData = new Set<string>();
-
-      for (let i = 0; i < transactions.length; i++) {
-        const tx = transactions[i];
+      const duplicateTransactions: any[] = [];
+    
+      for (const tx of transactions) {
         const key = JSON.stringify(tx);
+    
         if (!uniqueCsvData.has(key)) {
           uniqueCsvData.add(key);
           result.push(tx);
         } else {
-          // This is a duplicate transaction
-          const txReceipts = await this.getTxReceipt(tx?.TxHash);
-          const rpcTransfers = txReceipts.logs.filter(
-            (item) => item.topics[0] == TokenTransferUtils.transfer
-          );
-
-          //Wait until all transactions in 1 block have been run to get uniqueCsvData
-          if (transactions.length - 1 == i) {
-            if (rpcTransfers.length == uniqueCsvData.size) {
-              continue;
-            }
-            result.push(tx);
-          }
+          duplicateTransactions.push(tx);
+        }
+      }
+    
+      if (duplicateTransactions.length > 0) {
+        console.log(duplicateTransactions);
+        
+        const txReceipts = await Promise.all(
+          duplicateTransactions.map((tx) => this.getTxReceipt(tx?.TxHash))
+        );
+    
+        const rpcTransfers = txReceipts.map((receipt) =>receipt.logs.filter((item) => item.topics[0] == TokenTransferUtils.transfer));
+          
+        if (rpcTransfers.length != uniqueCsvData.size) {
+          result.push(...duplicateTransactions);
         }
       }
     }
