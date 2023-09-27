@@ -51,22 +51,6 @@ export class TokenTransfer {
     return url;
   }
 
-  public csvToObject(dataArray: any): Record<string, string>[] {
-    const keys = dataArray.data[0];
-    return dataArray.data
-      .slice(1)
-      .filter((element: any) => element.length > 1)
-      .map((element: any) => {
-        return element.reduce(
-          (acc: Record<string, string>, value: string, index: number) => {
-            acc[keys[index]] = value;
-            return acc;
-          },
-          {}
-        );
-      });
-  }
-
   public handleDuplicateTokenTransfer = async (
     data: TokenTransferData[]
   ): Promise<TokenTransferData[]> => {
@@ -76,31 +60,34 @@ export class TokenTransfer {
     for (const blockNumber in transactionsByBlock) {
       const transactions = transactionsByBlock[blockNumber];
       const uniqueCsvData = new Set<string>();
+      const duplicateTransactions: TokenTransferData[] = [];
 
-      for (let i = 0; i < transactions.length; i++) {
-        const tx = transactions[i];
+      for (const tx of transactions) {
         const key = JSON.stringify(tx);
+
         if (!uniqueCsvData.has(key)) {
           uniqueCsvData.add(key);
           result.push(tx);
         } else {
-          // This is a duplicate transaction
-          const txReceipts = await this.getTxReceipt(tx?.TxHash);
-          if (!txReceipts) {
-            console.log("txReceipts is null");
-            continue;
-          }
-          const rpcTransfers = txReceipts.logs.filter(
-            (item) => item.topics[0] == TokenTransferUtils.transfer
-          );
+          duplicateTransactions.push(tx);
+        }
+      }
 
-          //Wait until all transactions in 1 block have been run to get uniqueCsvData
-          if (transactions.length - 1 == i) {
-            if (rpcTransfers.length == uniqueCsvData.size) {
-              continue;
-            }
-            result.push(tx);
-          }
+      if (duplicateTransactions.length > 0) {
+        console.log(duplicateTransactions);
+
+        const txReceipts = await Promise.all(
+          duplicateTransactions.map((tx) => this.getTxReceipt(tx?.TxHash))
+        );
+
+        const rpcTransfers = txReceipts.map((receipt) =>
+          receipt.logs.filter(
+            (item) => item.topics[0] == TokenTransferUtils.transfer
+          )
+        );
+
+        if (rpcTransfers.length != uniqueCsvData.size) {
+          result.push(...duplicateTransactions);
         }
       }
     }

@@ -5,5 +5,6 @@
     "moduleResolution": "node",
     "target": "es2018",
     "module": "CommonJS"
-  }
+  },
+  "exclude": ["specs", "jest-setup.ts"]
 }
