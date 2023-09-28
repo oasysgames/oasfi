@@ -47,7 +47,7 @@ jobs:
   prepare-release:
     runs-on: ubuntu-latest
     outputs:
-      newtag: ${{ steps.gettag.outputs.newtag }}
+      new_tag: ${{ steps.set_git_tag.outputs.target_tag_name }}
 
     steps:
     - name: Checkout code
@@ -123,7 +123,7 @@ jobs:
     - name: Create GitHub Release and Upload binaries/source
       uses: softprops/action-gh-release@v1
       with:
-        tag_name: ${{ env.TARGET_TAG_NAME }}
+        tag_name: ${{ needs.prepare-release.outputs.new_tag }}
         files: ./my-binary,source-code.zip
       env:
         GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
