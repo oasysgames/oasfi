@@ -112,6 +112,6 @@ jobs:
       uses: softprops/action-gh-release@v1
       with:
         files: ./my-binary,source-code.zip
-        tag_name: ${{ needs.prepare-release.outputs.newtag }}
+        tag_name: ${{ env.TARGET_TAG_NAME}}
       env:
         GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
