@@ -70,13 +70,8 @@ jobs:
     - name: Checkout code
       uses: actions/checkout@v2
 
-    - name: Compile TypeScript
-      run: npx tsc
-
     - name: Build with pkg
-      run: |
-        npm install -g pkg
-        pkg . --output ./my-binary
+      run: npm run build:prod
 
     - name: Upload binaries to release
       uses: actions/upload-release-asset@v1
