@@ -2,8 +2,6 @@ name: Release Workflow
 
 on:
   push:
-    tags:
-      - 'v0.1.*'
     branches:
       - main
 
@@ -46,8 +44,37 @@ jobs:
     - name: Run tests
       run: npm run test
 
-  build-and-release:
+  prepare-release:
     needs: test
+    runs-on: ubuntu-latest
+    steps:
+    - name: Checkout code
+      uses: actions/checkout@v2
+
+    - name: Get the latest tag
+      id: gettag
+      run: echo ::set-output name=tag::$(git describe --tags `git rev-list --tags --max-count=1`)
+
+    - name: Calculate new tag
+      id: newtag
+      run: |
+        LATEST_TAG=${{ steps.gettag.outputs.tag }}
+        
+        MAJOR=$(echo $LATEST_TAG | cut -d. -f1)
+        MINOR=$(echo $LATEST_TAG | cut -d. -f2)
+        PATCH=$(echo $LATEST_TAG | cut -d. -f3)
+        
+        NEW_TAG="${MAJOR}.${MINOR}.$((PATCH + 1))"
+        
+        echo ::set-output name=tag::$NEW_TAG
+
+    - name: Create and push new tag
+      run: |
+        git tag ${{ steps.newtag.outputs.tag }}
+        git push origin ${{ steps.newtag.outputs.tag }}
+
+  build-and-release:
+    needs: prepare-release
     runs-on: ubuntu-latest
 
     steps:
@@ -61,12 +88,21 @@ jobs:
         npm install -g pkg
         pkg . --output ./my-binary
 
-    - name: Zip source code
-      run: zip -r source-code.zip .
-
-    - name: Upload binaries and source code to release
+    - name: Create GitHub Release
       uses: softprops/action-gh-release@v1
       with:
         files: ./my-binary,source-code.zip
+        tag_name: ${{ needs.prepare-release.outputs.newtag }}
+      env:
+        GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+
+    - name: Zip source code
+      run: zip -r source-code.zip .
+
+    - name: Create GitHub Release and Upload binaries/source
+      uses: softprops/action-gh-release@v1
+      with:
+        files: ./my-binary,source-code.zip
+        tag_name: ${{ needs.prepare-release.outputs.newtag }}
       env:
         GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
