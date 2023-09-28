@@ -88,7 +88,7 @@ jobs:
         cat TARGET_TAG_NAME
         git tag $(cat TARGET_TAG_NAME)
         git push origin $(cat TARGET_TAG_NAME)
-        echo "TARGET_TAG_NAME=$(cat TARGET_TAG_NAME)" >> $GITHUB_ENV
+        echo "target_tag_name=$NEW_VERSION" >> $GITHUB_ENV
 
     - name: Create release
       id: create_release
