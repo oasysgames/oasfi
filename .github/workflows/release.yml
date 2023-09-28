@@ -84,7 +84,7 @@ jobs:
     - name: Push the new tag
       id: set_git_tag
       run: |
-        echo "${{ steps.set_release_tag.outputs.tag_name }}" > TARGET_TAG_NAME
+        echo "${{ env.tag_name }}" > TARGET_TAG_NAME
         cat TARGET_TAG_NAME
         git tag $(cat TARGET_TAG_NAME)
         git push origin $(cat TARGET_TAG_NAME)
