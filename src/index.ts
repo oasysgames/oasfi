@@ -21,7 +21,7 @@ async function processCsv(args: CommandArgs) {
   await tokenTransfer.saveCsvToFile(output, Papa.unparse(data));
 }
 
-yargs(hideBin(process.argv))
+void yargs(hideBin(process.argv))
   .command(
     "<input> <output> <chain>",
     "Check token balance and remove duplicate records from a CSV",
