@@ -58,16 +58,16 @@ jobs:
       run: |
           git fetch --prune --unshallow
           echo "$(git tag --sort=creatordate | tail -n 1)" > CUR_TAG
-          echo ::set-output name=cur_tag::$(cat CUR_TAG)
+          echo "cur_tag=$(cat CUR_TAG)" >> $GITHUB_ENV
 
     - name: Set release tag
       id: set_release_tag
       run: |
-        echo "Current Tag: ${{ steps.cur_tag_var.outputs.cur_tag }}"
+        echo "Current Tag: ${{ env.cur_tag }}"
 
-        if [[ "${{ steps.cur_tag_var.outputs.cur_tag }}" =~ ^[0-9].+$ ]]; then
+        if [[ "${{ env.cur_tag }}" =~ ^[0-9].+$ ]]; then
           echo 'Incrementing patch version'
-          CUR_VERSION=${{ steps.cur_tag_var.outputs.cur_tag }}
+          CUR_VERSION=${{ env.cur_tag }}
           VERSION=( ${CUR_VERSION//./ } )
           
           # Incrementing the patch version
@@ -75,12 +75,11 @@ jobs:
           
           NEW_VERSION=$(IFS="."; echo "${VERSION[*]}")
           echo "New Version: $NEW_VERSION"
-          echo $NEW_VERSION > TAG_NAME
+          echo "tag_name=$NEW_VERSION" >> $GITHUB_ENV
         else
           echo 'Current tag format is not valid for incrementing.'
           exit 1
         fi
-        echo ::set-output name=tag_name::$(cat TAG_NAME)
 
     - name: Push the new tag
       id: set_git_tag
@@ -89,7 +88,7 @@ jobs:
         cat TARGET_TAG_NAME
         git tag $(cat TARGET_TAG_NAME)
         git push origin $(cat TARGET_TAG_NAME)
-        echo ::set-output name=target_tag_name::$(cat TARGET_TAG_NAME)
+        echo "TARGET_TAG_NAME=$(cat TARGET_TAG_NAME)" >> $GITHUB_ENV
 
   build-and-release:
     needs: prepare-release
@@ -105,14 +104,6 @@ jobs:
         npx tsc
         npm install -g pkg
         pkg . --output ./my-binary
-
-    - name: Create GitHub Release
-      uses: softprops/action-gh-release@v1
-      with:
-        files: ./my-binary,source-code.zip
-        tag_name: ${{ needs.prepare-release.outputs.newtag }}
-      env:
-        GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
 
     - name: Zip source code
       run: zip -r source-code.zip .
