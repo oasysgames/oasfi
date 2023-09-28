@@ -56,30 +56,40 @@ jobs:
     - name: Get latest tag
       id: getlatesttag
       run: |
-        LATEST_TAG=$(git describe --tags `git rev-list --tags --max-count=1` 2>/dev/null)
-        echo "LATEST_TAG=$LATEST_TAG" >> $GITHUB_ENV
+          git fetch --prune --unshallow
+          echo "$(git tag --sort=creatordate | tail -n 1)" > CUR_TAG
+          echo ::set-output name=cur_tag::$(cat CUR_TAG)
 
-    - name: Calculate new tag and set it
-      id: gettag
+    - name: Set release tag
+      id: set_release_tag
       run: |
-        if [[ -z "${LATEST_TAG}" ]]; then
-          # If no previous tag, start with v0.1.0
-          NEW_TAG="v0.1.0"
+        echo "Current Tag: ${{ steps.cur_tag_var.outputs.cur_tag }}"
+
+        if [[ "${{ steps.cur_tag_var.outputs.cur_tag }}" =~ ^[0-9].+$ ]]; then
+          echo 'Incrementing patch version'
+          CUR_VERSION=${{ steps.cur_tag_var.outputs.cur_tag }}
+          VERSION=( ${CUR_VERSION//./ } )
+          
+          # Incrementing the patch version
+          ((VERSION[-1]+=1))
+          
+          NEW_VERSION=$(IFS="."; echo "${VERSION[*]}")
+          echo "New Version: $NEW_VERSION"
+          echo $NEW_VERSION > TAG_NAME
         else
-          # If previous tag exists, bump the patch version
-          MAJOR_MINOR=$(echo $LATEST_TAG | awk -F. '{print $1 "." $2}')
-          PATCH=$(echo $LATEST_TAG | awk -F. '{print $3}' | sed 's/^0*//')
-          NEW_TAG="${MAJOR_MINOR}.$((PATCH + 1))"
+          echo 'Current tag format is not valid for incrementing.'
+          exit 1
         fi
-        echo "NEW_TAG=${NEW_TAG}" >> $GITHUB_ENV
-        echo "::set-output name=newtag::${NEW_TAG}"
+        echo ::set-output name=tag_name::$(cat TAG_NAME)
 
     - name: Push the new tag
+      id: set_git_tag
       run: |
-        git config user.name "GitHub Actions"
-        git config user.email "actions@github.com"
-        git tag $NEW_TAG
-        git push origin $NEW_TAG
+        echo "${{ steps.set_release_tag.outputs.tag_name }}" > TARGET_TAG_NAME
+        cat TARGET_TAG_NAME
+        git tag $(cat TARGET_TAG_NAME)
+        git push origin $(cat TARGET_TAG_NAME)
+        echo ::set-output name=target_tag_name::$(cat TARGET_TAG_NAME)
 
   build-and-release:
     needs: prepare-release
