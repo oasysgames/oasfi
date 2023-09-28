@@ -96,11 +96,11 @@ jobs:
       env:
         GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
       with:
-        tag_name: ${{ steps.get_tag_ver.outputs.cur_tag }}
-        release_name: Release ${{ steps.get_tag_ver.outputs.cur_tag }}
-        body_path: ./DIFF_COMMIT
+        tag_name: ${{ env.TARGET_TAG_NAME }}
+        release_name: Release ${{ env.TARGET_TAG_NAME }}
         draft: true
         prerelease: false
+
 
   build-and-release:
     needs: prepare-release
