@@ -65,7 +65,7 @@ jobs:
       run: |
         echo "Current Tag: ${{ env.cur_tag }}"
 
-        if [[ "${{ steps.cur_tag_var.outputs.cur_tag }}" =~ ^v[0-9].+$ ]]; then
+        if [[ "${{ env.cur_tag }}" =~ ^v[0-9].+$ ]]; then
           echo 'Incrementing patch version'
           CUR_VERSION=${{ env.cur_tag }}
           VERSION=( ${CUR_VERSION//./ } )
