@@ -81,6 +81,8 @@ jobs:
 
     - name: Upload binaries to release
       uses: actions/upload-release-asset@v1
+      env:
+        GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
       with:
         upload_url: ${{ needs.create-release.outputs.upload_url }}
         asset_path: ./my-binary
