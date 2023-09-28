@@ -90,6 +90,18 @@ jobs:
         git push origin $(cat TARGET_TAG_NAME)
         echo "TARGET_TAG_NAME=$(cat TARGET_TAG_NAME)" >> $GITHUB_ENV
 
+    - name: Create release
+      id: create_release
+      uses: actions/create-release@v1.1.4
+      env:
+        GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+      with:
+        tag_name: ${{ steps.get_tag_ver.outputs.cur_tag }}
+        release_name: Release ${{ steps.get_tag_ver.outputs.cur_tag }}
+        body_path: ./DIFF_COMMIT
+        draft: true
+        prerelease: false
+
   build-and-release:
     needs: prepare-release
     runs-on: ubuntu-latest
