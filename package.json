@@ -9,7 +9,8 @@
   },
   "scripts": {
     "test": "jest",
-    "compile": "npx tsc && pkg ."
+    "compile": "npx tsc && pkg .",
+    "lint": "eslint ."
   },
   "keywords": [],
   "author": "",
