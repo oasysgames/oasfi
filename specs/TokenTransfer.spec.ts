@@ -5,7 +5,7 @@ import * as Papa from "papaparse";
 
 describe("tests", () => {
   it("saveCsvToFile test", async () => {
-    const outputPath = "./sample/output.csv";
+    const outputPath = "./specs/samples/output.csv";
     const target = new TokenTransfer("hub_mainnet");
     const sampleData = "sampledata";
     await target.saveCsvToFile(outputPath, sampleData);
