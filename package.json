@@ -10,7 +10,8 @@
   "scripts": {
     "test": "jest",
     "compile": "npx tsc && pkg .",
-    "lint": "eslint ."
+    "lint": "eslint .",
+    "build:prod": "pkg . --output ./my-binary"
   },
   "keywords": [],
   "author": "",
@@ -37,12 +38,10 @@
     "typescript": "^5.2.2",
     "yargs": "^17.7.2"
   },
-  "bin": {
-    "oasys-csv-cli": "./dist/index.js"
-  },
   "type": "commonjs",
   "dependencies": {
     "ethers": "^5.7.2",
-    "papaparse": "^5.4.1"
+    "papaparse": "^5.4.1",
+    "pkg": "^5.8.1"
   }
 }
