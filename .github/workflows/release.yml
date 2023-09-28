@@ -45,33 +45,41 @@ jobs:
       run: npm run test
 
   prepare-release:
-    needs: test
     runs-on: ubuntu-latest
+    outputs:
+      newtag: ${{ steps.gettag.outputs.newtag }}
+
     steps:
     - name: Checkout code
       uses: actions/checkout@v2
 
-    - name: Get the latest tag
+    - name: Get latest tag
+      id: getlatesttag
+      run: |
+        LATEST_TAG=$(git describe --tags `git rev-list --tags --max-count=1` 2>/dev/null)
+        echo "LATEST_TAG=$LATEST_TAG" >> $GITHUB_ENV
+
+    - name: Calculate new tag and set it
       id: gettag
-      run: echo ::set-output name=tag::$(git describe --tags `git rev-list --tags --max-count=1`)
-
-    - name: Calculate new tag
-      id: newtag
       run: |
-        LATEST_TAG=${{ steps.gettag.outputs.tag }}
-        
-        MAJOR=$(echo $LATEST_TAG | cut -d. -f1)
-        MINOR=$(echo $LATEST_TAG | cut -d. -f2)
-        PATCH=$(echo $LATEST_TAG | cut -d. -f3)
-        
-        NEW_TAG="${MAJOR}.${MINOR}.$((PATCH + 1))"
-        
-        echo ::set-output name=tag::$NEW_TAG
+        if [[ -z "${LATEST_TAG}" ]]; then
+          # If no previous tag, start with v0.1.0
+          NEW_TAG="v0.1.0"
+        else
+          # If previous tag exists, bump the patch version
+          MAJOR_MINOR=$(echo $LATEST_TAG | awk -F. '{print $1 "." $2}')
+          PATCH=$(echo $LATEST_TAG | awk -F. '{print $3}' | sed 's/^0*//')
+          NEW_TAG="${MAJOR_MINOR}.$((PATCH + 1))"
+        fi
+        echo "NEW_TAG=${NEW_TAG}" >> $GITHUB_ENV
+        echo "::set-output name=newtag::${NEW_TAG}"
 
-    - name: Create and push new tag
+    - name: Push the new tag
       run: |
-        git tag ${{ steps.newtag.outputs.tag }}
-        git push origin ${{ steps.newtag.outputs.tag }}
+        git config user.name "GitHub Actions"
+        git config user.email "actions@github.com"
+        git tag $NEW_TAG
+        git push origin $NEW_TAG
 
   build-and-release:
     needs: prepare-release
