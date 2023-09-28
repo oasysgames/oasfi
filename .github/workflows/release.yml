@@ -61,6 +61,8 @@ jobs:
         release_name: Release ${{ github.ref }}
         draft: true
         prerelease: false
+    outputs:
+      upload_url: ${{ steps.create_release.outputs.upload_url }}
 
   build-and-release:
     needs: create-release
@@ -80,7 +82,7 @@ jobs:
     - name: Upload binaries to release
       uses: actions/upload-release-asset@v1
       with:
-        upload_url: ${{ steps.create_release.outputs.upload_url }}
+        upload_url: ${{ needs.create-release.outputs.upload_url }}
         asset_path: ./my-binary
         asset_name: my-binary-ubuntu
         asset_content_type: application/octet-stream
