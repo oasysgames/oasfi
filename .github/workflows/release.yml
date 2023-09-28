@@ -34,6 +34,12 @@ jobs:
     - name: Install dependencies
       run: npm install
 
+    - name: Install type definitions
+      run: npm install --save-dev @types/node @types/fs-extra
+
+    - name: Compile TypeScript
+      run: npx tsc
+
     - name: Lint with eslint
       run: npm run lint
 
@@ -63,9 +69,6 @@ jobs:
     steps:
     - name: Checkout code
       uses: actions/checkout@v2
-
-    - name: Compile TypeScript
-      run: npx tsc
 
     - name: Build with pkg
       run: |
