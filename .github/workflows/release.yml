@@ -88,7 +88,7 @@ jobs:
         cat TARGET_TAG_NAME
         git tag $(cat TARGET_TAG_NAME)
         git push origin $(cat TARGET_TAG_NAME)
-        echo "target_tag_name=$NEW_VERSION" >> $GITHUB_ENV
+        echo "target_tag_name=${{ env.tag_name }}" >> $GITHUB_ENV
 
     - name: Create release
       id: create_release
@@ -100,7 +100,6 @@ jobs:
         release_name: Release ${{ env.TARGET_TAG_NAME }}
         draft: true
         prerelease: false
-
 
   build-and-release:
     needs: prepare-release
