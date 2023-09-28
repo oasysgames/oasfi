@@ -53,6 +53,7 @@ jobs:
         release_name: Release ${{ github.ref }}
         draft: true
         prerelease: false
+        token: ${{ secrets.GITHUB_TOKEN }}
 
   build-and-release:
     needs: create-release
