@@ -46,26 +46,8 @@ jobs:
     - name: Run tests
       run: npm run test
 
-  create-release:
-    needs: test
-    runs-on: ubuntu-latest
-
-    steps:
-    - name: Create Release
-      id: create_release
-      uses: actions/create-release@v1
-      env:
-        GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
-      with:
-        tag_name: ${{ github.ref }}
-        release_name: Release ${{ github.ref }}
-        draft: true
-        prerelease: false
-    outputs:
-      upload_url: ${{ steps.create_release.outputs.upload_url }}
-
   build-and-release:
-    needs: create-release
+    needs: test
     runs-on: ubuntu-latest
 
     steps:
@@ -79,23 +61,12 @@ jobs:
         npm install -g pkg
         pkg . --output ./my-binary
 
-    - name: Upload binaries to release
-      uses: actions/upload-release-asset@v1
-      env:
-        GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
-      with:
-        upload_url: ${{ needs.create-release.outputs.upload_url }}
-        asset_path: ./my-binary
-        asset_name: my-binary-ubuntu
-        asset_content_type: application/octet-stream
-
     - name: Zip source code
       run: zip -r source-code.zip .
 
-    - name: Upload Source Code
-      uses: actions/upload-release-asset@v1
+    - name: Upload binaries and source code to release
+      uses: softprops/action-gh-release@v1
       with:
-        upload_url: ${{ needs.create-release.outputs.upload_url }}
-        asset_path: source-code.zip
-        asset_name: source-code.zip
-        asset_content_type: application/zip
+        files: ./my-binary,source-code.zip
+      env:
+        GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
