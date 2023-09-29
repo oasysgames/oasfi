@@ -91,7 +91,6 @@ jobs:
         fi
 
         echo "tag_name=$NEW_TAG" >> $GITHUB_ENV
-        echo "::set-output name=target_tag_name::${{ env.tag_name }}"
 
     - name: Use computed tag
       run: |
@@ -112,8 +111,8 @@ jobs:
       env:
         GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
       with:
-        tag_name: ${{ env.target_tag_name }}
-        release_name: Release ${{ env.target_tag_name }}
+        tag_name: ${{ env.tag_name }}
+        release_name: Release ${{ env.tag_name }}
         draft: true
         prerelease: false
 
