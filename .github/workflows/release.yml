@@ -55,6 +55,10 @@ jobs:
     - name: Checkout code
       uses: actions/checkout@v2
 
+    - name: Set target major and minor version
+      run: |
+        echo "target_major_minor_tag=v0.2.x" >> $GITHUB_ENV
+
     - name: Get latest tag
       id: getlatesttag
       run: |
@@ -84,12 +88,7 @@ jobs:
         fi
 
         # Export the new tag for subsequent steps
-        echo "NEW_TAG=$NEW_TAG" >> $GITHUB_ENV
-
-    - name: Use computed tag
-      run: |
-       # Export the new tag for subsequent steps
-       echo "tag_name=$NEW_TAG" >> $GITHUB_ENV
+        echo "tag_name=$NEW_TAG" >> $GITHUB_ENV
 
     - name: Use computed tag
       run: |
