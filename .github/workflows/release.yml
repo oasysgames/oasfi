@@ -46,6 +46,7 @@ jobs:
 
   prepare-release:
     runs-on: ubuntu-latest
+    needs: test
     outputs:
       new_tag: ${{ steps.set_git_tag.outputs.target_tag_name }}
 
@@ -55,7 +56,7 @@ jobs:
 
     - name: Set target major and minor version
       run: |
-        echo "target_major_minor_tag=v0.2.x" >> $GITHUB_ENV
+        echo "target_major_minor_tag=v0.1.x" >> $GITHUB_ENV
 
     - name: Get latest tag
       id: getlatesttag
@@ -103,7 +104,7 @@ jobs:
         cat TARGET_TAG_NAME
         git tag $(cat TARGET_TAG_NAME)
         git push origin $(cat TARGET_TAG_NAME)
-        echo "::set-output name=target_tag_name::${{ env.tag_name }}"
+        echo "target_tag_name=${{ env.tag_name }}" >> $GITHUB_OUTPUT
 
     - name: Create release
       id: create_release
