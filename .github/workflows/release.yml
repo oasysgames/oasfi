@@ -69,16 +69,16 @@ jobs:
       run: |
         # Assuming target_major_minor_tag has a format like "vX.Y.x"
         # Remove the 'v' prefix and then extract major and minor version
-        TARGET_MAJOR_MINOR=${{ env.target_major_minor_tag:1 }}
+        TARGET_MAJOR_MINOR=${target_major_minor_tag:1}
         TARGET_MAJOR=$(echo $TARGET_MAJOR_MINOR | cut -d. -f1)
         TARGET_MINOR=$(echo $TARGET_MAJOR_MINOR | cut -d. -f2)
-
+        
         # Remove the 'v' prefix from cur_tag and then extract major, minor, and patch
-        CURRENT_TAG=${{ env.cur_tag:1 }}
+        CURRENT_TAG=${cur_tag:1}
         MAJOR=$(echo $CURRENT_TAG | cut -d. -f1)
         MINOR=$(echo $CURRENT_TAG | cut -d. -f2)
         PATCH=$(echo $CURRENT_TAG | cut -d. -f3)
-
+        
         if [[ "$MAJOR" == "$TARGET_MAJOR" && "$MINOR" == "$TARGET_MINOR" ]]; then
           NEW_TAG="v${TARGET_MAJOR}.${TARGET_MINOR}.0"
         else
