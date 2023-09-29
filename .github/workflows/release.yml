@@ -60,29 +60,32 @@ jobs:
     - name: Get latest tag
       id: getlatesttag
       run: |
-          git fetch --prune --unshallow
-          echo "$(git tag --sort=creatordate | tail -n 1)" > CUR_TAG
-          echo "cur_tag=$(cat CUR_TAG)" >> $GITHUB_ENV
+        git fetch --prune --unshallow
+        echo "$(git tag --sort=creatordate | tail -n 1)" > CUR_TAG
+        echo "cur_tag=$(cat CUR_TAG)" >> $GITHUB_ENV
 
-    - name: Set release tag
-      id: set_release_tag
-      run: |
         # Assuming target_major_minor_tag has a format like "vX.Y.x"
-        # Remove the 'v' prefix and then extract major and minor version
-        TARGET_MAJOR_MINOR=${target_major_minor_tag:1}
-        TARGET_MAJOR=$(echo $TARGET_MAJOR_MINOR | cut -d. -f1)
-        TARGET_MINOR=$(echo $TARGET_MAJOR_MINOR | cut -d. -f2)
-        
-        # Remove the 'v' prefix from cur_tag and then extract major, minor, and patch
-        CURRENT_TAG=${cur_tag:1}
-        MAJOR=$(echo $CURRENT_TAG | cut -d. -f1)
-        MINOR=$(echo $CURRENT_TAG | cut -d. -f2)
-        PATCH=$(echo $CURRENT_TAG | cut -d. -f3)
-        
-        if [[ "$MAJOR" == "$TARGET_MAJOR" && "$MINOR" == "$TARGET_MINOR" ]]; then
-          NEW_TAG="v${TARGET_MAJOR}.${TARGET_MINOR}.0"
+        # Extract major and minor version for the target tag
+        TARGET_MAJOR_MINOR=${target_major_minor_tag%.*}  # Removes ".x" to get vX.Y
+
+        # Extract major and minor for the current tag
+        CURRENT_MAJOR_MINOR=${cur_tag%.*}  # Removes ".Z" to get vX.Y
+
+        # Compare the target and current tag
+        if [[ "$TARGET_MAJOR_MINOR" == "$CURRENT_MAJOR_MINOR" ]]; then
+          # Check if a tag with the TARGET_MAJOR_MINOR exists
+          if git tag | grep -q "^${TARGET_MAJOR_MINOR}\."; then
+            # If it exists, find the latest patch version for the target major.minor and increment it
+            LATEST_PATCH=$(git tag | grep "^${TARGET_MAJOR_MINOR}\." | cut -d. -f3 | sort -n | tail -1)
+            NEW_TAG="${TARGET_MAJOR_MINOR}.$((LATEST_PATCH+1))"
+          else
+            # If not exists, start patch version from 0
+            NEW_TAG="${TARGET_MAJOR_MINOR}.0"
+          fi
         else
-          NEW_TAG="v${MAJOR}.${MINOR}.$((PATCH+1))"
+          # If they don't match, just increment the patch version of current tag
+          PATCH=$(echo $cur_tag | cut -d. -f3)
+          NEW_TAG="${CURRENT_MAJOR_MINOR}.$((PATCH+1))"
         fi
 
         echo "tag_name=$NEW_TAG" >> $GITHUB_ENV
