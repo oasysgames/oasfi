@@ -4,8 +4,6 @@ on:
   push:
     branches:
       - main
-    tags:
-      - "v0.2.x"
 
 jobs:
   test:
@@ -70,24 +68,23 @@ jobs:
       id: set_release_tag
       run: |
         # Assuming target_major_minor_tag has a format like "vX.Y.x"
-        # Extract major and minor version from the target_major_minor_tag
-        TARGET_MAJOR=$(echo $target_major_minor_tag | cut -d. -f1)
-        TARGET_MINOR=$(echo $target_major_minor_tag | cut -d. -f2)
+        # Remove the 'v' prefix and then extract major and minor version
+        TARGET_MAJOR_MINOR=${{ env.target_major_minor_tag:1 }}
+        TARGET_MAJOR=$(echo $TARGET_MAJOR_MINOR | cut -d. -f1)
+        TARGET_MINOR=$(echo $TARGET_MAJOR_MINOR | cut -d. -f2)
 
-        # Extract major, minor, and patch from the current tag
-        MAJOR=$(echo $cur_tag | cut -d. -f1)
-        MINOR=$(echo $cur_tag | cut -d. -f2)
-        PATCH=$(echo $cur_tag | cut -d. -f3)
+        # Remove the 'v' prefix from cur_tag and then extract major, minor, and patch
+        CURRENT_TAG=${{ env.cur_tag:1 }}
+        MAJOR=$(echo $CURRENT_TAG | cut -d. -f1)
+        MINOR=$(echo $CURRENT_TAG | cut -d. -f2)
+        PATCH=$(echo $CURRENT_TAG | cut -d. -f3)
 
-        # If the major and minor versions of the current tag match the target versions, then start the patch version from 0.
         if [[ "$MAJOR" == "$TARGET_MAJOR" && "$MINOR" == "$TARGET_MINOR" ]]; then
-          NEW_TAG="${TARGET_MAJOR}.${TARGET_MINOR}.0"
+          NEW_TAG="v${TARGET_MAJOR}.${TARGET_MINOR}.0"
         else
-          # Otherwise, increment the patch version
-          NEW_TAG="${MAJOR}.${MINOR}.$((PATCH+1))"
+          NEW_TAG="v${MAJOR}.${MINOR}.$((PATCH+1))"
         fi
 
-        # Export the new tag for subsequent steps
         echo "tag_name=$NEW_TAG" >> $GITHUB_ENV
 
     - name: Use computed tag
