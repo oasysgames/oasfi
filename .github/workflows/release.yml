@@ -91,8 +91,7 @@ jobs:
         fi
 
         echo "tag_name=$NEW_TAG" >> $GITHUB_ENV
-        echo "TARGET_MAJOR_MINOR: $TARGET_MAJOR_MINOR"
-        echo "CURRENT_MAJOR_MINOR: $CURRENT_MAJOR_MINOR"
+        echo "::set-output name=target_tag_name::${{ env.tag_name }}"
 
     - name: Use computed tag
       run: |
