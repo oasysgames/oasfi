@@ -76,23 +76,21 @@ jobs:
 
         # Compare the target and current tag
         if [[ "$TARGET_MAJOR_MINOR" == "$CURRENT_MAJOR_MINOR" ]]; then
-          # Check if a tag with the TARGET_MAJOR_MINOR exists
+          # Since the major.minor matches, find the latest patch version for the target major.minor and increment it
+          LATEST_PATCH=$(git tag | grep "^${TARGET_MAJOR_MINOR}\." | cut -d. -f3 | sort -n | tail -1)
+          NEW_TAG="${TARGET_MAJOR_MINOR}.$((LATEST_PATCH+1))"
+        else
+          # If the major.minor doesn't match, check if any tag exists with the TARGET_MAJOR_MINOR
           if git tag | grep -q "^${TARGET_MAJOR_MINOR}\."; then
-            # If it exists, find the latest patch version for the target major.minor and increment it
             LATEST_PATCH=$(git tag | grep "^${TARGET_MAJOR_MINOR}\." | cut -d. -f3 | sort -n | tail -1)
             NEW_TAG="${TARGET_MAJOR_MINOR}.$((LATEST_PATCH+1))"
           else
-            # If not exists, start patch version from 0
+            # If no tag exists for the target major.minor, start patch version from 0
             NEW_TAG="${TARGET_MAJOR_MINOR}.0"
           fi
-        else
-          # If they don't match, just increment the patch version of current tag
-          PATCH=$(echo $cur_tag | cut -d. -f3)
-          NEW_TAG="${CURRENT_MAJOR_MINOR}.$((PATCH+1))"
         fi
 
         echo "tag_name=$NEW_TAG" >> $GITHUB_ENV
-
         echo "TARGET_MAJOR_MINOR: $TARGET_MAJOR_MINOR"
         echo "CURRENT_MAJOR_MINOR: $CURRENT_MAJOR_MINOR"
 
