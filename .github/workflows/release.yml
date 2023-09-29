@@ -64,6 +64,9 @@ jobs:
         echo "$(git tag --sort=creatordate | tail -n 1)" > CUR_TAG
         echo "cur_tag=$(cat CUR_TAG)" >> $GITHUB_ENV
 
+    - name: Set release tag
+      id: set_release_tag
+      run: |
         # Assuming target_major_minor_tag has a format like "vX.Y.x"
         # Extract major and minor version for the target tag
         TARGET_MAJOR_MINOR=${target_major_minor_tag%.*}  # Removes ".x" to get vX.Y
