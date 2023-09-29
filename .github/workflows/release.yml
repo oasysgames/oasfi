@@ -56,7 +56,7 @@ jobs:
 
     - name: Set target major and minor version
       run: |
-        echo "target_major_minor_tag=v0.2.x" >> $GITHUB_ENV
+        echo "target_major_minor_tag=v0.1.x" >> $GITHUB_ENV
 
     - name: Get latest tag
       id: getlatesttag
