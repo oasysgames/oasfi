@@ -119,6 +119,10 @@ jobs:
     - name: Zip source code
       run: zip -r source-code.zip .
 
+    - name: check env variable
+      run: |
+          echo "${{ needs.prepare-release.outputs.new_tag }}"
+
     - name: Create GitHub Release and Upload binaries/source
       uses: softprops/action-gh-release@v1
       with:
