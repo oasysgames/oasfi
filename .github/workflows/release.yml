@@ -93,6 +93,9 @@ jobs:
 
         echo "tag_name=$NEW_TAG" >> $GITHUB_ENV
 
+        echo "TARGET_MAJOR_MINOR: $TARGET_MAJOR_MINOR"
+        echo "CURRENT_MAJOR_MINOR: $CURRENT_MAJOR_MINOR"
+
     - name: Use computed tag
       run: |
         echo "Next tag will be: ${{ env.tag_name }}"
