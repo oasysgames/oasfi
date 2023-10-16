@@ -16,22 +16,22 @@
 #### MacOS:
 
 ```bash
-./oasys-csv-cli-macos input.csv output.csv chain_name
+./oasys-csv-cli-macos -i=input.csv -o=output.csv -c=chain_name
 
 # example
-# ./oasys-csv-cli-macos foo.csv bar.csv hub_mainnet
+# ./oasys-csv-cli-macos -i=foo.csv -o=bar.csv -c=hub_mainnet
 ```
 
 #### Windows:
 
 ```bash
-oasys-csv-cli-win.exe input.csv output.csv chain_name
+oasys-csv-cli-win.exe -i=input.csv -o=output.csv -c=chain_name
 ```
 
 #### Linux:
 
 ```bash
-./oasys-csv-cli-linux input.csv output.csv  chain_name
+./oasys-csv-cli-linux -i=input.csv -o=output.csv -c=chain_name
 ```
 
 ここで、input.csvは読み込むCSVファイルのパス、output.csvは出力されるCSVファイルのパスを指定します。
@@ -52,3 +52,12 @@ npm run compile
 #### 使い方
 
 上記「使い方」と同上
+
+
+
+ts-node index.ts  export-commission-reward fdsffd --chain=hub_mainnet
+
+
+2023-10-16T10:30:00
+
+--time_zone=Asia/Tokyo --from_data=2023-10-16T10:30:00

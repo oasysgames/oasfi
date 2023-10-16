@@ -2,17 +2,13 @@
 
 import * as fsPromise from "fs/promises";
 import * as Papa from "papaparse";
-import yargs, { Arguments } from "yargs";
+import yargs, { Arguments, Argv, showHelp } from "yargs";
 import { hideBin } from "yargs/helpers";
+import { CorrectCsvArgs, commissionRewardArgs } from "./types";
 import { TokenTransfer } from "./module/TokenTransfer";
+import { commissionReward } from "./module/Validator";
 
-interface CommandArgs {
-  input: string;
-  output: string;
-  chain: string;
-}
-
-async function processCsv(args: CommandArgs) {
+async function processCorrectCsv(args: CorrectCsvArgs) {
   const { chain, input, output } = args;
   const tokenTransfer = new TokenTransfer(chain);
   const csvContent = await fsPromise.readFile(input, "utf-8");
@@ -21,33 +17,102 @@ async function processCsv(args: CommandArgs) {
   await tokenTransfer.saveCsvToFile(output, Papa.unparse(data));
 }
 
+async function processCommissionReward(args: commissionRewardArgs) {
+  await commissionReward(args)
+}
+
+
+
 void yargs(hideBin(process.argv))
+  .usage("<command>  [OPTIONS]")
+  .help('help').alias('help', 'h')
+  .version('version', '1.0.1').alias('version', 'V')
   .command(
-    "<input> <output> <chain>",
+    "correct-csv",
     "Check token balance and remove duplicate records from a CSV",
-    {
-      input: {
-        describe: "Input CSV file",
-        type: "string",
-        demandOption: true,
-      },
-      output: {
-        describe: "Output CSV file",
-        type: "string",
-        demandOption: true,
-      },
-      chain: {
-        describe: "Chain name",
-        type: "string",
-        demandOption: true,
-      },
+    (yargs: Argv) => {
+      return yargs.options({
+        input: {
+          alias: 'i',
+          description: "Input CSV file",
+          requiresArg: true,
+          required: true,
+        },
+        output: {
+          alias: 'o',
+          description: "Output CSV file",
+          requiresArg: true,
+          required: true
+        },
+        chain: {
+          alias: 'c',
+          description: "Chain name",
+          requiresArg: true,
+          required: true
+        }
+      })
     },
-    async (argv: Arguments<CommandArgs>) => {
+    async (argv: Arguments<CorrectCsvArgs>) => {
       try {
-        await processCsv(argv);
+        await processCorrectCsv(argv);
       } catch (error) {
         console.error(`An error occurred: ${error.message}`);
       }
     }
   )
+  .command("export-commission-reward [validator_address]", "Export commission reward",
+    (yargs: Argv) => {
+      return yargs.options({
+        validator_address: {
+          description: "validator address",
+          requiresArg: true,
+          required: true,
+          type:'string'
+        },
+        chain: {
+          alias: 'c',
+          description: "Chain name",
+          requiresArg: true,
+          required: true
+        },
+        from_epoch: {
+          type: 'number',
+          description: 'from epoch',
+        },
+        to_epoch: {
+          type: 'number',
+          description: 'to epoch',
+        },
+        from_data: {
+          type: 'string',
+          description: 'from datetime',
+        },
+        to_data: {
+          type: 'string',
+          description: 'to datetime',
+        },
+        price_time: {
+          type: 'number',
+          description: 'price',
+        },
+        price: {
+          type: 'string',
+          description: 'price',
+        },
+        time_zone: {
+          type: 'string',
+          description: 'timezone',
+        }
+      })
+    }, async (argv: Arguments<commissionRewardArgs>) => {
+      console.log(argv);
+      
+      await processCommissionReward(argv);
+      try {
+      } catch (error) {
+        console.error(`An error occurred: ${error.message}`);
+      }
+    })
+
   .help().argv;
+
