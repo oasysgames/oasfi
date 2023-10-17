@@ -34,8 +34,6 @@ const getOasPriceByRange = async (
     from: fromTimestamp,
     to: toTimestamp,
   });
-  console.log("🚀 ~ file: coingecko.ts:37 ~ marketChart:", marketChart)
-
 
   if (marketChart.prices.length > 0) {
     // If only one oas price can be obtained

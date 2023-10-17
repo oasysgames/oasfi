@@ -11,7 +11,7 @@
     "test": "jest",
     "compile": "npx tsc && pkg .",
     "lint": "eslint .",
-    "codegen": "graphql-codegen --config codegen.ts"
+    "codegen": "graphql-codegen --config src/codegen.ts"
   },
   "keywords": [],
   "author": "",

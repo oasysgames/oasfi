@@ -85,15 +85,15 @@ void yargs(hideBin(process.argv))
         },
         from_data: {
           type: 'string',
-          description: 'from datetime',
+          description: 'from datetime YYYY-MM-DDTHH:MM:SS',
         },
         to_data: {
           type: 'string',
-          description: 'to datetime',
+          description: 'to datetime YYYY-MM-DDTHH:MM:SS',
         },
         price_time: {
-          type: 'number',
-          description: 'price',
+          type: 'string',
+          description: 'utc time price - format: HH:MM:SS',
         },
         price: {
           type: 'string',
@@ -105,8 +105,6 @@ void yargs(hideBin(process.argv))
         }
       })
     }, async (argv: Arguments<commissionRewardArgs>) => {
-      console.log(argv);
-      
       await processCommissionReward(argv);
       try {
       } catch (error) {

@@ -19,24 +19,28 @@ const CREDENTIALS = process.env.GOOGLE_APPLICATION_CREDENTIALS;
 
 const INITIAL_MONTH = '202209';
 
-// 'Oas price(jpy)',
-// 'Oas price(usd)',
-// 'Oas price(krw)',
-// 'Oas price(eur)',
-// 'Oas price(sgd)',
-const HEADER_FOR_GENERAL = [
+
+export const HEADER_FOR_GENERAL_ONLY_ONE_PRICE = [
   'epoch',
   'block',
   'timestamp(UTC)',
   'Total staked(OAS+SOAS+WOAS)',
   'Daily validator commission(OAS)',
-  // 'Total staked(OAS)',
-  // 'Total staked(SOAS)',
-  // 'Total staked(WOAS)',
-  // 'Remaining validator commission(OAS)',
   'Oas price',
 ];
 
+export const HEADER_FOR_GENERAL_MULTI_PRICE = [
+  'epoch',
+  'block',
+  'timestamp(UTC)',
+  'Total staked(OAS+SOAS+WOAS)',
+  'Daily validator commission(OAS)',
+  'Oas price(jpy)',
+  'Oas price(usd)',
+  'Oas price(krw)',
+  'Oas price(eur)',
+  'Oas price(sgd)',
+];
 const GOOGLE_API_SCOPES = ['https://www.googleapis.com/auth/spreadsheets'];
 
 type ColumnWidth = { [columnName: string]: number };
@@ -205,7 +209,7 @@ const setHeaderWidth = async (
 ) => {
   await Promise.all(
     header.map(async (h, i) => {
-      const width = COLUMN_WIDTHS[h]||220;
+      const width = COLUMN_WIDTHS[h] || 220;
 
       return sheet.updateDimensionProperties(
         'COLUMNS',
@@ -227,6 +231,7 @@ const setHeaderWidth = async (
 export const getDataSheet = async (
   doc: GoogleSpreadsheet,
   timestamp: Date,
+  header: Array<string>
 ): Promise<GoogleSpreadsheetWorksheet> => {
   // get year and month date
   const title = getMonthDate(timestamp);
@@ -234,8 +239,8 @@ export const getDataSheet = async (
   let sheet = doc.sheetsByTitle[title];
 
   if (!sheet) {
-    sheet = await doc.addSheet({ title, headerValues: HEADER_FOR_GENERAL });
-    await setHeaderWidth(sheet, HEADER_FOR_GENERAL);
+    sheet = await doc.addSheet({ title, headerValues: header });
+    await setHeaderWidth(sheet, header);
   }
 
   return sheet;
@@ -243,6 +248,7 @@ export const getDataSheet = async (
 
 export const getLatestSheet = async (
   doc: GoogleSpreadsheet,
+  header:Array<string>
 ): Promise<GoogleSpreadsheetWorksheet> => {
   const title = 'latest';
   let sheet = doc.sheetsByTitle[title];
@@ -251,9 +257,8 @@ export const getLatestSheet = async (
     await sheet.delete();
   }
 
-  sheet = await doc.addSheet({ title, headerValues: HEADER_FOR_GENERAL });
-  await setHeaderWidth(sheet, HEADER_FOR_GENERAL);
-
+  sheet = await doc.addSheet({ title, headerValues: header });
+  await setHeaderWidth(sheet, header);
   return sheet;
 };
 

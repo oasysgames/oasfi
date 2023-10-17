@@ -22,16 +22,3 @@ export const getTime = (timestamp: Date) => {
 export const getMonthDate = (timestamp: Date) => {
   return dateParts(timestamp).slice(0, 2).join('');
 };
-
-export const getDateTimeByTZ = (timestamp: Date,tz:string) => {
-  if (tz) {
-    return moment.unix(timestamp.getTime()).tz(tz);
-  }
-  return moment(timestamp)
-}
-
-export const getEndDayByJP = (timestamp: Date) => {
-  const japanMoment = moment.unix(timestamp.getTime()).tz("Asia/Tokyo").endOf('day');
-  const utcMoment = japanMoment.utc().toDate();
-  return utcMoment
-}

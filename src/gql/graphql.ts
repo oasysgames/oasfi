@@ -1213,9 +1213,6 @@ export type GetEpochQueryVariables = Exact<{
   epoch: Scalars['BigInt'];
 }>;
 
-export type GetEpochQueryByTimestamp = Exact<{
-  timestamp: Scalars['BigInt'];
-}>;
 
 export type GetEpochQuery = { __typename?: 'Query', epoches: Array<{ __typename?: 'Epoch', epoch: any, block: any, timestamp: any }> };
 

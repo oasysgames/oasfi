@@ -10,7 +10,7 @@ import type {
   GetValidatorsQueryVariables,
   GetEpochRewardsQueryVariables,
   GetEpochRewardsQuery,
-  GetEpochQueryByTimestamp,
+  GetEpochByToTimeStampQueryVariables,
 
 } from './../gql/graphql';
 
@@ -137,16 +137,16 @@ export class Subgraph {
     const data = await request(this.baseGraphUrl, GetLatestEpoch);
     return data;
   };
-  public getEpochByToTimestamp = async (timestamp: Date) => {
-    const variables: GetEpochQueryByTimestamp = {
-      timestamp: timestamp.getTime(),
+  public getEpochByToTimestamp = async (timestamp: number) => {
+    const variables: GetEpochByToTimeStampQueryVariables = {
+      timestamp: timestamp
     };
     const data = await request(this.baseGraphUrl, GetEpochByToTimeStamp, variables);
     return data;
   };
-  public getEpochByFromTimestamp = async (timestamp: Date) => {
-    const variables: GetEpochQueryByTimestamp = {
-      timestamp: timestamp.getTime(),
+  public getEpochByFromTimestamp = async (timestamp: number) => {
+    const variables: GetEpochByToTimeStampQueryVariables = {
+      timestamp: timestamp,
     };
     const data = await request(this.baseGraphUrl, GetEpochByFromTimeStamp, variables);
     return data;

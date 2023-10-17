@@ -55,9 +55,11 @@ npm run compile
 
 
 
-ts-node index.ts  export-commission-reward fdsffd --chain=hub_mainnet
-
-
-2023-10-16T10:30:00
-
---time_zone=Asia/Tokyo --from_data=2023-10-16T10:30:00
+ ./oasys-csv-cli-linux  export-commission-reward 0x15f41edfe3556b853d79f96edbae4b68c0217673 -c=hub_mainnet
+ ./oasys-csv-cli-linux  export-commission-reward 0x15f41edfe3556b853d79f96edbae4b68c0217673 -c=hub_mainnet --from_epoch=100
+ ./oasys-csv-cli-linux  export-commission-reward 0x15f41edfe3556b853d79f96edbae4b68c0217673 -c=hub_mainnet --to_epoch=100
+ ./oasys-csv-cli-linux  export-commission-reward 0x15f41edfe3556b853d79f96edbae4b68c0217673 -c=hub_mainnet --from_epoch=100 --to_epoch=200
+ ./oasys-csv-cli-linux  export-commission-reward 0x15f41edfe3556b853d79f96edbae4b68c0217673 -c=hub_mainnet --from_data=2023-10-16T10:00:00
+ ./oasys-csv-cli-linux  export-commission-reward 0x15f41edfe3556b853d79f96edbae4b68c0217673 -c=hub_mainnet --to_data=2023-10-16T10:00:00
+ ./oasys-csv-cli-linux  export-commission-reward 0x15f41edfe3556b853d79f96edbae4b68c0217673 -c=hub_mainnet --from_data=2023-08-16T10:00:00 --to_data=2023-10-16T10:00:00
+ ./oasys-csv-cli-linux  export-commission-reward 0x272d6bd040c2b8454f4f6f43115758fbe318ee2c -c=hub_mainnet  --from_epoch=246 --to_epoch=247 --price_time=10:00:00 --price=jpy

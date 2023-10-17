@@ -38,7 +38,7 @@ export interface commissionRewardArgs {
     to_epoch: number;
     from_data: string;
     to_data: string;
-    price_time: number;
+    price_time: string;
     time_zone: string;
     price: string;
 }
