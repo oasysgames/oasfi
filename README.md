@@ -42,11 +42,25 @@ oasys-csv-cli-win.exe -i=input.csv -o=output.csv -c=chain_name
 #### 実行ファイル作成
 
 ```bash
+nvm use 18
 git clone https://github.com/oasysgames/explorer-csv-cli.git
 cd explorer-csv-cli
 npm i
 npm i -g pkg
 npm run compile
+```
+
+# sheet API
+https://console.cloud.google.com/apis/library/browse?hl=ja&project=nftwars-357707&q=sheet
+
+# service account
+https://firebase.google.com/docs/app-distribution/authenticate-service-account?hl=ja&platform=ios
+https://docs.biztex.co.jp/cobit-docs/google_spreadsheet_settings/for_serviceaccount.html
+
+# export
+```
+export SPREADSHEET_ID=xx
+export GOOGLE_APPLICATION_CREDENTIALS=xx
 ```
 
 #### 使い方
