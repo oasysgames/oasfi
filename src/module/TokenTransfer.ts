@@ -1,5 +1,4 @@
-import * as fsPromise from "fs/promises";
-import * as path from "path";
+
 import { ethers } from "ethers";
 import { TokenTransferUtils } from "../utils/TokenTransferUtils";
 import * as dotenv from "dotenv";
@@ -102,11 +101,6 @@ export class TokenTransfer {
       result[tx.BlockNumber].push(tx);
       return result;
     }, {});
-  };
-  public saveCsvToFile = async (outputPath: string, csvData: string) => {
-    const filePath = path.join(outputPath);
-    await fsPromise.writeFile(filePath, csvData);
-    console.log("DONE!");
   };
 
   private getTxReceipt = async (

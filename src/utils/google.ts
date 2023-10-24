@@ -316,13 +316,13 @@ export const getAdditionalData = (
     });
 
   // set total stake amount row
-  rowData.push([
-    'Total',
-    '',
-    '',
-    utils.formatEther(totalStake).toString(),
-    '',
-  ]);
+  // rowData.push([
+  //   'Total',
+  //   '',
+  //   '',
+  //   utils.formatEther(totalStake).toString(),
+  //   '',
+  // ]);
 
   return {
     rowData: rowData,

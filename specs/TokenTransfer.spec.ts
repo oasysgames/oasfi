@@ -2,13 +2,14 @@ import { TokenTransfer, TokenTransferData } from "../src/module/TokenTransfer";
 import * as fs from "fs";
 import * as fsPromise from "fs/promises";
 import * as Papa from "papaparse";
+import { saveCsvToFile } from "./../src/service/csvService";
 
 describe("tests", () => {
   it("saveCsvToFile test", async () => {
     const outputPath = "./specs/samples/output.csv";
     const target = new TokenTransfer("hub_mainnet");
     const sampleData = "sampledata";
-    await target.saveCsvToFile(outputPath, sampleData);
+    await saveCsvToFile(outputPath, sampleData);
     // ファイルを読み込む
     const outputData = fs.readFileSync(outputPath, "utf-8");
     // 期待するデータ

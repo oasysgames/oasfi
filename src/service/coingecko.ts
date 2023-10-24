@@ -1,4 +1,6 @@
 import { CoinGeckoClient } from 'coingecko-api-v3';
+import { OasPrices } from './../types';
+
 const client = new CoinGeckoClient(
   {
     timeout: 3000,
@@ -6,7 +8,6 @@ const client = new CoinGeckoClient(
   },
   process.env.COINGECKO_API_KEY,
 );
-import { OasPrices } from './../types';
 
 const id = 'oasys';
 const vsCurrencies = ['jpy', 'usd', 'krw', 'eur', 'sgd'];

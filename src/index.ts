@@ -7,6 +7,7 @@ import { hideBin } from "yargs/helpers";
 import { CorrectCsvArgs, commissionRewardArgs } from "./types";
 import { TokenTransfer } from "./module/TokenTransfer";
 import { commissionReward } from "./module/Validator";
+import { saveCsvToFile } from "./service/csvService";
 
 async function processCorrectCsv(args: CorrectCsvArgs) {
   const { chain, input, output } = args;
@@ -14,7 +15,7 @@ async function processCorrectCsv(args: CorrectCsvArgs) {
   const csvContent = await fsPromise.readFile(input, "utf-8");
   const result = Papa.parse(csvContent, { header: true });
   const data = await tokenTransfer.handleDuplicateTokenTransfer(result.data);
-  await tokenTransfer.saveCsvToFile(output, Papa.unparse(data));
+  await saveCsvToFile(output, Papa.unparse(data));
 }
 
 async function processCommissionReward(args: commissionRewardArgs) {
@@ -102,6 +103,14 @@ void yargs(hideBin(process.argv))
         time_zone: {
           type: 'string',
           description: 'timezone',
+        },
+        export_csv_online: {
+          type: 'string',
+          description: 'export csv online',
+        },
+        output: {
+          alias: 'o',
+          description: "Output CSV file"
         }
       })
     }, async (argv: Arguments<commissionRewardArgs>) => {

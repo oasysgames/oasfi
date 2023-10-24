@@ -16,7 +16,7 @@
 #### MacOS:
 
 ```bash
-./oasys-csv-cli-macos -i=input.csv -o=output.csv -c=chain_name
+./oasys-csv-cli-macos correct-csv -i=input.csv -o=output.csv -c=chain_name
 
 # example
 # ./oasys-csv-cli-macos -i=foo.csv -o=bar.csv -c=hub_mainnet
@@ -25,18 +25,23 @@
 #### Windows:
 
 ```bash
-oasys-csv-cli-win.exe -i=input.csv -o=output.csv -c=chain_name
+oasys-csv-cli-win.exe correct-csv -i=input.csv -o=output.csv -c=chain_name
 ```
 
 #### Linux:
 
 ```bash
-./oasys-csv-cli-linux -i=input.csv -o=output.csv -c=chain_name
+./oasys-csv-cli-linux correct-csv -i=input.csv -o=output.csv -c=chain_name
 ```
 
 ここで、input.csvは読み込むCSVファイルのパス、output.csvは出力されるCSVファイルのパスを指定します。
 
+
+詳細な例
+./oasys-csv-cli-linux correct-csv -i=./target_csv/token-transfers.csv -o=./output_csv/token-transfers.output.csv -c=hub_mainnet
+
 ---
+
 
 ### for developer
 #### 実行ファイル作成
@@ -61,19 +66,26 @@ https://docs.biztex.co.jp/cobit-docs/google_spreadsheet_settings/for_serviceacco
 ```
 export SPREADSHEET_ID=xx
 export GOOGLE_APPLICATION_CREDENTIALS=xx
+export COINGECKO_API_KEY=xx
 ```
 
 #### 使い方
-
 上記「使い方」と同上
 
 
 
- ./oasys-csv-cli-linux  export-commission-reward 0x15f41edfe3556b853d79f96edbae4b68c0217673 -c=hub_mainnet
- ./oasys-csv-cli-linux  export-commission-reward 0x15f41edfe3556b853d79f96edbae4b68c0217673 -c=hub_mainnet --from_epoch=100
- ./oasys-csv-cli-linux  export-commission-reward 0x15f41edfe3556b853d79f96edbae4b68c0217673 -c=hub_mainnet --to_epoch=100
- ./oasys-csv-cli-linux  export-commission-reward 0x15f41edfe3556b853d79f96edbae4b68c0217673 -c=hub_mainnet --from_epoch=100 --to_epoch=200
- ./oasys-csv-cli-linux  export-commission-reward 0x15f41edfe3556b853d79f96edbae4b68c0217673 -c=hub_mainnet --from_data=2023-10-16T10:00:00
- ./oasys-csv-cli-linux  export-commission-reward 0x15f41edfe3556b853d79f96edbae4b68c0217673 -c=hub_mainnet --to_data=2023-10-16T10:00:00
- ./oasys-csv-cli-linux  export-commission-reward 0x15f41edfe3556b853d79f96edbae4b68c0217673 -c=hub_mainnet --from_data=2023-08-16T10:00:00 --to_data=2023-10-16T10:00:00
+ ./oasys-csv-cli-linux  export-commission-reward 0x272d6bd040c2b8454f4f6f43115758fbe318ee2c -c=hub_mainnet 
+ ./oasys-csv-cli-linux  export-commission-reward 0x272d6bd040c2b8454f4f6f43115758fbe318ee2c -c=hub_mainnet --export_csv_online=true -o=output.csv
+ ./oasys-csv-cli-linux  export-commission-reward 0x272d6bd040c2b8454f4f6f43115758fbe318ee2c -c=hub_mainnet --from_epoch=100
+ ./oasys-csv-cli-linux  export-commission-reward 0x272d6bd040c2b8454f4f6f43115758fbe318ee2c -c=hub_mainnet --to_epoch=100
+ ./oasys-csv-cli-linux  export-commission-reward 0x272d6bd040c2b8454f4f6f43115758fbe318ee2c -c=hub_mainnet --from_epoch=100 --to_epoch=200
+ ./oasys-csv-cli-linux  export-commission-reward 0x272d6bd040c2b8454f4f6f43115758fbe318ee2c -c=hub_mainnet --from_data=2023-10-16T10:00:00
+ ./oasys-csv-cli-linux  export-commission-reward 0x272d6bd040c2b8454f4f6f43115758fbe318ee2c -c=hub_mainnet --to_data=2023-10-16T10:00:00
+ ./oasys-csv-cli-linux  export-commission-reward 0x272d6bd040c2b8454f4f6f43115758fbe318ee2c -c=hub_mainnet --from_data=2023-08-16T10:00:00 --to_data=2023-10-16T10:00:00
  ./oasys-csv-cli-linux  export-commission-reward 0x272d6bd040c2b8454f4f6f43115758fbe318ee2c -c=hub_mainnet  --from_epoch=246 --to_epoch=247 --price_time=10:00:00 --price=jpy
+
+ --from_data=2023-01-06T19:22:28
+ --to_data=2023-01-08T19:22:28
+
+ --from_data=2023-01-07T02:22:28
+--to_data=2023-01-08T02:22:28

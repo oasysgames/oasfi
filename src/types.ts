@@ -41,4 +41,6 @@ export interface commissionRewardArgs {
     price_time: string;
     time_zone: string;
     price: string;
+    export_csv_online:string;
+    output: string;
 }
