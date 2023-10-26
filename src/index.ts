@@ -1,57 +1,57 @@
 #!/usr/bin/env node
 
-import * as fsPromise from "fs/promises";
-import * as Papa from "papaparse";
-import yargs, { Arguments, Argv, showHelp } from "yargs";
-import { hideBin } from "yargs/helpers";
-import { CorrectCsvArgs, commissionRewardArgs } from "./types";
-import { TokenTransfer } from "./module/TokenTransfer";
-import { commissionReward } from "./module/Validator";
-import { saveCsvToFile } from "./service/csvService";
+import * as fsPromise from 'fs/promises';
+import * as Papa from 'papaparse';
+import yargs, { Arguments, Argv } from 'yargs';
+import { hideBin } from 'yargs/helpers';
+import { TokenTransfer } from './module/TokenTransfer';
+import { commissionReward } from './module/Validator';
+import { saveCsvToFile } from './service/csvService';
+import { CorrectCsvArgs, commissionRewardArgs } from './types';
 
 async function processCorrectCsv(args: CorrectCsvArgs) {
   const { chain, input, output } = args;
   const tokenTransfer = new TokenTransfer(chain);
-  const csvContent = await fsPromise.readFile(input, "utf-8");
+  const csvContent = await fsPromise.readFile(input, 'utf-8');
   const result = Papa.parse(csvContent, { header: true });
   const data = await tokenTransfer.handleDuplicateTokenTransfer(result.data);
   await saveCsvToFile(output, Papa.unparse(data));
 }
 
 async function processCommissionReward(args: commissionRewardArgs) {
-  await commissionReward(args)
+  await commissionReward(args);
 }
 
-
-
 void yargs(hideBin(process.argv))
-  .usage("<command>  [OPTIONS]")
-  .help('help').alias('help', 'h')
-  .version('version', '1.0.1').alias('version', 'V')
+  .usage('<command>  [OPTIONS]')
+  .help('help')
+  .alias('help', 'h')
+  .version('version', '1.0.1')
+  .alias('version', 'V')
   .command(
-    "correct-csv",
-    "Check token balance and remove duplicate records from a CSV",
+    'correct-csv',
+    'Check token balance and remove duplicate records from a CSV',
     (yargs: Argv) => {
       return yargs.options({
         input: {
           alias: 'i',
-          description: "Input CSV file",
+          description: 'Input CSV file',
           requiresArg: true,
           required: true,
         },
         output: {
           alias: 'o',
-          description: "Output CSV file",
+          description: 'Output CSV file',
           requiresArg: true,
-          required: true
+          required: true,
         },
         chain: {
           alias: 'c',
-          description: "Chain name",
+          description: 'Chain name',
           requiresArg: true,
-          required: true
-        }
-      })
+          required: true,
+        },
+      });
     },
     async (argv: Arguments<CorrectCsvArgs>) => {
       try {
@@ -59,22 +59,24 @@ void yargs(hideBin(process.argv))
       } catch (error) {
         console.error(`An error occurred: ${error.message}`);
       }
-    }
+    },
   )
-  .command("export-commission-reward [validator_address]", "Export commission reward",
+  .command(
+    'export-commission-reward [validator_address]',
+    'Export commission reward',
     (yargs: Argv) => {
       return yargs.options({
         validator_address: {
-          description: "validator address",
+          description: 'validator address',
           requiresArg: true,
           required: true,
-          type:'string'
+          type: 'string',
         },
         chain: {
           alias: 'c',
-          description: "Chain name",
+          description: 'Chain name',
           requiresArg: true,
-          required: true
+          required: true,
         },
         from_epoch: {
           type: 'number',
@@ -110,16 +112,17 @@ void yargs(hideBin(process.argv))
         },
         output: {
           alias: 'o',
-          description: "Output CSV file"
-        }
-      })
-    }, async (argv: Arguments<commissionRewardArgs>) => {
+          description: 'Output CSV file',
+        },
+      });
+    },
+    async (argv: Arguments<commissionRewardArgs>) => {
       await processCommissionReward(argv);
       try {
       } catch (error) {
         console.error(`An error occurred: ${error.message}`);
       }
-    })
+    },
+  )
 
   .help().argv;
-

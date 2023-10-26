@@ -1,24 +1,22 @@
+import { BigNumber, utils } from 'ethers';
 import {
   GoogleSpreadsheet,
   GoogleSpreadsheetWorksheet,
 } from 'google-spreadsheet';
 import { google } from 'googleapis';
-import { utils, BigNumber } from 'ethers';
 import {
-  TimeData,
-  ValidatorTotalStake,
-  TotalStakeData,
   OasPrices,
+  TimeData,
+  TotalStakeData,
+  ValidatorTotalStake,
 } from './../types';
 import { getDate, getMonthDate, getTime } from './date';
-import { validatorsInfo } from './validatorsInfo';
 
 const SPREADSHEET_ID = process.env.SPREADSHEET_ID ?? '';
 // set service account info path when local development
 const CREDENTIALS = process.env.GOOGLE_APPLICATION_CREDENTIALS;
 
 const INITIAL_MONTH = '202209';
-
 
 export const HEADER_FOR_GENERAL_ONLY_ONE_PRICE = [
   'epoch',
@@ -140,8 +138,8 @@ export const saveTotalStakeAmount = async (
     const lastMonthTotalStake =
       typeof lastMonthTotalStakeString === 'string'
         ? utils.parseEther(
-          lastMonthTotalStakeString.replace('/,/g', '').split('.')[0],
-        )
+            lastMonthTotalStakeString.replace('/,/g', '').split('.')[0],
+          )
         : BigNumber.from('0');
     latestMonthRow[header.oas] = utils
       .formatEther(totalStakeData.totalOasStake)
@@ -165,8 +163,8 @@ export const saveTotalStakeAmount = async (
     const lastMonthTotalStake =
       typeof lastMonthTotalStakeString === 'string'
         ? utils.parseEther(
-          lastMonthTotalStakeString.replace('/,/g', '').split('.')[0],
-        )
+            lastMonthTotalStakeString.replace('/,/g', '').split('.')[0],
+          )
         : BigNumber.from('0');
 
     const rowData = ['0', '0', '0', '0', '0', '0'];
@@ -231,7 +229,7 @@ const setHeaderWidth = async (
 export const getDataSheet = async (
   doc: GoogleSpreadsheet,
   timestamp: Date,
-  header: Array<string>
+  header: Array<string>,
 ): Promise<GoogleSpreadsheetWorksheet> => {
   // get year and month date
   const title = getMonthDate(timestamp);
@@ -248,7 +246,7 @@ export const getDataSheet = async (
 
 export const getLatestSheet = async (
   doc: GoogleSpreadsheet,
-  header:Array<string>
+  header: Array<string>,
 ): Promise<GoogleSpreadsheetWorksheet> => {
   const title = 'latest';
   let sheet = doc.sheetsByTitle[title];
@@ -266,7 +264,7 @@ export const getAdditionalData = (
   oasPrices: OasPrices,
   stakeDate: ValidatorTotalStake[],
   timeData: TimeData,
-  price: string
+  price: string,
 ): {
   rowData: string[][];
   totalStakeData: TotalStakeData;
@@ -281,8 +279,7 @@ export const getAdditionalData = (
   const krw = oasPrices['krw'] ?? '';
   const eur = oasPrices['eur'] ?? '';
   const sgd = oasPrices['sgd'] ?? '';
-  let prices = price ? [oasPrices[price]] : [jpy, usd, krw, eur, sgd]
-
+  const prices = price ? [oasPrices[price]] : [jpy, usd, krw, eur, sgd];
 
   let totalStake = BigNumber.from('0');
   let totalOasStake = BigNumber.from('0');
@@ -311,7 +308,7 @@ export const getAdditionalData = (
         `${date} ${time}`,
         utils.formatEther(validatorTotalStake).toString(),
         utils.formatEther(stake.dailyCommission).toString(),
-        ...prices
+        ...prices,
       ];
     });
 

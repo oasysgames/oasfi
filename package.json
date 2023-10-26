@@ -11,6 +11,7 @@
     "test": "jest",
     "compile": "npx tsc && pkg .",
     "lint": "eslint .",
+    "lint:fix": "eslint --fix --ext .js,.jsx .",
     "codegen": "graphql-codegen --config src/codegen.ts",
     "format": "prettier --write \"**/*.ts\""
   },

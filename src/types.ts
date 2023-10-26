@@ -1,46 +1,46 @@
 import { BigNumber } from 'ethers';
 
 export interface ValidatorTotalStake {
-    address: string;
-    oas: BigNumber;
-    soas: BigNumber;
-    woas: BigNumber;
-    dailyCommission: BigNumber;
-    totalCommission: BigNumber;
+  address: string;
+  oas: BigNumber;
+  soas: BigNumber;
+  woas: BigNumber;
+  dailyCommission: BigNumber;
+  totalCommission: BigNumber;
 }
 
 export interface TotalStakeData {
-    totalStake: BigNumber;
-    totalOasStake: BigNumber;
-    totalSoasStake: BigNumber;
-    totalWoasStake: BigNumber;
+  totalStake: BigNumber;
+  totalOasStake: BigNumber;
+  totalSoasStake: BigNumber;
+  totalWoasStake: BigNumber;
 }
 
 export interface TimeData {
-    epoch: string;
-    block: string;
-    timestamp: Date;
+  epoch: string;
+  block: string;
+  timestamp: Date;
 }
 
 export interface OasPrices {
-    [vsCurrency: string]: string;
+  [vsCurrency: string]: string;
 }
 export interface CorrectCsvArgs {
-    input: string;
-    output: string;
-    chain: string;
+  input: string;
+  output: string;
+  chain: string;
 }
 
 export interface commissionRewardArgs {
-    validator_address: string;
-    chain: string;
-    from_epoch: number;
-    to_epoch: number;
-    from_data: string;
-    to_data: string;
-    price_time: string;
-    time_zone: string;
-    price: string;
-    export_csv_online:string;
-    output: string;
+  validator_address: string;
+  chain: string;
+  from_epoch: number;
+  to_epoch: number;
+  from_data: string;
+  to_data: string;
+  price_time: string;
+  time_zone: string;
+  price: string;
+  export_csv_online: string;
+  output: string;
 }

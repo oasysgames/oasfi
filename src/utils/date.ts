@@ -1,6 +1,3 @@
-import moment = require("moment-timezone");
-
-
 const dateParts = (dt: Date): string[] => {
   const Y = dt.getUTCFullYear().toString();
   const M = ('00' + (dt.getUTCMonth() + 1)).slice(-2);

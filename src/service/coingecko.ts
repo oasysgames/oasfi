@@ -28,7 +28,6 @@ const getOasPriceByRange = async (
     throw new Error('toTimestamp is in the future');
   }
 
-
   const marketChart = await client.coinIdMarketChartRange({
     id,
     vs_currency: vsCurrency,

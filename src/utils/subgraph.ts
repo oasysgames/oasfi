@@ -1,18 +1,16 @@
 import { BigNumber } from 'ethers';
 import { request } from 'graphql-request';
-import { ValidatorTotalStake } from './../types';
 import { graphql } from './../gql/gql';
 import type {
+  GetEpochByToTimeStampQueryVariables,
+  GetEpochQueryVariables,
+  GetEpochRewardsQuery,
+  GetEpochRewardsQueryVariables,
   GetValidatorStakesQuery,
   GetValidatorStakesQueryVariables,
-  GetEpochQuery,
-  GetEpochQueryVariables,
   GetValidatorsQueryVariables,
-  GetEpochRewardsQueryVariables,
-  GetEpochRewardsQuery,
-  GetEpochByToTimeStampQueryVariables,
-
 } from './../gql/graphql';
+import { ValidatorTotalStake } from './../types';
 
 const GetEpoch = graphql(`
   query GetEpoch($epoch: BigInt!) {
@@ -24,23 +22,23 @@ const GetEpoch = graphql(`
   }
 `);
 const GetEpochByFromTimeStamp = graphql(`
-query GetEpochByFromTimeStamp($timestamp: BigInt!) {
-  epoches(
-    where: {timestamp_gte: $timestamp,}
-    orderBy: timestamp
-    orderDirection: asc
-    first: 1
-  ) {
-    epoch
-    block
-    timestamp
+  query GetEpochByFromTimeStamp($timestamp: BigInt!) {
+    epoches(
+      where: { timestamp_gte: $timestamp }
+      orderBy: timestamp
+      orderDirection: asc
+      first: 1
+    ) {
+      epoch
+      block
+      timestamp
+    }
   }
-}
 `);
 const GetEpochByToTimeStamp = graphql(`
-query GetEpochByToTimeStamp($timestamp: BigInt!) {
+  query GetEpochByToTimeStamp($timestamp: BigInt!) {
     epoches(
-      where: {timestamp_lte: $timestamp,}
+      where: { timestamp_lte: $timestamp }
       orderBy: timestamp
       orderDirection: desc
       first: 1
@@ -52,18 +50,14 @@ query GetEpochByToTimeStamp($timestamp: BigInt!) {
   }
 `);
 
-
-
-
-
 const GetLatestEpoch = graphql(`
-query GetLatestEpoch {
-  epoches(first: 1, orderBy: epoch, orderDirection: desc) {
-    epoch
-    block
-    timestamp
+  query GetLatestEpoch {
+    epoches(first: 1, orderBy: epoch, orderDirection: desc) {
+      epoch
+      block
+      timestamp
+    }
   }
-}
 `);
 const GetEpochRewards = graphql(`
   query GetEpochRewards($epoch: BigInt!, $first: Int!, $skip: Int!) {
@@ -77,17 +71,18 @@ const GetEpochRewards = graphql(`
 `);
 
 const GetValidators = graphql(`
-  query GetValidators(
-    $block: Int! 
-    $validator: ID!
+  query GetValidators($block: Int!, $validator: ID!) {
+    validators(
+      orderBy: id
+      first: 1000
+      block: { number: $block }
+      where: { id: $validator }
     ) {
-    validators(orderBy: id, first: 1000, block: { number: $block } ,where: {id: $validator}) {
       id
       commissions
     }
   }
 `);
-
 
 const GetValidatorStakes = graphql(`
   query GetValidatorStakes(
@@ -107,7 +102,9 @@ const GetValidatorStakes = graphql(`
 `);
 
 const BASE_GRAPH_URL: Record<string, string> = {
-  hub_mainnet: process.env.HUB_MAINNET_GRAPH_URL || "https://graph.mainnet.oasys.games/subgraphs/name/oasys/staking",
+  hub_mainnet:
+    process.env.HUB_MAINNET_GRAPH_URL ||
+    'https://graph.mainnet.oasys.games/subgraphs/name/oasys/staking',
 };
 
 export class Subgraph {
@@ -139,16 +136,24 @@ export class Subgraph {
   };
   public getEpochByToTimestamp = async (timestamp: number) => {
     const variables: GetEpochByToTimeStampQueryVariables = {
-      timestamp: timestamp
+      timestamp: timestamp,
     };
-    const data = await request(this.baseGraphUrl, GetEpochByToTimeStamp, variables);
+    const data = await request(
+      this.baseGraphUrl,
+      GetEpochByToTimeStamp,
+      variables,
+    );
     return data;
   };
   public getEpochByFromTimestamp = async (timestamp: number) => {
     const variables: GetEpochByToTimeStampQueryVariables = {
       timestamp: timestamp,
     };
-    const data = await request(this.baseGraphUrl, GetEpochByFromTimeStamp, variables);
+    const data = await request(
+      this.baseGraphUrl,
+      GetEpochByFromTimeStamp,
+      variables,
+    );
     return data;
   };
 
@@ -165,7 +170,11 @@ export class Subgraph {
 
     for (let i = 0; ; i++) {
       variables.skip = variables.first * i;
-      const data: any = await request(this.baseGraphUrl, GetEpochRewards, variables);
+      const data: any = await request(
+        this.baseGraphUrl,
+        GetEpochRewards,
+        variables,
+      );
 
       if (data.epochRewards.length === 0) break; // All epochRewards information already retrieved.
       epochRewards.epochRewards = epochRewards.epochRewards.concat(
@@ -201,7 +210,11 @@ export class Subgraph {
     };
     for (let i = 0; ; i++) {
       variables.skip = variables.first * i;
-      const data: any = await request(this.baseGraphUrl, GetValidatorStakes, variables);
+      const data: any = await request(
+        this.baseGraphUrl,
+        GetValidatorStakes,
+        variables,
+      );
 
       if (data.validators[0].stakes.length === 0) break; // All stake information already retrieved.
       validatorStakes.validators[0].stakes =
@@ -210,7 +223,11 @@ export class Subgraph {
     return validatorStakes;
   };
 
-  public getValidatorTotalStake = async (epoch: number, block: number, validator_address: string) => {
+  public getValidatorTotalStake = async (
+    epoch: number,
+    block: number,
+    validator_address: string,
+  ) => {
     const validators: any = await this.getValidators(block, validator_address);
 
     const epochRewards = await this.getEpochRewards(epoch);
@@ -222,7 +239,8 @@ export class Subgraph {
           (epochReward) => {
             if (typeof epochReward.address !== 'string') return false;
             return (
-              epochReward.address.toLowerCase() === validatorAddress.toLowerCase()
+              epochReward.address.toLowerCase() ===
+              validatorAddress.toLowerCase()
             );
           },
         );
@@ -238,7 +256,7 @@ export class Subgraph {
           woas: BigNumber.from('0'),
           dailyCommission:
             validatorEpochReward &&
-              typeof validatorEpochReward.commissions === 'string'
+            typeof validatorEpochReward.commissions === 'string'
               ? BigNumber.from(validatorEpochReward.commissions)
               : BigNumber.from('0'),
           totalCommission: BigNumber.from(validator.commissions),
@@ -262,7 +280,9 @@ export class Subgraph {
               BigNumber.from(stake.woas),
             );
           } else {
-            throw new Error('Can not get stake.oas or stake.soas or stake.woas');
+            throw new Error(
+              'Can not get stake.oas or stake.soas or stake.woas',
+            );
           }
         });
         return validatorTotalStake;
@@ -271,8 +291,4 @@ export class Subgraph {
 
     return validatorTotalStakes;
   };
-
 }
-
-
-
