@@ -8,8 +8,8 @@ import { writeFile } from '../utils/file';
 import { Subgraph } from '../utils/subgraph';
 import { getOasPrice, getOasPrices } from './../service/coingecko';
 import {
-  HEADER_FOR_GENERAL_MULTI_PRICE,
-  HEADER_FOR_GENERAL_ONLY_ONE_PRICE,
+  DEFAULT_LIST_PRICE,
+  HEADER_FOR_GENERAL,
   getAdditionalData,
   getDataSheet,
   getSpreadSheet,
@@ -17,9 +17,13 @@ import {
 
 export const commissionReward = async (argv: commissionRewardArgs) => {
   const subgraph = new Subgraph(argv.chain);
-  const header = argv.price
-    ? HEADER_FOR_GENERAL_ONLY_ONE_PRICE
-    : HEADER_FOR_GENERAL_MULTI_PRICE;
+  let header: string[] = HEADER_FOR_GENERAL
+  
+  if (process.env.COINGECKO_API_KEY) {
+    header = argv.price
+      ? [...header, 'Oas price']
+      : [...header, ...DEFAULT_LIST_PRICE];
+  }
   const epoches = await getEpoches(argv, subgraph);
 
   let doc: GoogleSpreadsheet;
@@ -56,7 +60,7 @@ export const commissionReward = async (argv: commissionRewardArgs) => {
 
       const timestamp = moment(epochData.epoches[0].timestamp * 1000).toDate();
 
-      const oasPrices = await getOasPricesForEpoch(argv, epochData);
+      const oasPrices = process.env.COINGECKO_API_KEY ? await getOasPricesForEpoch(argv, epochData) : false
 
       const validatorTotalStakes = await subgraph.getValidatorTotalStake(
         parseInt(epoch, 10),
@@ -146,6 +150,7 @@ const getEpoches = async (argv: commissionRewardArgs, subgraph: Subgraph) => {
 
 async function getOasPricesForEpoch(argv, epochData) {
   const timestamp = moment(epochData.epoches[0].timestamp * 1000).toDate();
+
   //default 00:00:00 UTC
   let priceTime = moment(timestamp).startOf('day').toDate();
 
@@ -160,6 +165,7 @@ async function getOasPricesForEpoch(argv, epochData) {
       .toDate();
   }
 
+  priceTime = timestamp
   console.log('Start getting oas prices');
   let oasPrices = {};
 
