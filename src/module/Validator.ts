@@ -18,7 +18,7 @@ import {
 export const commissionReward = async (argv: commissionRewardArgs) => {
   const subgraph = new Subgraph(argv.chain);
   let header: string[] = HEADER_FOR_GENERAL
-  
+
   if (process.env.COINGECKO_API_KEY) {
     header = argv.price
       ? [...header, 'Oas price']
@@ -149,23 +149,18 @@ const getEpoches = async (argv: commissionRewardArgs, subgraph: Subgraph) => {
 };
 
 async function getOasPricesForEpoch(argv, epochData) {
-  const timestamp = moment(epochData.epoches[0].timestamp * 1000).toDate();
 
-  //default 00:00:00 UTC
-  let priceTime = moment(timestamp).startOf('day').toDate();
+  const timestamp = epochData.epoches[0].timestamp * 1000
+
+  //Default 00:00:00 UTC
+  let priceTime = new Date(timestamp);
+  priceTime.setUTCHours(0, 0, 0, 0)
 
   if (argv.price_time) {
     const datetime = moment(argv.price_time, 'HH:mm:ss');
-    priceTime = moment(timestamp)
-      .set({
-        hour: datetime.get('hour'),
-        minute: datetime.get('minute'),
-        second: datetime.get('second'),
-      })
-      .toDate();
+    priceTime.setUTCHours(datetime.get('hour'), datetime.get('minute'), datetime.get('second'), 0)
   }
 
-  priceTime = timestamp
   console.log('Start getting oas prices');
   let oasPrices = {};
 
@@ -175,7 +170,6 @@ async function getOasPricesForEpoch(argv, epochData) {
   } else {
     oasPrices = await getOasPrices(priceTime);
   }
-
   console.log('Finish getting oas prices');
   return oasPrices;
 }
