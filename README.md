@@ -68,6 +68,18 @@ export SPREADSHEET_ID=xx
 export GOOGLE_APPLICATION_CREDENTIALS=xx
 export COINGECKO_API_KEY=xx
 ```
+# NOTE optional:  
+* --export_csv_online SPREADSHEET_ID と GOOGLE_APPLICATION_CREDENTIALS が指定されていれば、オンラインでエクスポートされます。--export_csv_online フラグを設定しない場合、デフォルトはローカルにエクスポートされます。 --output フラグを使用してエクスポート先を指定できます。
+
+* --from_data、--to_data のデフォルトはローカル タイムゾーンです。 タイムゾーンを変更する場合は、--time_zone=timezone を使用できます。
+
+* --price はエクスポートする通貨を指定します。それ以外の場合、--price のデフォルト フラグは [jpy,usd,krw,eur,sgd] になります。
+
+* --price_time は価格を取得する時間(UTC)を渡します。 --price_time フラグが設定されていない場合、デフォルトは 00:00:00 UTC になります。
+
+* COINGECKO_API_KEYが指定されていない場合、価格列はエクスポートされません
+
+
 
 #### 使い方
 上記「使い方」と同上
@@ -89,3 +101,4 @@ export COINGECKO_API_KEY=xx
 
  --from_data=2023-01-07T02:22:28
 --to_data=2023-01-08T02:22:28
+
