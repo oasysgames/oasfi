@@ -18,20 +18,20 @@ const CREDENTIALS = process.env.GOOGLE_APPLICATION_CREDENTIALS;
 
 const INITIAL_MONTH = '202209';
 
-
-export const HEADER_FOR_GENERAL:string[] = [
+export const HEADER_FOR_GENERAL: string[] = [
   'epoch',
   'block',
   'timestamp(UTC)',
   'Total staked(OAS+SOAS+WOAS)',
   'Daily validator commission(OAS)',
 ];
-export const DEFAULT_LIST_PRICE:string[] =[
+export const DEFAULT_LIST_PRICE: string[] = [
+  'Oas price(jpy)',
   'Oas price(usd)',
   'Oas price(krw)',
   'Oas price(eur)',
   'Oas price(sgd)',
-]
+];
 const GOOGLE_API_SCOPES = ['https://www.googleapis.com/auth/spreadsheets'];
 
 type ColumnWidth = { [columnName: string]: number };
@@ -131,8 +131,8 @@ export const saveTotalStakeAmount = async (
     const lastMonthTotalStake =
       typeof lastMonthTotalStakeString === 'string'
         ? utils.parseEther(
-          lastMonthTotalStakeString.replace('/,/g', '').split('.')[0],
-        )
+            lastMonthTotalStakeString.replace('/,/g', '').split('.')[0],
+          )
         : BigNumber.from('0');
     latestMonthRow[header.oas] = utils
       .formatEther(totalStakeData.totalOasStake)
@@ -156,7 +156,7 @@ export const saveTotalStakeAmount = async (
     const lastMonthTotalStake =
       typeof lastMonthTotalStakeString === 'string'
         ? utils.parseEther(
-          lastMonthTotalStakeString.replace('/,/g', '').split('.')[0],
+            lastMonthTotalStakeString.replace('/,/g', '').split('.')[0]
         )
         : BigNumber.from('0');
 
@@ -266,8 +266,7 @@ export const getAdditionalData = (
 
   const date = getDate(timestamp);
   const time = getTime(timestamp);
-  
-  let prices = []
+  let prices = [];
   if (oasPrices) {
     const jpy = oasPrices['jpy'] ?? '';
     const usd = oasPrices['usd'] ?? '';
@@ -276,7 +275,6 @@ export const getAdditionalData = (
     const sgd = oasPrices['sgd'] ?? '';
     prices = price ? [oasPrices[price]] : [jpy, usd, krw, eur, sgd];
   }
-
 
   let totalStake = BigNumber.from('0');
   let totalOasStake = BigNumber.from('0');
