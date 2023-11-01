@@ -8,18 +8,29 @@ import { TokenTransfer } from './module/TokenTransfer';
 import { commissionReward } from './module/Validator';
 import { saveCsvToFile } from './service/csvService';
 import { CorrectCsvArgs, commissionRewardArgs } from './types';
+import { LogUtils } from './utils/Logger';
 
 async function processCorrectCsv(args: CorrectCsvArgs) {
-  const { chain, input, output } = args;
-  const tokenTransfer = new TokenTransfer(chain);
-  const csvContent = await fsPromise.readFile(input, 'utf-8');
-  const result = Papa.parse(csvContent, { header: true });
-  const data = await tokenTransfer.handleDuplicateTokenTransfer(result.data);
-  await saveCsvToFile(output, Papa.unparse(data));
+  const Logger = new LogUtils('log-correctCsv', 'log-error.txt');
+  try {
+    const { chain, input, output } = args;
+    const tokenTransfer = new TokenTransfer(chain);
+    const csvContent = await fsPromise.readFile(input, 'utf-8');
+    const result = Papa.parse(csvContent, { header: true });
+    const data = await tokenTransfer.handleDuplicateTokenTransfer(result.data);
+    await saveCsvToFile(output, Papa.unparse(data));
+  } catch (error) {
+    Logger.log('error', `${error}`);
+  }
 }
 
 async function processCommissionReward(args: commissionRewardArgs) {
-  await commissionReward(args);
+  const Logger = new LogUtils('log-commission', 'log-error.txt');
+  try {
+    await commissionReward(args);
+  } catch (error) {
+    Logger.log('error', `${error}`);
+  }
 }
 
 void yargs(hideBin(process.argv))
@@ -96,7 +107,7 @@ void yargs(hideBin(process.argv))
         },
         price_time: {
           type: 'string',
-          description: 'utc time price - format: HH:MM:SS',
+          description: 'UTC time price - format: HH:MM:SS',
         },
         price: {
           type: 'string',
