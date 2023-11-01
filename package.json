@@ -58,6 +58,7 @@
     "graphql": "^16.8.1",
     "graphql-request": "^5.1.0",
     "moment-timezone": "^0.5.43",
-    "papaparse": "^5.4.1"
+    "papaparse": "^5.4.1",
+    "winston": "^3.11.0"
   }
 }
