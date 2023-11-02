@@ -5,7 +5,7 @@
 - blockscoutv5から取得される特定のaddressのtokenTransferデータを修正するスクリプト
 - 特定のaddressのvalidationとstakingによって生じたお金の記録を出力するスクリプト
 
-##　ガイド
+## ガイド
 
 * 以下のガイドを参照してください
 
