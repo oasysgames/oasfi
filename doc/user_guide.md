@@ -41,7 +41,7 @@ blockscout v5から取得されるtoken transferのデータに誤りがあり�
 
 ## export-commission-rewardスクリプト
 
-* 特定のaddressのvalidator報酬とstaking報酬によって生じたお金の記録を出力するスクリプトです。
+* 特定のaddressのcommision rewardによって生じたお金の記録を出力するスクリプトです。
 * OASトークンの価格を出力したい場合はCOINGECKOのAPIキーを取得して、以下のコマンドを実行します。(APIキーはcoingeckoと各自が契約してユーザー自身が取得してください)
 
 ```bash
