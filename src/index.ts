@@ -1,53 +1,139 @@
 #!/usr/bin/env node
 
-import * as fsPromise from "fs/promises";
-import * as Papa from "papaparse";
-import yargs, { Arguments } from "yargs";
-import { hideBin } from "yargs/helpers";
-import { TokenTransfer } from "./module/TokenTransfer";
+import * as fsPromise from 'fs/promises';
+import * as Papa from 'papaparse';
+import yargs, { Arguments, Argv } from 'yargs';
+import { hideBin } from 'yargs/helpers';
+import { TokenTransfer } from './module/TokenTransfer';
+import { commissionReward } from './module/Validator';
+import { saveCsvToFile } from './service/csvService';
+import { CorrectCsvArgs, commissionRewardArgs } from './types';
+import { LogUtils } from './utils/Logger';
 
-interface CommandArgs {
-  input: string;
-  output: string;
-  chain: string;
+async function processCorrectCsv(args: CorrectCsvArgs) {
+  const Logger = new LogUtils('log-correctCsv', 'log-error.txt');
+  try {
+    const { chain, input, output } = args;
+    const tokenTransfer = new TokenTransfer(chain);
+    const csvContent = await fsPromise.readFile(input, 'utf-8');
+    const result = Papa.parse(csvContent, { header: true });
+    const data = await tokenTransfer.handleDuplicateTokenTransfer(result.data);
+    await saveCsvToFile(output, Papa.unparse(data));
+  } catch (error) {
+    Logger.log('error', `${error}`);
+  }
 }
 
-async function processCsv(args: CommandArgs) {
-  const { chain, input, output } = args;
-  const tokenTransfer = new TokenTransfer(chain);
-  const csvContent = await fsPromise.readFile(input, "utf-8");
-  const result = Papa.parse(csvContent, { header: true });
-  const data = await tokenTransfer.handleDuplicateTokenTransfer(result.data);
-  await tokenTransfer.saveCsvToFile(output, Papa.unparse(data));
+async function processCommissionReward(args: commissionRewardArgs) {
+  const Logger = new LogUtils('log-commission', 'log-error.txt');
+  try {
+    await commissionReward(args);
+  } catch (error) {
+    Logger.log('error', `${error}`);
+  }
 }
 
 void yargs(hideBin(process.argv))
+  .usage('<command>  [OPTIONS]')
+  .help('help')
+  .alias('help', 'h')
+  .version('version', '1.0.1')
+  .alias('version', 'V')
   .command(
-    "<input> <output> <chain>",
-    "Check token balance and remove duplicate records from a CSV",
-    {
-      input: {
-        describe: "Input CSV file",
-        type: "string",
-        demandOption: true,
-      },
-      output: {
-        describe: "Output CSV file",
-        type: "string",
-        demandOption: true,
-      },
-      chain: {
-        describe: "Chain name",
-        type: "string",
-        demandOption: true,
-      },
+    'correct-csv',
+    'Check token balance and remove duplicate records from a CSV',
+    (yargs: Argv) => {
+      return yargs.options({
+        input: {
+          alias: 'i',
+          description: 'Input CSV file',
+          requiresArg: true,
+          required: true,
+        },
+        output: {
+          alias: 'o',
+          description: 'Output CSV file',
+          requiresArg: true,
+          required: true,
+        },
+        chain: {
+          alias: 'c',
+          description: 'Chain name',
+          requiresArg: true,
+          required: true,
+        },
+      });
     },
-    async (argv: Arguments<CommandArgs>) => {
+    async (argv: Arguments<CorrectCsvArgs>) => {
       try {
-        await processCsv(argv);
+        await processCorrectCsv(argv);
       } catch (error) {
         console.error(`An error occurred: ${error.message}`);
       }
-    }
+    },
   )
+  .command(
+    'export-commission-reward [validator_address]',
+    'Export commission reward',
+    (yargs: Argv) => {
+      return yargs.options({
+        validator_address: {
+          description: 'validator address',
+          requiresArg: true,
+          required: true,
+          type: 'string',
+        },
+        chain: {
+          alias: 'c',
+          description: 'Chain name',
+          requiresArg: true,
+          required: true,
+        },
+        from_epoch: {
+          type: 'number',
+          description: 'from epoch',
+        },
+        to_epoch: {
+          type: 'number',
+          description: 'to epoch',
+        },
+        from_data: {
+          type: 'string',
+          description: 'from datetime YYYY-MM-DDTHH:MM:SS',
+        },
+        to_data: {
+          type: 'string',
+          description: 'to datetime YYYY-MM-DDTHH:MM:SS',
+        },
+        price_time: {
+          type: 'string',
+          description: 'UTC time price - format: HH:MM:SS',
+        },
+        price: {
+          type: 'string',
+          description: 'price',
+        },
+        time_zone: {
+          type: 'string',
+          description: 'timezone',
+        },
+        export_csv_online: {
+          type: 'string',
+          description: 'export csv online',
+        },
+        output: {
+          alias: 'o',
+          description: 'Output CSV file',
+        },
+      });
+    },
+    async (argv: Arguments<commissionRewardArgs>) => {
+      await processCommissionReward(argv);
+      try {
+      } catch (error) {
+        console.error(`An error occurred: ${error.message}`);
+      }
+    },
+  )
+
   .help().argv;

@@ -1,23 +1,21 @@
-import * as fsPromise from "fs/promises";
-import * as path from "path";
-import { ethers } from "ethers";
-import { TokenTransferUtils } from "../utils/TokenTransferUtils";
-import * as dotenv from "dotenv";
+import { ethers } from 'ethers';
+import { TokenTransferUtils } from '../utils/TokenTransferUtils';
+import * as dotenv from 'dotenv';
 dotenv.config();
 const BASE_RPC_URL: Record<string, string> = {
-  tcgv_mainnet: process.env.TCGV_MAINNET_URL || "https://rpc.tcgverse.xyz/",
-  tcgv_testnet: process.env.TCGV_TESTNET_URL || "",
-  sandv_testnet: process.env.SANDV_TESTNET_URL || "",
-  hub_mainnet: process.env.HUB_MAINNET_URL || "https://rpc.mainnet.oasys.games",
-  eth_mainnet: process.env.ETH_MAINNET_URL || "",
+  tcgv_mainnet: process.env.TCGV_MAINNET_URL || 'https://rpc.tcgverse.xyz/',
+  tcgv_testnet: process.env.TCGV_TESTNET_URL || '',
+  sandv_testnet: process.env.SANDV_TESTNET_URL || '',
+  hub_mainnet: process.env.HUB_MAINNET_URL || 'https://rpc.mainnet.oasys.games',
+  eth_mainnet: process.env.ETH_MAINNET_URL || '',
   mch_mainnet:
-    process.env.MCH_MAINNET_URL || "https://rpc.oasys.mycryptoheroes.net/",
+    process.env.MCH_MAINNET_URL || 'https://rpc.oasys.mycryptoheroes.net/',
   home_mainnet:
     process.env.HOME_MAINNET_URL ||
-    "https://rpc.mainnet.oasys.homeverse.games/",
+    'https://rpc.mainnet.oasys.homeverse.games/',
   saakuru_mainnet:
-    process.env.SAAKURU_MAINNET_URL || "https://rpc.saakuru.network/",
-  hub_testnet: process.env.HUB_TESTNET_URL || "",
+    process.env.SAAKURU_MAINNET_URL || 'https://rpc.saakuru.network/',
+  hub_testnet: process.env.HUB_TESTNET_URL || '',
 };
 
 export type TokenTransferData = {
@@ -52,7 +50,7 @@ export class TokenTransfer {
   }
 
   public handleDuplicateTokenTransfer = async (
-    data: TokenTransferData[]
+    data: TokenTransferData[],
   ): Promise<TokenTransferData[]> => {
     const result: TokenTransferData[] = [];
     const transactionsByBlock = this.groupTransactionCsvByBlock(data);
@@ -77,13 +75,13 @@ export class TokenTransfer {
         console.log(duplicateTransactions);
 
         const txReceipts = await Promise.all(
-          duplicateTransactions.map((tx) => this.getTxReceipt(tx?.TxHash))
+          duplicateTransactions.map((tx) => this.getTxReceipt(tx?.TxHash)),
         );
 
         const rpcTransfers = txReceipts.map((receipt) =>
           receipt.logs.filter(
-            (item) => item.topics[0] == TokenTransferUtils.transfer
-          )
+            (item) => item.topics[0] == TokenTransferUtils.transfer,
+          ),
         );
 
         if (rpcTransfers.length != uniqueCsvData.size) {
@@ -103,14 +101,9 @@ export class TokenTransfer {
       return result;
     }, {});
   };
-  public saveCsvToFile = async (outputPath: string, csvData: string) => {
-    const filePath = path.join(outputPath);
-    await fsPromise.writeFile(filePath, csvData);
-    console.log("DONE!");
-  };
 
   private getTxReceipt = async (
-    transaction_hash: string
+    transaction_hash: string,
   ): Promise<ethers.providers.TransactionReceipt> => {
     try {
       const provider = new ethers.providers.JsonRpcProvider(this.baseRpcUrl);
@@ -118,7 +111,7 @@ export class TokenTransfer {
       const receipt = await provider.getTransactionReceipt(transaction_hash);
 
       if (receipt === null) {
-        console.log("Transaction not mined yet");
+        console.log('Transaction not mined yet');
       }
       return receipt;
     } catch (error) {
