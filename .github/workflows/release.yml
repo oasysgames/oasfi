@@ -130,9 +130,9 @@ jobs:
         npm i
         npx tsc
         npm install -g pkg
-        pkg . -t node18-linux-x64 --output ./oasys-csv-cli-linux
-        pkg . -t node18-macos-x64 --output ./oasys-csv-cli-macos
-        pkg . -t node18-win-x64 --output ./oasys-csv-cli-win.exe
+        pkg . -t node18-linux-x64 --output ./oasfi-linux
+        pkg . -t node18-macos-x64 --output ./oasfi-macos
+        pkg . -t node18-win-x64 --output ./oasfi.exe
 
     - name: Create GitHub Release and Upload binaries/source
       uses: softprops/action-gh-release@v1

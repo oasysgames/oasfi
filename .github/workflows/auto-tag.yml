@@ -1,0 +1,30 @@
+name: Auto Tag
+
+on:
+  push:
+    branches:
+      - main
+
+jobs:
+  build:
+    name: Create Tag
+    runs-on: ubuntu-latest
+
+    steps:
+      - name: Checkout code
+        uses: actions/checkout@v2
+        with:
+          fetch-depth: 0  # Important: This is needed to fetch all tags
+
+      - name: Bump version and push tag
+        id: create_tag
+        uses: anothrNick/github-tag-action@1.26.0
+        env:
+          GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+          WITH_V: true
+          RELEASE_BRANCHES: main
+          CUSTOM_TAG: ${{ github.event.head_commit.message }}
+
+      - name: Check out new tag
+        run: |
+          echo "New tag created: ${{ steps.create_tag.outputs.tag }}"
