@@ -10,7 +10,7 @@
 
 blockscout v5から取得されるtoken transferのデータに誤りがあり、そのデータを修正するために作成されたスクリプトです。
 主に会計をするときに用いるプログラムです。
-ダウンロードしたプログラム、blockscout v5カラ取得したtoken transferのデータ（input.csv）、修正データを出力するファイル(output.csv)を同一ディレクトリに配置して、そのディレクトリ下で以下のようなコマンドを動かしてください。
+ダウンロードしたプログラム、blockscout v5から取得したtoken transferのデータ（input.csv）、修正データを出力するファイル(output.csv)を同一ディレクトリに配置して、そのディレクトリ下で以下のようなコマンドを動かしてください。
 
 #### MacOS:
 
@@ -41,14 +41,12 @@ blockscout v5から取得されるtoken transferのデータに誤りがあり�
 
 ## export-commission-rewardスクリプト
 
-特定のaddressのvalidationとstakingによって生じたお金の記録を出力するスクリプトです。
-COINGECHOのAPIキーを取得して、以下のコマンドを実行します。(APIキーはセキュリティの観点で使用時に手渡し)
+* 特定のaddressのvalidator報酬とstaking報酬によって生じたお金の記録を出力するスクリプトです。
+* OASトークンの価格を出力したい場合はCOINGECKOのAPIキーを取得して、以下のコマンドを実行します。(APIキーはcoingeckoと各自が契約してユーザー自身が取得してください)
 
 ```bash
 export COINGECKO_API_KEY=xx
 ```
-
-このように環境変数に指定しないとコマンドを実行した時にstakingとvalidationの価格がcsvに出力されないようになります。
 
 ###　基本コマンド
 
