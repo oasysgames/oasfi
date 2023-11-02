@@ -91,6 +91,7 @@ export COINGECKO_API_KEY=xx
 #### --price
 
 * --price はエクスポートする通貨を指定します。それ以外の場合、--price のデフォルト フラグは [jpy,usd,krw,eur,sgd] になります。
+* 通貨はcoingeckoに対応のものが利用できます
 
 ```bash
  ./oasys-csv-cli-linux  export-commission-reward 0x272d6bd040c2b8454f4f6f43115758fbe318ee2c -c=hub_mainnet --price=jpy
@@ -117,7 +118,7 @@ export COINGECKO_API_KEY=xx
 * --export_csv_online=trueを指定しているとオンラインでエクスポートされます。--export_csv_online フラグを設定しない場合、デフォルトはローカルにエクスポートされます。 
 
 * 但し、--export_csv_online=trueを指定していても、SPREADSHEET_IDとGOOGLE_APPLICATION_CREDENTIALSが環境変数として入っていないとオンラインにエクスポートされないので、
-
+* GOOGLE_APPLICATION_CREDENTIALSは各自Google Cloud Platformから取得してください
 ```
 export SPREADSHEET_ID=xx
 export GOOGLE_APPLICATION_CREDENTIALS=xx
@@ -131,6 +132,7 @@ export GOOGLE_APPLICATION_CREDENTIALS=xx
 #### --output
 
 * 出力するファイル先を指定
+* デフォルトはcommision-reward-(address).csv
 
 ```bash
  ./oasys-csv-cli-linux  export-commission-reward 0x272d6bd040c2b8454f4f6f43115758fbe318ee2c -c=hub_mainnet -o=output.csv
