@@ -3,7 +3,7 @@
 以下の2つの機能を満たすための業務用スクリプトを準備しています。
 
 - blockscoutv5から取得される特定のaddressのtokenTransferデータを修正するスクリプト
-- 特定のaddressのvalidationとstakingによって生じたお金の記録を出力するスクリプト
+- 特定のaddressのvalidator報酬とstaking報酬によって生じたお金の記録を出力するスクリプト
 
 ## ガイド
 
