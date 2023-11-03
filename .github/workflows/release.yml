@@ -1,53 +1,84 @@
 name: Release Workflow
 
 on:
-  workflow_run:
-    workflows: ["Auto Tag"]
-    types:
-      - completed
+  push:
+    branches:
+      - main
+
 
 jobs:
-  test:
-    strategy:
-      matrix:
-        os: [ubuntu-latest, windows-latest, macos-latest]
-    runs-on: ${{ matrix.os }}
+  build:
+    name: Create Tag
+    runs-on: ubuntu-latest
 
     steps:
-    - name: Checkout code
-      uses: actions/checkout@v2
+      - name: Checkout code
+        uses: actions/checkout@v4
+        with:
+          fetch-depth: 0  # Important: This is needed to fetch all tags
 
-    - name: Setup Node.js
-      uses: actions/setup-node@v2
-      with:
-        node-version: '18'
+      - name: Bump version and push tag
+        id: create_tag
+        uses: anothrNick/github-tag-action@1.64.0
+        env:
+          GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+          WITH_V: true
+          RELEASE_BRANCHES: main
 
-    - name: Cache node modules
-      uses: actions/cache@v2
-      with:
-        path: ~/.npm
-        key: ${{ runner.os }}-node-${{ hashFiles('**/package-lock.json') }}
-        restore-keys: |
-          ${{ runner.os }}-node-
+      - name: Check out new tag
+        run: |
+          echo "New tag created: ${{ steps.create_tag.outputs.tag }}"
 
-    - name: Install dependencies
-      run: npm install
+      - name: Save the tag
+        run: |
+          echo "${{ steps.create_tag.outputs.tag }}" > tag.txt    
 
-    - name: Install type definitions
-      run: npm install --save-dev @types/node @types/fs-extra
-
-    - name: Compile TypeScript
-      run: npx tsc
-
-    - name: Lint with eslint
-      run: npm run lint
-
-    - name: Run tests
-      run: npm run test
+      - name: Upload tag as artifact
+        uses: actions/upload-artifact@v2
+        with:
+          name: tag
+          path: tag.txt
+#  test:
+#    strategy:
+#      matrix:
+#        os: [macos-latest]
+#    runs-on: ${{ matrix.os }}
+#
+#    steps:
+#    - name: Checkout code
+#      uses: actions/checkout@v2
+#
+#    - name: Setup Node.js
+#      uses: actions/setup-node@v2
+#      with:
+#        node-version: '18'
+#
+#    - name: Cache node modules
+#      uses: actions/cache@v2
+#      with:
+#        path: ~/.npm
+#        key: ${{ runner.os }}-node-${{ hashFiles('**/package-lock.json') }}
+#        restore-keys: |
+#          ${{ runner.os }}-node-
+#
+#    - name: Install dependencies
+#      run: npm install
+#
+#    - name: Install type definitions
+#      run: npm install --save-dev @types/node @types/fs-extra
+#
+#    - name: Compile TypeScript
+#      run: npx tsc
+#
+#    - name: Lint with eslint
+#      run: npm run lint
+#
+#    - name: Run tests
+#      run: npm run test
 
   prepare-release:
     runs-on: ubuntu-latest
-    needs: test
+#    needs: test
     outputs:
       new_tag: ${{ steps.set_tag.outputs.tag }}  # Updated this line to use the set_tag step
 
