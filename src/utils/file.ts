@@ -17,7 +17,7 @@ export async function writeFile(filePath: string, data: any) {
     if (!exist) {
       await fsPromise.mkdir(dirname, { recursive: true });
     }
-    if (!( await isExists(filePath))) {
+    if (!(await isExists(filePath))) {
       await fsPromise.writeFile(filePath, data, 'utf8');
     }
   } catch (err) {

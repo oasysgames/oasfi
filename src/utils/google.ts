@@ -156,8 +156,8 @@ export const saveTotalStakeAmount = async (
     const lastMonthTotalStake =
       typeof lastMonthTotalStakeString === 'string'
         ? utils.parseEther(
-            lastMonthTotalStakeString.replace('/,/g', '').split('.')[0]
-        )
+            lastMonthTotalStakeString.replace('/,/g', '').split('.')[0],
+          )
         : BigNumber.from('0');
 
     const rowData = ['0', '0', '0', '0', '0', '0'];
