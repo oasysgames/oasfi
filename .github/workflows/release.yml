@@ -127,15 +127,15 @@ jobs:
         npm install -g pkg
         pkg . -t node18-linux-x64 --output ./oasfi-linux
         pkg . -t node18-macos-x64 --output ./oasfi-macos
-        pkg . -t node18-win-x64 --output ./oasfi.exe
+        pkg . -t node18-win-x64 --output ./oasfi-win.exe
 
     - name: Create GitHub Release and Upload binaries/source
       uses: softprops/action-gh-release@v1
       with:
         tag_name: ${{ needs.prepare-release.outputs.new_tag }}
         files: |
-          ./oasys-csv-cli-linux,
-          ./oasys-csv-cli-macos,
-          ./oasys-csv-cli-win.exe
+          ./oasfi-linux,
+          ./oasfi-macos,
+          ./oasfi-win.exe
       env:
         GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
