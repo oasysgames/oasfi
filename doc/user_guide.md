@@ -15,28 +15,28 @@ blockscout v5から取得されるtoken transferのデータに誤りがあり�
 #### MacOS:
 
 ```bash
-./oasys-csv-cli-macos correct-csv -i=input.csv -o=output.csv -c=chain_name
+./oasfi-macos correct-csv -i=input.csv -o=output.csv -c=chain_name
 
 # example
-# ./oasys-csv-cli-macos correct-csv -i=blockscoutV5.csv -o=correctTransferData.csv -c=hub_mainnet
+# ./oasfi-macos correct-csv -i=blockscoutV5.csv -o=correctTransferData.csv -c=hub_mainnet
 ```
 
 #### Windows:
 
 ```bash
-./oasys-csv-cli-win.exe correct-csv -i=input.csv -o=output.csv -c=chain_name
+./oasfi-win.exe correct-csv -i=input.csv -o=output.csv -c=chain_name
 
 # example
-# ./oasys-csv-cli-win.exe correct-csv -i=blockscoutV5.csv -o=correctTransferData.csv -c=hub_mainnet
+# ./oasfi-win.exe correct-csv -i=blockscoutV5.csv -o=correctTransferData.csv -c=hub_mainnet
 ```
 
 #### Linux:
 
 ```bash
-./oasys-csv-cli-linux correct-csv -i=input.csv -o=output.csv -c=chain_name
+./oasfi-linux correct-csv -i=input.csv -o=output.csv -c=chain_name
 
 # example
-# ./oasys-csv-cli-linux correct-csv -i=blockscoutV5.csv -o=correctTransferData.csv -c=hub_mainnet
+# ./oasfi-linux correct-csv -i=blockscoutV5.csv -o=correctTransferData.csv -c=hub_mainnet
 ```
 
 ## export-commission-rewardスクリプト
@@ -53,28 +53,28 @@ export COINGECKO_API_KEY=xx
 #### MacOS:
 
 ```bash
-./oasys-csv-cli-macos  export-commission-reward address -c=chain_name
+./oasfi-macos  export-commission-reward address -c=chain_name
 
 # example
-# ./oasys-csv-cli-macos  export-commission-reward 0x272d6bd040c2b8454f4f6f43115758fbe318ee2c -c=hub_mainnet 
+# ./oasfi-macos  export-commission-reward 0x272d6bd040c2b8454f4f6f43115758fbe318ee2c -c=hub_mainnet 
 ```
 
 #### windows:
 
 ```bash
-./oasys-csv-cli-win.exe  export-commission-reward address -c=chain_name
+./oasfi-win.exe  export-commission-reward address -c=chain_name
 
 # example
-# ./oasys-csv-cli-win.exe  export-commission-reward 0x272d6bd040c2b8454f4f6f43115758fbe318ee2c -c=hub_mainnet 
+# ./oasfi-win.exe  export-commission-reward 0x272d6bd040c2b8454f4f6f43115758fbe318ee2c -c=hub_mainnet 
 ```
 
 #### linux:
 
 ```bash
-./oasys-csv-cli-linux  export-commission-reward address -c=chain_name
+./oasfi-linux  export-commission-reward address -c=chain_name
 
 # example
-# ./oasys-csv-cli-linux  export-commission-reward 0x272d6bd040c2b8454f4f6f43115758fbe318ee2c -c=hub_mainnet 
+# ./oasfi-linux  export-commission-reward 0x272d6bd040c2b8454f4f6f43115758fbe318ee2c -c=hub_mainnet 
 ```
 
 ### optional command:  
@@ -85,7 +85,7 @@ export COINGECKO_API_KEY=xx
 * デフォルトはローカルタイムゾーンで、タイムゾーンを変更する場合は、--time_zone=timezone を使用できます。
 
 ```bash
-./oasys-csv-cli-linux  export-commission-reward 0x272d6bd040c2b8454f4f6f43115758fbe318ee2c -c=hub_mainnet --from_data=2023-08-16T10:00:00 --to_data=2023-10-16T10:00:00
+./oasfi-linux  export-commission-reward 0x272d6bd040c2b8454f4f6f43115758fbe318ee2c -c=hub_mainnet --from_data=2023-08-16T10:00:00 --to_data=2023-10-16T10:00:00
 ```
 
 #### --price
@@ -94,7 +94,7 @@ export COINGECKO_API_KEY=xx
 * 通貨はcoingeckoに対応のものが利用できます
 
 ```bash
- ./oasys-csv-cli-linux  export-commission-reward 0x272d6bd040c2b8454f4f6f43115758fbe318ee2c -c=hub_mainnet --price=jpy
+ ./oasfi-linux  export-commission-reward 0x272d6bd040c2b8454f4f6f43115758fbe318ee2c -c=hub_mainnet --price=jpy
 ```
 
 #### --from_epoch, --to_epoch
@@ -102,7 +102,7 @@ export COINGECKO_API_KEY=xx
 * 特定のepochの範囲を指定して、その範囲のデータをcsvに出力する。
 
 ```bash
- ./oasys-csv-cli-linux  export-commission-reward 0x272d6bd040c2b8454f4f6f43115758fbe318ee2c -c=hub_mainnet  --from_epoch=246 --to_epoch=247
+ ./oasfi-linux  export-commission-reward 0x272d6bd040c2b8454f4f6f43115758fbe318ee2c -c=hub_mainnet  --from_epoch=246 --to_epoch=247
 ```
 
 #### --price_time
@@ -110,7 +110,7 @@ export COINGECKO_API_KEY=xx
 * --price_time は価格を取得する時間(UTC)を渡します。 --price_time フラグが設定されていない場合、デフォルトは 00:00:00 UTC になります。
 
 ```bash
- ./oasys-csv-cli-linux  export-commission-reward 0x272d6bd040c2b8454f4f6f43115758fbe318ee2c --price_time=10:00:00
+ ./oasfi-linux  export-commission-reward 0x272d6bd040c2b8454f4f6f43115758fbe318ee2c --price_time=10:00:00
 ```
 
 #### --export_csv_online
@@ -126,7 +126,7 @@ export GOOGLE_APPLICATION_CREDENTIALS=xx
 を実行しましょう。
 
 ```bash
- ./oasys-csv-cli-linux  export-commission-reward 0x272d6bd040c2b8454f4f6f43115758fbe318ee2c -c=hub_mainnet --export_csv_online=true
+ ./oasfi-linux  export-commission-reward 0x272d6bd040c2b8454f4f6f43115758fbe318ee2c -c=hub_mainnet --export_csv_online=true
 ```
 
 #### --output
@@ -135,7 +135,7 @@ export GOOGLE_APPLICATION_CREDENTIALS=xx
 * デフォルトはcommision-reward-(address).csv
 
 ```bash
- ./oasys-csv-cli-linux  export-commission-reward 0x272d6bd040c2b8454f4f6f43115758fbe318ee2c -c=hub_mainnet -o=output.csv
+ ./oasfi-linux  export-commission-reward 0x272d6bd040c2b8454f4f6f43115758fbe318ee2c -c=hub_mainnet -o=output.csv
 ```
 
 ### 参考
