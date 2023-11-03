@@ -7,8 +7,8 @@
 
 ```bash
 nvm use 18
-git clone https://github.com/oasysgames/explorer-csv-cli.git
-cd explorer-csv-cli
+git clone https://github.com/oasysgames/oasfi.git
+cd oasfi
 npm i
 npm i -g pkg
 npm run compile

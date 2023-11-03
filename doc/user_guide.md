@@ -3,7 +3,7 @@
 
 ## Downloadの仕方
 
-- [releases](https://github.com/oasysgames/explorer-csv-cli/releases)から最新のものをダウンロードしてください。
+- [releases](https://github.com/oasysgames/oasfi/releases)から最新のものをダウンロードしてください。
 - MaxOS, Windows, Linux 3つに対応しておりますのでご自身のosに合うものをお選びください。
 
 ## correct-csvスクリプト

@@ -2,9 +2,15 @@
 import { TypedDocumentNode as DocumentNode } from '@graphql-typed-document-node/core';
 export type Maybe<T> = T | null;
 export type InputMaybe<T> = Maybe<T>;
-export type Exact<T extends { [key: string]: unknown }> = { [K in keyof T]: T[K] };
-export type MakeOptional<T, K extends keyof T> = Omit<T, K> & { [SubKey in K]?: Maybe<T[SubKey]> };
-export type MakeMaybe<T, K extends keyof T> = Omit<T, K> & { [SubKey in K]: Maybe<T[SubKey]> };
+export type Exact<T extends { [key: string]: unknown }> = {
+  [K in keyof T]: T[K];
+};
+export type MakeOptional<T, K extends keyof T> = Omit<T, K> & {
+  [SubKey in K]?: Maybe<T[SubKey]>;
+};
+export type MakeMaybe<T, K extends keyof T> = Omit<T, K> & {
+  [SubKey in K]: Maybe<T[SubKey]>;
+};
 /** All built-in and custom scalars, mapped to their actual values */
 export type Scalars = {
   ID: string;
@@ -110,7 +116,7 @@ export enum EnvironmentValue_OrderBy {
   Id = 'id',
   JailPeriod = 'jailPeriod',
   RewardRate = 'rewardRate',
-  ValidatorThreshold = 'validatorThreshold'
+  ValidatorThreshold = 'validatorThreshold',
 }
 
 export type Epoch = {
@@ -176,7 +182,7 @@ export enum EpochReward_OrderBy {
   Commissions = 'commissions',
   Epoch = 'epoch',
   Id = 'id',
-  Rewards = 'rewards'
+  Rewards = 'rewards',
 }
 
 export type Epoch_Filter = {
@@ -218,7 +224,7 @@ export enum Epoch_OrderBy {
   Block = 'block',
   Epoch = 'epoch',
   Id = 'id',
-  Timestamp = 'timestamp'
+  Timestamp = 'timestamp',
 }
 
 export type LockedUnstake = {
@@ -306,13 +312,13 @@ export enum LockedUnstake_OrderBy {
   Index = 'index',
   Staker = 'staker',
   Token = 'token',
-  UnlockTime = 'unlockTime'
+  UnlockTime = 'unlockTime',
 }
 
 /** Defines the order direction, either ascending or descending */
 export enum OrderDirection {
   Asc = 'asc',
-  Desc = 'desc'
+  Desc = 'desc',
 }
 
 export type Overview = {
@@ -432,7 +438,7 @@ export enum Overview_OrderBy {
   StakerCount = 'stakerCount',
   TotalRewards = 'totalRewards',
   TotalStake = 'totalStake',
-  ValidatorCount = 'validatorCount'
+  ValidatorCount = 'validatorCount',
 }
 
 export type Query = {
@@ -459,18 +465,15 @@ export type Query = {
   validators: Array<Validator>;
 };
 
-
 export type Query_MetaArgs = {
   block?: InputMaybe<Block_Height>;
 };
-
 
 export type QueryEnvironmentValueArgs = {
   block?: InputMaybe<Block_Height>;
   id: Scalars['ID'];
   subgraphError?: _SubgraphErrorPolicy_;
 };
-
 
 export type QueryEnvironmentValuesArgs = {
   block?: InputMaybe<Block_Height>;
@@ -482,20 +485,17 @@ export type QueryEnvironmentValuesArgs = {
   where?: InputMaybe<EnvironmentValue_Filter>;
 };
 
-
 export type QueryEpochArgs = {
   block?: InputMaybe<Block_Height>;
   id: Scalars['ID'];
   subgraphError?: _SubgraphErrorPolicy_;
 };
 
-
 export type QueryEpochRewardArgs = {
   block?: InputMaybe<Block_Height>;
   id: Scalars['ID'];
   subgraphError?: _SubgraphErrorPolicy_;
 };
-
 
 export type QueryEpochRewardsArgs = {
   block?: InputMaybe<Block_Height>;
@@ -507,7 +507,6 @@ export type QueryEpochRewardsArgs = {
   where?: InputMaybe<EpochReward_Filter>;
 };
 
-
 export type QueryEpochesArgs = {
   block?: InputMaybe<Block_Height>;
   first?: InputMaybe<Scalars['Int']>;
@@ -518,13 +517,11 @@ export type QueryEpochesArgs = {
   where?: InputMaybe<Epoch_Filter>;
 };
 
-
 export type QueryLockedUnstakeArgs = {
   block?: InputMaybe<Block_Height>;
   id: Scalars['ID'];
   subgraphError?: _SubgraphErrorPolicy_;
 };
-
 
 export type QueryLockedUnstakesArgs = {
   block?: InputMaybe<Block_Height>;
@@ -536,13 +533,11 @@ export type QueryLockedUnstakesArgs = {
   where?: InputMaybe<LockedUnstake_Filter>;
 };
 
-
 export type QueryOverviewArgs = {
   block?: InputMaybe<Block_Height>;
   id: Scalars['ID'];
   subgraphError?: _SubgraphErrorPolicy_;
 };
-
 
 export type QueryOverviewsArgs = {
   block?: InputMaybe<Block_Height>;
@@ -554,20 +549,17 @@ export type QueryOverviewsArgs = {
   where?: InputMaybe<Overview_Filter>;
 };
 
-
 export type QueryStakeArgs = {
   block?: InputMaybe<Block_Height>;
   id: Scalars['ID'];
   subgraphError?: _SubgraphErrorPolicy_;
 };
 
-
 export type QueryStakerArgs = {
   block?: InputMaybe<Block_Height>;
   id: Scalars['ID'];
   subgraphError?: _SubgraphErrorPolicy_;
 };
-
 
 export type QueryStakersArgs = {
   block?: InputMaybe<Block_Height>;
@@ -579,7 +571,6 @@ export type QueryStakersArgs = {
   where?: InputMaybe<Staker_Filter>;
 };
 
-
 export type QueryStakesArgs = {
   block?: InputMaybe<Block_Height>;
   first?: InputMaybe<Scalars['Int']>;
@@ -590,20 +581,17 @@ export type QueryStakesArgs = {
   where?: InputMaybe<Stake_Filter>;
 };
 
-
 export type QueryValidatorArgs = {
   block?: InputMaybe<Block_Height>;
   id: Scalars['ID'];
   subgraphError?: _SubgraphErrorPolicy_;
 };
 
-
 export type QueryValidatorBlockArgs = {
   block?: InputMaybe<Block_Height>;
   id: Scalars['ID'];
   subgraphError?: _SubgraphErrorPolicy_;
 };
-
 
 export type QueryValidatorBlocksArgs = {
   block?: InputMaybe<Block_Height>;
@@ -614,7 +602,6 @@ export type QueryValidatorBlocksArgs = {
   subgraphError?: _SubgraphErrorPolicy_;
   where?: InputMaybe<ValidatorBlock_Filter>;
 };
-
 
 export type QueryValidatorsArgs = {
   block?: InputMaybe<Block_Height>;
@@ -727,7 +714,7 @@ export enum Stake_OrderBy {
   Soas = 'soas',
   Staker = 'staker',
   Validator = 'validator',
-  Woas = 'woas'
+  Woas = 'woas',
 }
 
 export type Staker = {
@@ -739,7 +726,6 @@ export type Staker = {
   totalUnstake: Scalars['BigInt'];
 };
 
-
 export type StakerLockedUnstakesArgs = {
   first?: InputMaybe<Scalars['Int']>;
   orderBy?: InputMaybe<LockedUnstake_OrderBy>;
@@ -747,7 +733,6 @@ export type StakerLockedUnstakesArgs = {
   skip?: InputMaybe<Scalars['Int']>;
   where?: InputMaybe<LockedUnstake_Filter>;
 };
-
 
 export type StakerStakesArgs = {
   first?: InputMaybe<Scalars['Int']>;
@@ -789,7 +774,7 @@ export enum Staker_OrderBy {
   LockedUnstakes = 'lockedUnstakes',
   Stakes = 'stakes',
   TotalStake = 'totalStake',
-  TotalUnstake = 'totalUnstake'
+  TotalUnstake = 'totalUnstake',
 }
 
 export type Subscription = {
@@ -816,18 +801,15 @@ export type Subscription = {
   validators: Array<Validator>;
 };
 
-
 export type Subscription_MetaArgs = {
   block?: InputMaybe<Block_Height>;
 };
-
 
 export type SubscriptionEnvironmentValueArgs = {
   block?: InputMaybe<Block_Height>;
   id: Scalars['ID'];
   subgraphError?: _SubgraphErrorPolicy_;
 };
-
 
 export type SubscriptionEnvironmentValuesArgs = {
   block?: InputMaybe<Block_Height>;
@@ -839,20 +821,17 @@ export type SubscriptionEnvironmentValuesArgs = {
   where?: InputMaybe<EnvironmentValue_Filter>;
 };
 
-
 export type SubscriptionEpochArgs = {
   block?: InputMaybe<Block_Height>;
   id: Scalars['ID'];
   subgraphError?: _SubgraphErrorPolicy_;
 };
 
-
 export type SubscriptionEpochRewardArgs = {
   block?: InputMaybe<Block_Height>;
   id: Scalars['ID'];
   subgraphError?: _SubgraphErrorPolicy_;
 };
-
 
 export type SubscriptionEpochRewardsArgs = {
   block?: InputMaybe<Block_Height>;
@@ -864,7 +843,6 @@ export type SubscriptionEpochRewardsArgs = {
   where?: InputMaybe<EpochReward_Filter>;
 };
 
-
 export type SubscriptionEpochesArgs = {
   block?: InputMaybe<Block_Height>;
   first?: InputMaybe<Scalars['Int']>;
@@ -875,13 +853,11 @@ export type SubscriptionEpochesArgs = {
   where?: InputMaybe<Epoch_Filter>;
 };
 
-
 export type SubscriptionLockedUnstakeArgs = {
   block?: InputMaybe<Block_Height>;
   id: Scalars['ID'];
   subgraphError?: _SubgraphErrorPolicy_;
 };
-
 
 export type SubscriptionLockedUnstakesArgs = {
   block?: InputMaybe<Block_Height>;
@@ -893,13 +869,11 @@ export type SubscriptionLockedUnstakesArgs = {
   where?: InputMaybe<LockedUnstake_Filter>;
 };
 
-
 export type SubscriptionOverviewArgs = {
   block?: InputMaybe<Block_Height>;
   id: Scalars['ID'];
   subgraphError?: _SubgraphErrorPolicy_;
 };
-
 
 export type SubscriptionOverviewsArgs = {
   block?: InputMaybe<Block_Height>;
@@ -911,20 +885,17 @@ export type SubscriptionOverviewsArgs = {
   where?: InputMaybe<Overview_Filter>;
 };
 
-
 export type SubscriptionStakeArgs = {
   block?: InputMaybe<Block_Height>;
   id: Scalars['ID'];
   subgraphError?: _SubgraphErrorPolicy_;
 };
 
-
 export type SubscriptionStakerArgs = {
   block?: InputMaybe<Block_Height>;
   id: Scalars['ID'];
   subgraphError?: _SubgraphErrorPolicy_;
 };
-
 
 export type SubscriptionStakersArgs = {
   block?: InputMaybe<Block_Height>;
@@ -936,7 +907,6 @@ export type SubscriptionStakersArgs = {
   where?: InputMaybe<Staker_Filter>;
 };
 
-
 export type SubscriptionStakesArgs = {
   block?: InputMaybe<Block_Height>;
   first?: InputMaybe<Scalars['Int']>;
@@ -947,20 +917,17 @@ export type SubscriptionStakesArgs = {
   where?: InputMaybe<Stake_Filter>;
 };
 
-
 export type SubscriptionValidatorArgs = {
   block?: InputMaybe<Block_Height>;
   id: Scalars['ID'];
   subgraphError?: _SubgraphErrorPolicy_;
 };
 
-
 export type SubscriptionValidatorBlockArgs = {
   block?: InputMaybe<Block_Height>;
   id: Scalars['ID'];
   subgraphError?: _SubgraphErrorPolicy_;
 };
-
 
 export type SubscriptionValidatorBlocksArgs = {
   block?: InputMaybe<Block_Height>;
@@ -971,7 +938,6 @@ export type SubscriptionValidatorBlocksArgs = {
   subgraphError?: _SubgraphErrorPolicy_;
   where?: InputMaybe<ValidatorBlock_Filter>;
 };
-
 
 export type SubscriptionValidatorsArgs = {
   block?: InputMaybe<Block_Height>;
@@ -998,7 +964,6 @@ export type Validator = {
   totalStake: Scalars['BigInt'];
 };
 
-
 export type ValidatorBlocksArgs = {
   first?: InputMaybe<Scalars['Int']>;
   orderBy?: InputMaybe<ValidatorBlock_OrderBy>;
@@ -1006,7 +971,6 @@ export type ValidatorBlocksArgs = {
   skip?: InputMaybe<Scalars['Int']>;
   where?: InputMaybe<ValidatorBlock_Filter>;
 };
-
 
 export type ValidatorStakesArgs = {
   first?: InputMaybe<Scalars['Int']>;
@@ -1095,7 +1059,7 @@ export enum ValidatorBlock_OrderBy {
   Slashed = 'slashed',
   Substituted = 'substituted',
   Validated = 'validated',
-  Validator = 'validator'
+  Validator = 'validator',
 }
 
 export type Validator_Filter = {
@@ -1174,7 +1138,7 @@ export enum Validator_OrderBy {
   OperatingRatio = 'operatingRatio',
   Operator = 'operator',
   Stakes = 'stakes',
-  TotalStake = 'totalStake'
+  TotalStake = 'totalStake',
 }
 
 export type _Block_ = {
@@ -1206,34 +1170,62 @@ export enum _SubgraphErrorPolicy_ {
   /** Data will be returned even if the subgraph has indexing errors */
   Allow = 'allow',
   /** If the subgraph has indexing errors, data will be omitted. The default. */
-  Deny = 'deny'
+  Deny = 'deny',
 }
 
 export type GetEpochQueryVariables = Exact<{
   epoch: Scalars['BigInt'];
 }>;
 
-
-export type GetEpochQuery = { __typename?: 'Query', epoches: Array<{ __typename?: 'Epoch', epoch: any, block: any, timestamp: any }> };
+export type GetEpochQuery = {
+  __typename?: 'Query';
+  epoches: Array<{
+    __typename?: 'Epoch';
+    epoch: any;
+    block: any;
+    timestamp: any;
+  }>;
+};
 
 export type GetEpochByFromTimeStampQueryVariables = Exact<{
   timestamp: Scalars['BigInt'];
 }>;
 
-
-export type GetEpochByFromTimeStampQuery = { __typename?: 'Query', epoches: Array<{ __typename?: 'Epoch', epoch: any, block: any, timestamp: any }> };
+export type GetEpochByFromTimeStampQuery = {
+  __typename?: 'Query';
+  epoches: Array<{
+    __typename?: 'Epoch';
+    epoch: any;
+    block: any;
+    timestamp: any;
+  }>;
+};
 
 export type GetEpochByToTimeStampQueryVariables = Exact<{
   timestamp: Scalars['BigInt'];
 }>;
 
+export type GetEpochByToTimeStampQuery = {
+  __typename?: 'Query';
+  epoches: Array<{
+    __typename?: 'Epoch';
+    epoch: any;
+    block: any;
+    timestamp: any;
+  }>;
+};
 
-export type GetEpochByToTimeStampQuery = { __typename?: 'Query', epoches: Array<{ __typename?: 'Epoch', epoch: any, block: any, timestamp: any }> };
+export type GetLatestEpochQueryVariables = Exact<{ [key: string]: never }>;
 
-export type GetLatestEpochQueryVariables = Exact<{ [key: string]: never; }>;
-
-
-export type GetLatestEpochQuery = { __typename?: 'Query', epoches: Array<{ __typename?: 'Epoch', epoch: any, block: any, timestamp: any }> };
+export type GetLatestEpochQuery = {
+  __typename?: 'Query';
+  epoches: Array<{
+    __typename?: 'Epoch';
+    epoch: any;
+    block: any;
+    timestamp: any;
+  }>;
+};
 
 export type GetEpochRewardsQueryVariables = Exact<{
   epoch: Scalars['BigInt'];
@@ -1241,16 +1233,26 @@ export type GetEpochRewardsQueryVariables = Exact<{
   skip: Scalars['Int'];
 }>;
 
-
-export type GetEpochRewardsQuery = { __typename?: 'Query', epochRewards: Array<{ __typename?: 'EpochReward', epoch: any, address: any, commissions: any, rewards: any }> };
+export type GetEpochRewardsQuery = {
+  __typename?: 'Query';
+  epochRewards: Array<{
+    __typename?: 'EpochReward';
+    epoch: any;
+    address: any;
+    commissions: any;
+    rewards: any;
+  }>;
+};
 
 export type GetValidatorsQueryVariables = Exact<{
   block: Scalars['Int'];
   validator: Scalars['ID'];
 }>;
 
-
-export type GetValidatorsQuery = { __typename?: 'Query', validators: Array<{ __typename?: 'Validator', id: string, commissions: any }> };
+export type GetValidatorsQuery = {
+  __typename?: 'Query';
+  validators: Array<{ __typename?: 'Validator'; id: string; commissions: any }>;
+};
 
 export type GetValidatorStakesQueryVariables = Exact<{
   validator: Scalars['ID'];
@@ -1259,14 +1261,610 @@ export type GetValidatorStakesQueryVariables = Exact<{
   skip: Scalars['Int'];
 }>;
 
+export type GetValidatorStakesQuery = {
+  __typename?: 'Query';
+  validators: Array<{
+    __typename?: 'Validator';
+    stakes: Array<{ __typename?: 'Stake'; oas: any; soas: any; woas: any }>;
+  }>;
+};
 
-export type GetValidatorStakesQuery = { __typename?: 'Query', validators: Array<{ __typename?: 'Validator', stakes: Array<{ __typename?: 'Stake', oas: any, soas: any, woas: any }> }> };
-
-
-export const GetEpochDocument = {"kind":"Document","definitions":[{"kind":"OperationDefinition","operation":"query","name":{"kind":"Name","value":"GetEpoch"},"variableDefinitions":[{"kind":"VariableDefinition","variable":{"kind":"Variable","name":{"kind":"Name","value":"epoch"}},"type":{"kind":"NonNullType","type":{"kind":"NamedType","name":{"kind":"Name","value":"BigInt"}}}}],"selectionSet":{"kind":"SelectionSet","selections":[{"kind":"Field","name":{"kind":"Name","value":"epoches"},"arguments":[{"kind":"Argument","name":{"kind":"Name","value":"where"},"value":{"kind":"ObjectValue","fields":[{"kind":"ObjectField","name":{"kind":"Name","value":"epoch"},"value":{"kind":"Variable","name":{"kind":"Name","value":"epoch"}}}]}}],"selectionSet":{"kind":"SelectionSet","selections":[{"kind":"Field","name":{"kind":"Name","value":"epoch"}},{"kind":"Field","name":{"kind":"Name","value":"block"}},{"kind":"Field","name":{"kind":"Name","value":"timestamp"}}]}}]}}]} as unknown as DocumentNode<GetEpochQuery, GetEpochQueryVariables>;
-export const GetEpochByFromTimeStampDocument = {"kind":"Document","definitions":[{"kind":"OperationDefinition","operation":"query","name":{"kind":"Name","value":"GetEpochByFromTimeStamp"},"variableDefinitions":[{"kind":"VariableDefinition","variable":{"kind":"Variable","name":{"kind":"Name","value":"timestamp"}},"type":{"kind":"NonNullType","type":{"kind":"NamedType","name":{"kind":"Name","value":"BigInt"}}}}],"selectionSet":{"kind":"SelectionSet","selections":[{"kind":"Field","name":{"kind":"Name","value":"epoches"},"arguments":[{"kind":"Argument","name":{"kind":"Name","value":"where"},"value":{"kind":"ObjectValue","fields":[{"kind":"ObjectField","name":{"kind":"Name","value":"timestamp_gte"},"value":{"kind":"Variable","name":{"kind":"Name","value":"timestamp"}}}]}},{"kind":"Argument","name":{"kind":"Name","value":"orderBy"},"value":{"kind":"EnumValue","value":"timestamp"}},{"kind":"Argument","name":{"kind":"Name","value":"orderDirection"},"value":{"kind":"EnumValue","value":"asc"}},{"kind":"Argument","name":{"kind":"Name","value":"first"},"value":{"kind":"IntValue","value":"1"}}],"selectionSet":{"kind":"SelectionSet","selections":[{"kind":"Field","name":{"kind":"Name","value":"epoch"}},{"kind":"Field","name":{"kind":"Name","value":"block"}},{"kind":"Field","name":{"kind":"Name","value":"timestamp"}}]}}]}}]} as unknown as DocumentNode<GetEpochByFromTimeStampQuery, GetEpochByFromTimeStampQueryVariables>;
-export const GetEpochByToTimeStampDocument = {"kind":"Document","definitions":[{"kind":"OperationDefinition","operation":"query","name":{"kind":"Name","value":"GetEpochByToTimeStamp"},"variableDefinitions":[{"kind":"VariableDefinition","variable":{"kind":"Variable","name":{"kind":"Name","value":"timestamp"}},"type":{"kind":"NonNullType","type":{"kind":"NamedType","name":{"kind":"Name","value":"BigInt"}}}}],"selectionSet":{"kind":"SelectionSet","selections":[{"kind":"Field","name":{"kind":"Name","value":"epoches"},"arguments":[{"kind":"Argument","name":{"kind":"Name","value":"where"},"value":{"kind":"ObjectValue","fields":[{"kind":"ObjectField","name":{"kind":"Name","value":"timestamp_lte"},"value":{"kind":"Variable","name":{"kind":"Name","value":"timestamp"}}}]}},{"kind":"Argument","name":{"kind":"Name","value":"orderBy"},"value":{"kind":"EnumValue","value":"timestamp"}},{"kind":"Argument","name":{"kind":"Name","value":"orderDirection"},"value":{"kind":"EnumValue","value":"desc"}},{"kind":"Argument","name":{"kind":"Name","value":"first"},"value":{"kind":"IntValue","value":"1"}}],"selectionSet":{"kind":"SelectionSet","selections":[{"kind":"Field","name":{"kind":"Name","value":"epoch"}},{"kind":"Field","name":{"kind":"Name","value":"block"}},{"kind":"Field","name":{"kind":"Name","value":"timestamp"}}]}}]}}]} as unknown as DocumentNode<GetEpochByToTimeStampQuery, GetEpochByToTimeStampQueryVariables>;
-export const GetLatestEpochDocument = {"kind":"Document","definitions":[{"kind":"OperationDefinition","operation":"query","name":{"kind":"Name","value":"GetLatestEpoch"},"selectionSet":{"kind":"SelectionSet","selections":[{"kind":"Field","name":{"kind":"Name","value":"epoches"},"arguments":[{"kind":"Argument","name":{"kind":"Name","value":"first"},"value":{"kind":"IntValue","value":"1"}},{"kind":"Argument","name":{"kind":"Name","value":"orderBy"},"value":{"kind":"EnumValue","value":"epoch"}},{"kind":"Argument","name":{"kind":"Name","value":"orderDirection"},"value":{"kind":"EnumValue","value":"desc"}}],"selectionSet":{"kind":"SelectionSet","selections":[{"kind":"Field","name":{"kind":"Name","value":"epoch"}},{"kind":"Field","name":{"kind":"Name","value":"block"}},{"kind":"Field","name":{"kind":"Name","value":"timestamp"}}]}}]}}]} as unknown as DocumentNode<GetLatestEpochQuery, GetLatestEpochQueryVariables>;
-export const GetEpochRewardsDocument = {"kind":"Document","definitions":[{"kind":"OperationDefinition","operation":"query","name":{"kind":"Name","value":"GetEpochRewards"},"variableDefinitions":[{"kind":"VariableDefinition","variable":{"kind":"Variable","name":{"kind":"Name","value":"epoch"}},"type":{"kind":"NonNullType","type":{"kind":"NamedType","name":{"kind":"Name","value":"BigInt"}}}},{"kind":"VariableDefinition","variable":{"kind":"Variable","name":{"kind":"Name","value":"first"}},"type":{"kind":"NonNullType","type":{"kind":"NamedType","name":{"kind":"Name","value":"Int"}}}},{"kind":"VariableDefinition","variable":{"kind":"Variable","name":{"kind":"Name","value":"skip"}},"type":{"kind":"NonNullType","type":{"kind":"NamedType","name":{"kind":"Name","value":"Int"}}}}],"selectionSet":{"kind":"SelectionSet","selections":[{"kind":"Field","name":{"kind":"Name","value":"epochRewards"},"arguments":[{"kind":"Argument","name":{"kind":"Name","value":"where"},"value":{"kind":"ObjectValue","fields":[{"kind":"ObjectField","name":{"kind":"Name","value":"epoch"},"value":{"kind":"Variable","name":{"kind":"Name","value":"epoch"}}}]}},{"kind":"Argument","name":{"kind":"Name","value":"first"},"value":{"kind":"Variable","name":{"kind":"Name","value":"first"}}},{"kind":"Argument","name":{"kind":"Name","value":"skip"},"value":{"kind":"Variable","name":{"kind":"Name","value":"skip"}}}],"selectionSet":{"kind":"SelectionSet","selections":[{"kind":"Field","name":{"kind":"Name","value":"epoch"}},{"kind":"Field","name":{"kind":"Name","value":"address"}},{"kind":"Field","name":{"kind":"Name","value":"commissions"}},{"kind":"Field","name":{"kind":"Name","value":"rewards"}}]}}]}}]} as unknown as DocumentNode<GetEpochRewardsQuery, GetEpochRewardsQueryVariables>;
-export const GetValidatorsDocument = {"kind":"Document","definitions":[{"kind":"OperationDefinition","operation":"query","name":{"kind":"Name","value":"GetValidators"},"variableDefinitions":[{"kind":"VariableDefinition","variable":{"kind":"Variable","name":{"kind":"Name","value":"block"}},"type":{"kind":"NonNullType","type":{"kind":"NamedType","name":{"kind":"Name","value":"Int"}}}},{"kind":"VariableDefinition","variable":{"kind":"Variable","name":{"kind":"Name","value":"validator"}},"type":{"kind":"NonNullType","type":{"kind":"NamedType","name":{"kind":"Name","value":"ID"}}}}],"selectionSet":{"kind":"SelectionSet","selections":[{"kind":"Field","name":{"kind":"Name","value":"validators"},"arguments":[{"kind":"Argument","name":{"kind":"Name","value":"orderBy"},"value":{"kind":"EnumValue","value":"id"}},{"kind":"Argument","name":{"kind":"Name","value":"first"},"value":{"kind":"IntValue","value":"1000"}},{"kind":"Argument","name":{"kind":"Name","value":"block"},"value":{"kind":"ObjectValue","fields":[{"kind":"ObjectField","name":{"kind":"Name","value":"number"},"value":{"kind":"Variable","name":{"kind":"Name","value":"block"}}}]}},{"kind":"Argument","name":{"kind":"Name","value":"where"},"value":{"kind":"ObjectValue","fields":[{"kind":"ObjectField","name":{"kind":"Name","value":"id"},"value":{"kind":"Variable","name":{"kind":"Name","value":"validator"}}}]}}],"selectionSet":{"kind":"SelectionSet","selections":[{"kind":"Field","name":{"kind":"Name","value":"id"}},{"kind":"Field","name":{"kind":"Name","value":"commissions"}}]}}]}}]} as unknown as DocumentNode<GetValidatorsQuery, GetValidatorsQueryVariables>;
-export const GetValidatorStakesDocument = {"kind":"Document","definitions":[{"kind":"OperationDefinition","operation":"query","name":{"kind":"Name","value":"GetValidatorStakes"},"variableDefinitions":[{"kind":"VariableDefinition","variable":{"kind":"Variable","name":{"kind":"Name","value":"validator"}},"type":{"kind":"NonNullType","type":{"kind":"NamedType","name":{"kind":"Name","value":"ID"}}}},{"kind":"VariableDefinition","variable":{"kind":"Variable","name":{"kind":"Name","value":"block"}},"type":{"kind":"NonNullType","type":{"kind":"NamedType","name":{"kind":"Name","value":"Int"}}}},{"kind":"VariableDefinition","variable":{"kind":"Variable","name":{"kind":"Name","value":"first"}},"type":{"kind":"NonNullType","type":{"kind":"NamedType","name":{"kind":"Name","value":"Int"}}}},{"kind":"VariableDefinition","variable":{"kind":"Variable","name":{"kind":"Name","value":"skip"}},"type":{"kind":"NonNullType","type":{"kind":"NamedType","name":{"kind":"Name","value":"Int"}}}}],"selectionSet":{"kind":"SelectionSet","selections":[{"kind":"Field","name":{"kind":"Name","value":"validators"},"arguments":[{"kind":"Argument","name":{"kind":"Name","value":"where"},"value":{"kind":"ObjectValue","fields":[{"kind":"ObjectField","name":{"kind":"Name","value":"id"},"value":{"kind":"Variable","name":{"kind":"Name","value":"validator"}}}]}},{"kind":"Argument","name":{"kind":"Name","value":"block"},"value":{"kind":"ObjectValue","fields":[{"kind":"ObjectField","name":{"kind":"Name","value":"number"},"value":{"kind":"Variable","name":{"kind":"Name","value":"block"}}}]}}],"selectionSet":{"kind":"SelectionSet","selections":[{"kind":"Field","name":{"kind":"Name","value":"stakes"},"arguments":[{"kind":"Argument","name":{"kind":"Name","value":"first"},"value":{"kind":"Variable","name":{"kind":"Name","value":"first"}}},{"kind":"Argument","name":{"kind":"Name","value":"skip"},"value":{"kind":"Variable","name":{"kind":"Name","value":"skip"}}}],"selectionSet":{"kind":"SelectionSet","selections":[{"kind":"Field","name":{"kind":"Name","value":"oas"}},{"kind":"Field","name":{"kind":"Name","value":"soas"}},{"kind":"Field","name":{"kind":"Name","value":"woas"}}]}}]}}]}}]} as unknown as DocumentNode<GetValidatorStakesQuery, GetValidatorStakesQueryVariables>;
+export const GetEpochDocument = {
+  kind: 'Document',
+  definitions: [
+    {
+      kind: 'OperationDefinition',
+      operation: 'query',
+      name: { kind: 'Name', value: 'GetEpoch' },
+      variableDefinitions: [
+        {
+          kind: 'VariableDefinition',
+          variable: {
+            kind: 'Variable',
+            name: { kind: 'Name', value: 'epoch' },
+          },
+          type: {
+            kind: 'NonNullType',
+            type: {
+              kind: 'NamedType',
+              name: { kind: 'Name', value: 'BigInt' },
+            },
+          },
+        },
+      ],
+      selectionSet: {
+        kind: 'SelectionSet',
+        selections: [
+          {
+            kind: 'Field',
+            name: { kind: 'Name', value: 'epoches' },
+            arguments: [
+              {
+                kind: 'Argument',
+                name: { kind: 'Name', value: 'where' },
+                value: {
+                  kind: 'ObjectValue',
+                  fields: [
+                    {
+                      kind: 'ObjectField',
+                      name: { kind: 'Name', value: 'epoch' },
+                      value: {
+                        kind: 'Variable',
+                        name: { kind: 'Name', value: 'epoch' },
+                      },
+                    },
+                  ],
+                },
+              },
+            ],
+            selectionSet: {
+              kind: 'SelectionSet',
+              selections: [
+                { kind: 'Field', name: { kind: 'Name', value: 'epoch' } },
+                { kind: 'Field', name: { kind: 'Name', value: 'block' } },
+                { kind: 'Field', name: { kind: 'Name', value: 'timestamp' } },
+              ],
+            },
+          },
+        ],
+      },
+    },
+  ],
+} as unknown as DocumentNode<GetEpochQuery, GetEpochQueryVariables>;
+export const GetEpochByFromTimeStampDocument = {
+  kind: 'Document',
+  definitions: [
+    {
+      kind: 'OperationDefinition',
+      operation: 'query',
+      name: { kind: 'Name', value: 'GetEpochByFromTimeStamp' },
+      variableDefinitions: [
+        {
+          kind: 'VariableDefinition',
+          variable: {
+            kind: 'Variable',
+            name: { kind: 'Name', value: 'timestamp' },
+          },
+          type: {
+            kind: 'NonNullType',
+            type: {
+              kind: 'NamedType',
+              name: { kind: 'Name', value: 'BigInt' },
+            },
+          },
+        },
+      ],
+      selectionSet: {
+        kind: 'SelectionSet',
+        selections: [
+          {
+            kind: 'Field',
+            name: { kind: 'Name', value: 'epoches' },
+            arguments: [
+              {
+                kind: 'Argument',
+                name: { kind: 'Name', value: 'where' },
+                value: {
+                  kind: 'ObjectValue',
+                  fields: [
+                    {
+                      kind: 'ObjectField',
+                      name: { kind: 'Name', value: 'timestamp_gte' },
+                      value: {
+                        kind: 'Variable',
+                        name: { kind: 'Name', value: 'timestamp' },
+                      },
+                    },
+                  ],
+                },
+              },
+              {
+                kind: 'Argument',
+                name: { kind: 'Name', value: 'orderBy' },
+                value: { kind: 'EnumValue', value: 'timestamp' },
+              },
+              {
+                kind: 'Argument',
+                name: { kind: 'Name', value: 'orderDirection' },
+                value: { kind: 'EnumValue', value: 'asc' },
+              },
+              {
+                kind: 'Argument',
+                name: { kind: 'Name', value: 'first' },
+                value: { kind: 'IntValue', value: '1' },
+              },
+            ],
+            selectionSet: {
+              kind: 'SelectionSet',
+              selections: [
+                { kind: 'Field', name: { kind: 'Name', value: 'epoch' } },
+                { kind: 'Field', name: { kind: 'Name', value: 'block' } },
+                { kind: 'Field', name: { kind: 'Name', value: 'timestamp' } },
+              ],
+            },
+          },
+        ],
+      },
+    },
+  ],
+} as unknown as DocumentNode<
+  GetEpochByFromTimeStampQuery,
+  GetEpochByFromTimeStampQueryVariables
+>;
+export const GetEpochByToTimeStampDocument = {
+  kind: 'Document',
+  definitions: [
+    {
+      kind: 'OperationDefinition',
+      operation: 'query',
+      name: { kind: 'Name', value: 'GetEpochByToTimeStamp' },
+      variableDefinitions: [
+        {
+          kind: 'VariableDefinition',
+          variable: {
+            kind: 'Variable',
+            name: { kind: 'Name', value: 'timestamp' },
+          },
+          type: {
+            kind: 'NonNullType',
+            type: {
+              kind: 'NamedType',
+              name: { kind: 'Name', value: 'BigInt' },
+            },
+          },
+        },
+      ],
+      selectionSet: {
+        kind: 'SelectionSet',
+        selections: [
+          {
+            kind: 'Field',
+            name: { kind: 'Name', value: 'epoches' },
+            arguments: [
+              {
+                kind: 'Argument',
+                name: { kind: 'Name', value: 'where' },
+                value: {
+                  kind: 'ObjectValue',
+                  fields: [
+                    {
+                      kind: 'ObjectField',
+                      name: { kind: 'Name', value: 'timestamp_lte' },
+                      value: {
+                        kind: 'Variable',
+                        name: { kind: 'Name', value: 'timestamp' },
+                      },
+                    },
+                  ],
+                },
+              },
+              {
+                kind: 'Argument',
+                name: { kind: 'Name', value: 'orderBy' },
+                value: { kind: 'EnumValue', value: 'timestamp' },
+              },
+              {
+                kind: 'Argument',
+                name: { kind: 'Name', value: 'orderDirection' },
+                value: { kind: 'EnumValue', value: 'desc' },
+              },
+              {
+                kind: 'Argument',
+                name: { kind: 'Name', value: 'first' },
+                value: { kind: 'IntValue', value: '1' },
+              },
+            ],
+            selectionSet: {
+              kind: 'SelectionSet',
+              selections: [
+                { kind: 'Field', name: { kind: 'Name', value: 'epoch' } },
+                { kind: 'Field', name: { kind: 'Name', value: 'block' } },
+                { kind: 'Field', name: { kind: 'Name', value: 'timestamp' } },
+              ],
+            },
+          },
+        ],
+      },
+    },
+  ],
+} as unknown as DocumentNode<
+  GetEpochByToTimeStampQuery,
+  GetEpochByToTimeStampQueryVariables
+>;
+export const GetLatestEpochDocument = {
+  kind: 'Document',
+  definitions: [
+    {
+      kind: 'OperationDefinition',
+      operation: 'query',
+      name: { kind: 'Name', value: 'GetLatestEpoch' },
+      selectionSet: {
+        kind: 'SelectionSet',
+        selections: [
+          {
+            kind: 'Field',
+            name: { kind: 'Name', value: 'epoches' },
+            arguments: [
+              {
+                kind: 'Argument',
+                name: { kind: 'Name', value: 'first' },
+                value: { kind: 'IntValue', value: '1' },
+              },
+              {
+                kind: 'Argument',
+                name: { kind: 'Name', value: 'orderBy' },
+                value: { kind: 'EnumValue', value: 'epoch' },
+              },
+              {
+                kind: 'Argument',
+                name: { kind: 'Name', value: 'orderDirection' },
+                value: { kind: 'EnumValue', value: 'desc' },
+              },
+            ],
+            selectionSet: {
+              kind: 'SelectionSet',
+              selections: [
+                { kind: 'Field', name: { kind: 'Name', value: 'epoch' } },
+                { kind: 'Field', name: { kind: 'Name', value: 'block' } },
+                { kind: 'Field', name: { kind: 'Name', value: 'timestamp' } },
+              ],
+            },
+          },
+        ],
+      },
+    },
+  ],
+} as unknown as DocumentNode<GetLatestEpochQuery, GetLatestEpochQueryVariables>;
+export const GetEpochRewardsDocument = {
+  kind: 'Document',
+  definitions: [
+    {
+      kind: 'OperationDefinition',
+      operation: 'query',
+      name: { kind: 'Name', value: 'GetEpochRewards' },
+      variableDefinitions: [
+        {
+          kind: 'VariableDefinition',
+          variable: {
+            kind: 'Variable',
+            name: { kind: 'Name', value: 'epoch' },
+          },
+          type: {
+            kind: 'NonNullType',
+            type: {
+              kind: 'NamedType',
+              name: { kind: 'Name', value: 'BigInt' },
+            },
+          },
+        },
+        {
+          kind: 'VariableDefinition',
+          variable: {
+            kind: 'Variable',
+            name: { kind: 'Name', value: 'first' },
+          },
+          type: {
+            kind: 'NonNullType',
+            type: { kind: 'NamedType', name: { kind: 'Name', value: 'Int' } },
+          },
+        },
+        {
+          kind: 'VariableDefinition',
+          variable: { kind: 'Variable', name: { kind: 'Name', value: 'skip' } },
+          type: {
+            kind: 'NonNullType',
+            type: { kind: 'NamedType', name: { kind: 'Name', value: 'Int' } },
+          },
+        },
+      ],
+      selectionSet: {
+        kind: 'SelectionSet',
+        selections: [
+          {
+            kind: 'Field',
+            name: { kind: 'Name', value: 'epochRewards' },
+            arguments: [
+              {
+                kind: 'Argument',
+                name: { kind: 'Name', value: 'where' },
+                value: {
+                  kind: 'ObjectValue',
+                  fields: [
+                    {
+                      kind: 'ObjectField',
+                      name: { kind: 'Name', value: 'epoch' },
+                      value: {
+                        kind: 'Variable',
+                        name: { kind: 'Name', value: 'epoch' },
+                      },
+                    },
+                  ],
+                },
+              },
+              {
+                kind: 'Argument',
+                name: { kind: 'Name', value: 'first' },
+                value: {
+                  kind: 'Variable',
+                  name: { kind: 'Name', value: 'first' },
+                },
+              },
+              {
+                kind: 'Argument',
+                name: { kind: 'Name', value: 'skip' },
+                value: {
+                  kind: 'Variable',
+                  name: { kind: 'Name', value: 'skip' },
+                },
+              },
+            ],
+            selectionSet: {
+              kind: 'SelectionSet',
+              selections: [
+                { kind: 'Field', name: { kind: 'Name', value: 'epoch' } },
+                { kind: 'Field', name: { kind: 'Name', value: 'address' } },
+                { kind: 'Field', name: { kind: 'Name', value: 'commissions' } },
+                { kind: 'Field', name: { kind: 'Name', value: 'rewards' } },
+              ],
+            },
+          },
+        ],
+      },
+    },
+  ],
+} as unknown as DocumentNode<
+  GetEpochRewardsQuery,
+  GetEpochRewardsQueryVariables
+>;
+export const GetValidatorsDocument = {
+  kind: 'Document',
+  definitions: [
+    {
+      kind: 'OperationDefinition',
+      operation: 'query',
+      name: { kind: 'Name', value: 'GetValidators' },
+      variableDefinitions: [
+        {
+          kind: 'VariableDefinition',
+          variable: {
+            kind: 'Variable',
+            name: { kind: 'Name', value: 'block' },
+          },
+          type: {
+            kind: 'NonNullType',
+            type: { kind: 'NamedType', name: { kind: 'Name', value: 'Int' } },
+          },
+        },
+        {
+          kind: 'VariableDefinition',
+          variable: {
+            kind: 'Variable',
+            name: { kind: 'Name', value: 'validator' },
+          },
+          type: {
+            kind: 'NonNullType',
+            type: { kind: 'NamedType', name: { kind: 'Name', value: 'ID' } },
+          },
+        },
+      ],
+      selectionSet: {
+        kind: 'SelectionSet',
+        selections: [
+          {
+            kind: 'Field',
+            name: { kind: 'Name', value: 'validators' },
+            arguments: [
+              {
+                kind: 'Argument',
+                name: { kind: 'Name', value: 'orderBy' },
+                value: { kind: 'EnumValue', value: 'id' },
+              },
+              {
+                kind: 'Argument',
+                name: { kind: 'Name', value: 'first' },
+                value: { kind: 'IntValue', value: '1000' },
+              },
+              {
+                kind: 'Argument',
+                name: { kind: 'Name', value: 'block' },
+                value: {
+                  kind: 'ObjectValue',
+                  fields: [
+                    {
+                      kind: 'ObjectField',
+                      name: { kind: 'Name', value: 'number' },
+                      value: {
+                        kind: 'Variable',
+                        name: { kind: 'Name', value: 'block' },
+                      },
+                    },
+                  ],
+                },
+              },
+              {
+                kind: 'Argument',
+                name: { kind: 'Name', value: 'where' },
+                value: {
+                  kind: 'ObjectValue',
+                  fields: [
+                    {
+                      kind: 'ObjectField',
+                      name: { kind: 'Name', value: 'id' },
+                      value: {
+                        kind: 'Variable',
+                        name: { kind: 'Name', value: 'validator' },
+                      },
+                    },
+                  ],
+                },
+              },
+            ],
+            selectionSet: {
+              kind: 'SelectionSet',
+              selections: [
+                { kind: 'Field', name: { kind: 'Name', value: 'id' } },
+                { kind: 'Field', name: { kind: 'Name', value: 'commissions' } },
+              ],
+            },
+          },
+        ],
+      },
+    },
+  ],
+} as unknown as DocumentNode<GetValidatorsQuery, GetValidatorsQueryVariables>;
+export const GetValidatorStakesDocument = {
+  kind: 'Document',
+  definitions: [
+    {
+      kind: 'OperationDefinition',
+      operation: 'query',
+      name: { kind: 'Name', value: 'GetValidatorStakes' },
+      variableDefinitions: [
+        {
+          kind: 'VariableDefinition',
+          variable: {
+            kind: 'Variable',
+            name: { kind: 'Name', value: 'validator' },
+          },
+          type: {
+            kind: 'NonNullType',
+            type: { kind: 'NamedType', name: { kind: 'Name', value: 'ID' } },
+          },
+        },
+        {
+          kind: 'VariableDefinition',
+          variable: {
+            kind: 'Variable',
+            name: { kind: 'Name', value: 'block' },
+          },
+          type: {
+            kind: 'NonNullType',
+            type: { kind: 'NamedType', name: { kind: 'Name', value: 'Int' } },
+          },
+        },
+        {
+          kind: 'VariableDefinition',
+          variable: {
+            kind: 'Variable',
+            name: { kind: 'Name', value: 'first' },
+          },
+          type: {
+            kind: 'NonNullType',
+            type: { kind: 'NamedType', name: { kind: 'Name', value: 'Int' } },
+          },
+        },
+        {
+          kind: 'VariableDefinition',
+          variable: { kind: 'Variable', name: { kind: 'Name', value: 'skip' } },
+          type: {
+            kind: 'NonNullType',
+            type: { kind: 'NamedType', name: { kind: 'Name', value: 'Int' } },
+          },
+        },
+      ],
+      selectionSet: {
+        kind: 'SelectionSet',
+        selections: [
+          {
+            kind: 'Field',
+            name: { kind: 'Name', value: 'validators' },
+            arguments: [
+              {
+                kind: 'Argument',
+                name: { kind: 'Name', value: 'where' },
+                value: {
+                  kind: 'ObjectValue',
+                  fields: [
+                    {
+                      kind: 'ObjectField',
+                      name: { kind: 'Name', value: 'id' },
+                      value: {
+                        kind: 'Variable',
+                        name: { kind: 'Name', value: 'validator' },
+                      },
+                    },
+                  ],
+                },
+              },
+              {
+                kind: 'Argument',
+                name: { kind: 'Name', value: 'block' },
+                value: {
+                  kind: 'ObjectValue',
+                  fields: [
+                    {
+                      kind: 'ObjectField',
+                      name: { kind: 'Name', value: 'number' },
+                      value: {
+                        kind: 'Variable',
+                        name: { kind: 'Name', value: 'block' },
+                      },
+                    },
+                  ],
+                },
+              },
+            ],
+            selectionSet: {
+              kind: 'SelectionSet',
+              selections: [
+                {
+                  kind: 'Field',
+                  name: { kind: 'Name', value: 'stakes' },
+                  arguments: [
+                    {
+                      kind: 'Argument',
+                      name: { kind: 'Name', value: 'first' },
+                      value: {
+                        kind: 'Variable',
+                        name: { kind: 'Name', value: 'first' },
+                      },
+                    },
+                    {
+                      kind: 'Argument',
+                      name: { kind: 'Name', value: 'skip' },
+                      value: {
+                        kind: 'Variable',
+                        name: { kind: 'Name', value: 'skip' },
+                      },
+                    },
+                  ],
+                  selectionSet: {
+                    kind: 'SelectionSet',
+                    selections: [
+                      { kind: 'Field', name: { kind: 'Name', value: 'oas' } },
+                      { kind: 'Field', name: { kind: 'Name', value: 'soas' } },
+                      { kind: 'Field', name: { kind: 'Name', value: 'woas' } },
+                    ],
+                  },
+                },
+              ],
+            },
+          },
+        ],
+      },
+    },
+  ],
+} as unknown as DocumentNode<
+  GetValidatorStakesQuery,
+  GetValidatorStakesQueryVariables
+>;
