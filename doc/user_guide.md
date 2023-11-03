@@ -5,6 +5,7 @@
 
 - [releases](https://github.com/oasysgames/oasfi/releases)から最新のものをダウンロードしてください。
 - MaxOS, Windows, Linux 3つに対応しておりますのでご自身のosに合うものをお選びください。
+- macの場合は、プライバシー設定からアプリの実行を許可する必要があります
 
 ## correct-csvスクリプト
 
