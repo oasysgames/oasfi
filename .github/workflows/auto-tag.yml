@@ -27,3 +27,13 @@ jobs:
       - name: Check out new tag
         run: |
           echo "New tag created: ${{ steps.create_tag.outputs.tag }}"
+
+      - name: Save the tag
+        run: |
+          echo "${{ steps.create_tag.outputs.tag }}" > tag.txt    
+
+      - name: Upload tag as artifact
+        uses: actions/upload-artifact@v2
+        with:
+          name: tag
+          path: tag.txt
