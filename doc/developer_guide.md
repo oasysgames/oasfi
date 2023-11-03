@@ -3,7 +3,6 @@
 ## 実行ファイル作成
 
 * nodeはv18を利用してください
-* eslintとprettierは実行しないでください
 
 ```bash
 nvm use 18
