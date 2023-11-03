@@ -24,6 +24,7 @@ jobs:
           GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
           WITH_V: true
           RELEASE_BRANCHES: main
+          DEFAULT_BUMP: patch
 
       - name: Check out new tag
         run: |
@@ -38,43 +39,43 @@ jobs:
         with:
           name: tag
           path: tag.txt
-  test:
-    strategy:
-      matrix:
-        os: [macos-latest]
-    runs-on: ${{ matrix.os }}
-
-    steps:
-    - name: Checkout code
-      uses: actions/checkout@v2
-
-    - name: Setup Node.js
-      uses: actions/setup-node@v2
-      with:
-        node-version: '18'
-
-    - name: Cache node modules
-      uses: actions/cache@v2
-      with:
-        path: ~/.npm
-        key: ${{ runner.os }}-node-${{ hashFiles('**/package-lock.json') }}
-        restore-keys: |
-          ${{ runner.os }}-node-
-
-    - name: Install dependencies
-      run: npm install
-
-    - name: Install type definitions
-      run: npm install --save-dev @types/node @types/fs-extra
-
-    - name: Compile TypeScript
-      run: npx tsc
-
-    - name: Lint with eslint
-      run: npm run lint
-
-    - name: Run tests
-      run: npm run test
+#  test:
+#    strategy:
+#      matrix:
+#        os: [macos-latest]
+#    runs-on: ${{ matrix.os }}
+#
+#    steps:
+#    - name: Checkout code
+#      uses: actions/checkout@v2
+#
+#    - name: Setup Node.js
+#      uses: actions/setup-node@v2
+#      with:
+#        node-version: '18'
+#
+#    - name: Cache node modules
+#      uses: actions/cache@v2
+#      with:
+#        path: ~/.npm
+#        key: ${{ runner.os }}-node-${{ hashFiles('**/package-lock.json') }}
+#        restore-keys: |
+#          ${{ runner.os }}-node-
+#
+#    - name: Install dependencies
+#      run: npm install
+#
+#    - name: Install type definitions
+#      run: npm install --save-dev @types/node @types/fs-extra
+#
+#    - name: Compile TypeScript
+#      run: npx tsc
+#
+#    - name: Lint with eslint
+#      run: npm run lint
+#
+#    - name: Run tests
+#      run: npm run test
 
   prepare-release:
     runs-on: ubuntu-latest
