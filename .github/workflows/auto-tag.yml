@@ -18,12 +18,11 @@ jobs:
 
       - name: Bump version and push tag
         id: create_tag
-        uses: anothrNick/github-tag-action@1.26.0
+        uses: anothrNick/github-tag-action@1.64.0
         env:
           GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
           WITH_V: true
           RELEASE_BRANCHES: main
-          CUSTOM_TAG: ${{ github.event.head_commit.message }}
 
       - name: Check out new tag
         run: |
