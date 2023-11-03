@@ -101,16 +101,16 @@ jobs:
       run: |
         echo "Next tag will be: ${{ steps.set_tag.outputs.tag }}"  # Updated this line to use the set_tag step
 
-    - name: Create release
-      id: create_release
-      uses: actions/create-release@v1.1.4
-      env:
-       GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
-      with:
-        tag_name: ${{ steps.set_tag.outputs.tag }}  # Updated this line to use the set_tag step
-        release_name: Release ${{ steps.set_tag.outputs.tag }}  # Updated this line to use the set_tag step
-        draft: true
-        prerelease: false
+#    - name: Create release
+#      id: create_release
+#      uses: actions/create-release@v1.1.4
+#      env:
+#       GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+#      with:
+#        tag_name: ${{ steps.set_tag.outputs.tag }}  # Updated this line to use the set_tag step
+#        release_name: Release ${{ steps.set_tag.outputs.tag }}  # Updated this line to use the set_tag step
+#        draft: true
+#        prerelease: false
 
   build-and-release:
     needs: prepare-release
