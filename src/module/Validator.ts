@@ -18,6 +18,7 @@ import {
 export const commissionReward = async (argv: commissionRewardArgs) => {
   const subgraph = new Subgraph(argv.chain);
   let header: string[] = HEADER_FOR_GENERAL;
+  const validator_address = argv.validator_address?.toLocaleLowerCase();
 
   if (process.env.COINGECKO_API_KEY) {
     header = argv.price
@@ -67,7 +68,7 @@ export const commissionReward = async (argv: commissionRewardArgs) => {
       const validatorTotalStakes = await subgraph.getValidatorTotalStake(
         parseInt(epoch, 10),
         parseInt(block, 10),
-        argv.validator_address,
+        validator_address,
       );
 
       const timeData = {
@@ -94,12 +95,7 @@ export const commissionReward = async (argv: commissionRewardArgs) => {
     if (argv.export_csv_online) {
       await exportCsvOnline(doc, rowData, timestamp, header);
     } else {
-      await exportCsvLocal(
-        rowData,
-        header,
-        argv.validator_address,
-        argv.output,
-      );
+      await exportCsvLocal(rowData, header, validator_address, argv.output);
     }
     await sleep(1500);
   }
@@ -110,7 +106,7 @@ const getEpoches = async (argv: commissionRewardArgs, subgraph: Subgraph) => {
   let to = argv.to_epoch;
 
   if (!argv.to_epoch) {
-    to = latestEpoch.epoches[0].epoch - 1;
+    to = latestEpoch.epoches[0]?.epoch - 1;
   }
 
   if (!argv.from_epoch) {
@@ -119,19 +115,31 @@ const getEpoches = async (argv: commissionRewardArgs, subgraph: Subgraph) => {
 
   if (argv.from_data) {
     //specified timezone or local timezone
-    const from_temp = argv.time_zone
+    const from_time = argv.time_zone
       ? moment(argv.from_data).tz(argv.time_zone)
       : moment(argv.from_data);
-    from = (await subgraph.getEpochByFromTimestamp(from_temp.utc().unix()))
-      .epoches[0].epoch;
+
+    const epochData = await subgraph.getEpochByFromTimestamp(
+      from_time.utc().unix(),
+    );
+    from =
+      epochData.epoches.length > 0
+        ? epochData.epoches[0].epoch
+        : latestEpoch.epoches[0].epoch;
   }
 
   if (argv.to_data) {
-    const to_temp = argv.time_zone
+    const to_time = argv.time_zone
       ? moment(argv.to_data).tz(argv.time_zone)
       : moment(argv.to_data);
-    to = (await subgraph.getEpochByFromTimestamp(to_temp.utc().unix()))
-      .epoches[0].epoch;
+
+    const epochData = await subgraph.getEpochByFromTimestamp(
+      to_time.utc().unix(),
+    );
+    to =
+      epochData.epoches.length > 0
+        ? epochData.epoches[0].epoch
+        : latestEpoch.epoches[0].epoch;
   }
 
   if (from > to) {
