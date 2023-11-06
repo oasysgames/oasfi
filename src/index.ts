@@ -20,6 +20,7 @@ async function processCorrectCsv(args: CorrectCsvArgs) {
     const data = await tokenTransfer.handleDuplicateTokenTransfer(result.data);
     await saveCsvToFile(output, Papa.unparse(data));
   } catch (error) {
+    console.log(error);
     Logger.log('error', `${error}`);
   }
 }
@@ -29,6 +30,7 @@ async function processCommissionReward(args: commissionRewardArgs) {
   try {
     await commissionReward(args);
   } catch (error) {
+    console.log(error);
     Logger.log('error', `${error}`);
   }
 }
