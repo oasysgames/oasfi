@@ -101,10 +101,10 @@ export const main = async (argv: commissionRewardArgs) => {
 };
 
 export async function processValidatorStake(args: commissionRewardArgs) {
-  const Logger = new LogUtils('log-commission', 'log-error.txt');
   try {
     await main(args);
   } catch (error) {
+    const Logger = new LogUtils('log-commission', 'log-error.txt');
     console.log(error);
     Logger.log('error', `${error}`);
   }

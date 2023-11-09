@@ -4,6 +4,7 @@ import * as Papa from 'papaparse';
 import { saveCsvToFile } from '../service/csvService';
 import { writeFile } from '../utils/file';
 import { getDataSheet } from '../utils/google';
+import { convertArrayToObject } from './convert';
 
 export const exportCsvOnline = async (
   doc,
