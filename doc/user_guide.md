@@ -58,7 +58,7 @@ Please note that this script should be executed in the directory where the progr
 export COINGECKO_API_KEY=xx
 ```
 
-### 基本コマンド
+### Basic Command
 
 #### MacOS:
 
