@@ -1,8 +1,8 @@
 # for developer
 
-## 実行ファイル作成
+## create execution file
 
-* nodeはv18を利用してください
+* please use node v18
 
 ```bash
 nvm use 18
@@ -13,8 +13,8 @@ npm i -g pkg
 npm run compile
 ```
 
-* 上記六つのコマンドを打つとローカルに実行ファイルが生成されます。あとは
+* Executing the above six commands will generate the executable file locally. After that, you can...
 
-- [ユーザー向けガイド](./user_guide.md)
+- watch [ユーザー向けガイド](./user_guide.md)
 
-を参照してください。
+
