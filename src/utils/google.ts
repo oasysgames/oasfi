@@ -8,7 +8,7 @@ import {
   OasPrices,
   TimeData,
   TotalStakeData,
-  ValidatorTotalStake,
+  ValidatorStake,
 } from './../types';
 import { getDate, getMonthDate, getTime } from './date';
 
@@ -24,6 +24,7 @@ export const HEADER_FOR_GENERAL: string[] = [
   'timestamp(UTC)',
   'Total staked(OAS+SOAS+WOAS)',
   'Daily validator commission(OAS)',
+  'Staking reward',
 ];
 export const DEFAULT_LIST_PRICE: string[] = [
   'Oas price(jpy)',
@@ -255,7 +256,7 @@ export const getLatestSheet = async (
 
 export const getAdditionalData = (
   oasPrices: OasPrices,
-  stakeDate: ValidatorTotalStake[],
+  validatorStake: ValidatorStake[],
   timeData: TimeData,
   price: string,
 ): {
@@ -281,7 +282,7 @@ export const getAdditionalData = (
   let totalSoasStake = BigNumber.from('0');
   let totalWoasStake = BigNumber.from('0');
 
-  const rowData = stakeDate
+  const rowData = validatorStake
     .filter((stake) => {
       const validatorTotalStake = stake.oas.add(stake.soas).add(stake.woas);
       return validatorTotalStake.gt(0);
@@ -303,18 +304,10 @@ export const getAdditionalData = (
         `${date} ${time}`,
         utils.formatEther(validatorTotalStake).toString(),
         utils.formatEther(stake.dailyCommission).toString(),
+        utils.formatEther(stake.stakingReward).toString(),
         ...prices,
       ];
     });
-
-  // set total stake amount row
-  // rowData.push([
-  //   'Total',
-  //   '',
-  //   '',
-  //   utils.formatEther(totalStake).toString(),
-  //   '',
-  // ]);
 
   return {
     rowData: rowData,

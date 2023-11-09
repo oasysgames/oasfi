@@ -1,6 +1,6 @@
+import * as dotenv from 'dotenv';
 import { ethers } from 'ethers';
 import { TokenTransferUtils } from '../utils/TokenTransferUtils';
-import * as dotenv from 'dotenv';
 dotenv.config();
 const BASE_RPC_URL: Record<string, string> = {
   tcgv_mainnet: process.env.TCGV_MAINNET_URL || 'https://rpc.tcgverse.xyz/',

@@ -10,7 +10,7 @@ import type {
   GetValidatorStakesQueryVariables,
   GetValidatorsQueryVariables,
 } from './../gql/graphql';
-import { ValidatorTotalStake } from './../types';
+import { ValidatorStake } from '../types';
 
 const GetEpoch = graphql(`
   query GetEpoch($epoch: BigInt!) {
@@ -84,18 +84,23 @@ const GetValidators = graphql(`
   }
 `);
 
-const GetValidatorStakes = graphql(`
+const GetGraphValidatorStakes = graphql(`
   query GetValidatorStakes(
     $validator: ID!
+    $staker: String!
     $block: Int!
     $first: Int!
     $skip: Int!
   ) {
     validators(where: { id: $validator }, block: { number: $block }) {
-      stakes(first: $first, skip: $skip) {
+      stakes(where: { staker: $staker }, first: $first, skip: $skip) {
         oas
         soas
         woas
+        staker {
+          id
+        }
+        rewards
       }
     }
   }
@@ -193,12 +198,17 @@ export class Subgraph {
     const data = await request(this.baseGraphUrl, GetValidators, variables);
     return data;
   };
-  public getValidatorStakes = async (validator: string, block: number) => {
+  public getValidatorStakes = async (
+    validator: string,
+    block: number,
+    staker: string,
+  ) => {
     const variables: GetValidatorStakesQueryVariables = {
       validator,
       block,
       skip: 0,
       first: 1000,
+      staker,
     };
 
     const validatorStakes: GetValidatorStakesQuery = {
@@ -212,7 +222,7 @@ export class Subgraph {
       variables.skip = variables.first * i;
       const data: any = await request(
         this.baseGraphUrl,
-        GetValidatorStakes,
+        GetGraphValidatorStakes,
         variables,
       );
 
@@ -223,16 +233,17 @@ export class Subgraph {
     return validatorStakes;
   };
 
-  public getValidatorTotalStake = async (
+  public getValidatorStake = async (
     epoch: number,
     block: number,
     validator_address: string,
+    staker: string,
   ) => {
     const validators: any = await this.getValidators(block, validator_address);
 
     const epochRewards = await this.getEpochRewards(epoch);
 
-    const validatorTotalStakes = await Promise.all(
+    const validatorStakes = await Promise.all(
       validators.validators.map(async (validator) => {
         const validatorAddress = validator.id;
         const validatorEpochReward = epochRewards.epochRewards.find(
@@ -249,7 +260,7 @@ export class Subgraph {
           throw new Error('Can not get validator total commission');
         }
 
-        const validatorTotalStake: ValidatorTotalStake = {
+        const validatorStake: ValidatorStake = {
           address: validatorAddress,
           oas: BigNumber.from('0'),
           soas: BigNumber.from('0'),
@@ -260,24 +271,33 @@ export class Subgraph {
               ? BigNumber.from(validatorEpochReward.commissions)
               : BigNumber.from('0'),
           totalCommission: BigNumber.from(validator.commissions),
+          stakingReward: BigNumber.from('0'),
         };
 
-        const data = await this.getValidatorStakes(validatorAddress, block);
+        const data = await this.getValidatorStakes(
+          validatorAddress,
+          block,
+          staker,
+        );
 
         data.validators[0].stakes.forEach((stake) => {
           if (
             typeof stake.oas === 'string' &&
             typeof stake.soas === 'string' &&
-            typeof stake.woas === 'string'
+            typeof stake.woas === 'string' &&
+            typeof stake.rewards === 'string'
           ) {
-            validatorTotalStake.oas = validatorTotalStake.oas.add(
+            validatorStake.oas = validatorStake.oas.add(
               BigNumber.from(stake.oas),
             );
-            validatorTotalStake.soas = validatorTotalStake.soas.add(
+            validatorStake.soas = validatorStake.soas.add(
               BigNumber.from(stake.soas),
             );
-            validatorTotalStake.woas = validatorTotalStake.woas.add(
+            validatorStake.woas = validatorStake.woas.add(
               BigNumber.from(stake.woas),
+            );
+            validatorStake.stakingReward = validatorStake.stakingReward.add(
+              BigNumber.from(stake.rewards),
             );
           } else {
             throw new Error(
@@ -285,10 +305,10 @@ export class Subgraph {
             );
           }
         });
-        return validatorTotalStake;
+        return validatorStake;
       }),
     );
 
-    return validatorTotalStakes;
+    return validatorStakes;
   };
 }

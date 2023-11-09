@@ -1,12 +1,13 @@
 import { BigNumber } from 'ethers';
 
-export interface ValidatorTotalStake {
+export interface ValidatorStake {
   address: string;
   oas: BigNumber;
   soas: BigNumber;
   woas: BigNumber;
   dailyCommission: BigNumber;
   totalCommission: BigNumber;
+  stakingReward: BigNumber;
 }
 
 export interface TotalStakeData {
@@ -33,6 +34,7 @@ export interface CorrectCsvArgs {
 
 export interface commissionRewardArgs {
   validator_address: string;
+  staker: string;
   chain: string;
   from_epoch: number;
   to_epoch: number;

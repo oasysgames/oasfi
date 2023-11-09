@@ -1,39 +1,10 @@
 #!/usr/bin/env node
 
-import * as fsPromise from 'fs/promises';
-import * as Papa from 'papaparse';
 import yargs, { Arguments, Argv } from 'yargs';
 import { hideBin } from 'yargs/helpers';
-import { TokenTransfer } from './module/TokenTransfer';
-import { commissionReward } from './module/Validator';
-import { saveCsvToFile } from './service/csvService';
+import { processValidatorStake } from './cmd/cmdCalcValidatorStake';
+import { processCorrectCsv } from './cmd/cmdCorrectCsv';
 import { CorrectCsvArgs, commissionRewardArgs } from './types';
-import { LogUtils } from './utils/Logger';
-
-async function processCorrectCsv(args: CorrectCsvArgs) {
-  const Logger = new LogUtils('log-correctCsv', 'log-error.txt');
-  try {
-    const { chain, input, output } = args;
-    const tokenTransfer = new TokenTransfer(chain);
-    const csvContent = await fsPromise.readFile(input, 'utf-8');
-    const result = Papa.parse(csvContent, { header: true });
-    const data = await tokenTransfer.handleDuplicateTokenTransfer(result.data);
-    await saveCsvToFile(output, Papa.unparse(data));
-  } catch (error) {
-    console.log(error);
-    Logger.log('error', `${error}`);
-  }
-}
-
-async function processCommissionReward(args: commissionRewardArgs) {
-  const Logger = new LogUtils('log-commission', 'log-error.txt');
-  try {
-    await commissionReward(args);
-  } catch (error) {
-    console.log(error);
-    Logger.log('error', `${error}`);
-  }
-}
 
 void yargs(hideBin(process.argv))
   .usage('<command>  [OPTIONS]')
@@ -67,11 +38,7 @@ void yargs(hideBin(process.argv))
       });
     },
     async (argv: Arguments<CorrectCsvArgs>) => {
-      try {
-        await processCorrectCsv(argv);
-      } catch (error) {
-        console.error(`An error occurred: ${error.message}`);
-      }
+      await processCorrectCsv(argv);
     },
   )
   .command(
@@ -84,6 +51,10 @@ void yargs(hideBin(process.argv))
           requiresArg: true,
           required: true,
           type: 'string',
+        },
+        staker: {
+          type: 'string',
+          description: 'staker of validator',
         },
         chain: {
           alias: 'c',
@@ -130,11 +101,7 @@ void yargs(hideBin(process.argv))
       });
     },
     async (argv: Arguments<commissionRewardArgs>) => {
-      await processCommissionReward(argv);
-      try {
-      } catch (error) {
-        console.error(`An error occurred: ${error.message}`);
-      }
+      await processValidatorStake(argv);
     },
   )
 
