@@ -149,7 +149,7 @@ export GOOGLE_APPLICATION_CREDENTIALS=xx
  ./oasfi-linux  export-commission-reward 0x272d6bd040c2b8454f4f6f43115758fbe318ee2c -c=hub_mainnet -o=output.csv
 ```
 
-### 参考
+### Reference
 
 #### sheet API
 * Used to obtain the environment variable SPREADSHEET_ID.
