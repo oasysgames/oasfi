@@ -23,7 +23,7 @@ void yargs(hideBin(process.argv))
     processCorrectCsvCommand,
   )
   .command(
-    'export-commission-reward [validator_address]',
+    'export-commission-reward [validator_address] [staker_address]',
     'Export commission reward',
     defineValidatorStakeCommand,
     processValidatorStakeCommand,

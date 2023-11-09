@@ -1,6 +1,5 @@
-// ValidatorStakeCommand.js
 import { Arguments, Argv } from 'yargs';
-import { processValidatorStake } from '../excutes/excuteCalcValidatorStake';
+import { processValidatorStake } from '../excute/excuteCalcValidatorStake';
 import { commissionRewardArgs } from '../types';
 
 export const defineValidatorStakeCommand = (yargs: Argv) => {
@@ -11,9 +10,11 @@ export const defineValidatorStakeCommand = (yargs: Argv) => {
       required: true,
       type: 'string',
     },
-    staker: {
+    staker_address: {
+      description: 'staker address',
+      requiresArg: true,
+      required: true,
       type: 'string',
-      description: 'staker of validator',
     },
     chain: {
       alias: 'c',

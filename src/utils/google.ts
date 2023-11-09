@@ -24,7 +24,7 @@ export const HEADER_FOR_GENERAL: string[] = [
   'timestamp(UTC)',
   'Total staked(OAS+SOAS+WOAS)',
   'Daily validator commission(OAS)',
-  'Staking reward',
+  'Staking reward(OAS)',
 ];
 export const DEFAULT_LIST_PRICE: string[] = [
   'Oas price(jpy)',
@@ -256,12 +256,11 @@ export const getLatestSheet = async (
 
 export const getAdditionalData = (
   oasPrices: OasPrices,
-  validatorStake: ValidatorStake[],
+  validatorStakes: ValidatorStake[],
   timeData: TimeData,
   price: string,
 ): {
   rowData: string[][];
-  totalStakeData: TotalStakeData;
 } => {
   const { epoch, block, timestamp } = timeData;
 
@@ -277,45 +276,20 @@ export const getAdditionalData = (
     prices = price ? [oasPrices[price]] : [jpy, usd, krw, eur, sgd];
   }
 
-  let totalStake = BigNumber.from('0');
-  let totalOasStake = BigNumber.from('0');
-  let totalSoasStake = BigNumber.from('0');
-  let totalWoasStake = BigNumber.from('0');
-
-  const rowData = validatorStake
-    .filter((stake) => {
-      const validatorTotalStake = stake.oas.add(stake.soas).add(stake.woas);
-      return validatorTotalStake.gt(0);
-    })
-    .map((stake) => {
-      totalStake = totalStake.add(stake.oas).add(stake.soas).add(stake.woas);
-      totalOasStake = totalOasStake.add(stake.oas);
-      totalSoasStake = totalSoasStake.add(stake.soas);
-      totalWoasStake = totalWoasStake.add(stake.woas);
-      // const validatorInfo = validatorsInfo.find((validator) => {
-      //   return validator.address.toLowerCase() === stake.address.toLowerCase();
-      // });
-
-      const validatorTotalStake = stake.oas.add(stake.soas).add(stake.woas);
-
-      return [
-        epoch,
-        block,
-        `${date} ${time}`,
-        utils.formatEther(validatorTotalStake).toString(),
-        utils.formatEther(stake.dailyCommission).toString(),
-        utils.formatEther(stake.stakingReward).toString(),
-        ...prices,
-      ];
-    });
+  const rowData = validatorStakes.map((validatorStake: ValidatorStake) => {
+    const validatorTotalStake = validatorStake.totalStaked;
+    return [
+      epoch,
+      block,
+      `${date} ${time}`,
+      utils.formatEther(validatorTotalStake).toString(),
+      utils.formatEther(validatorStake.dailyCommission).toString(),
+      utils.formatEther(validatorStake.stakingReward).toString(),
+      ...prices,
+    ];
+  });
 
   return {
     rowData: rowData,
-    totalStakeData: {
-      totalStake,
-      totalOasStake,
-      totalSoasStake,
-      totalWoasStake,
-    },
   };
 };

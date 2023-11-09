@@ -1,5 +1,5 @@
 import { Arguments, Argv } from 'yargs';
-import { processCorrectCsv } from '../excutes/excuteCorrectCsv';
+import { processCorrectCsv } from '../excute/excuteCorrectCsv';
 import { CorrectCsvArgs } from '../types';
 
 export const defineCorrectCsvCommand = (yargs: Argv) => {

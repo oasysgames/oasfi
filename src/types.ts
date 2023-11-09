@@ -8,6 +8,7 @@ export interface ValidatorStake {
   dailyCommission: BigNumber;
   totalCommission: BigNumber;
   stakingReward: BigNumber;
+  totalStaked: BigNumber;
 }
 
 export interface TotalStakeData {
@@ -34,7 +35,7 @@ export interface CorrectCsvArgs {
 
 export interface commissionRewardArgs {
   validator_address: string;
-  staker: string;
+  staker_address: string;
   chain: string;
   from_epoch: number;
   to_epoch: number;

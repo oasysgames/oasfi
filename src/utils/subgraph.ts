@@ -1,5 +1,6 @@
 import { BigNumber } from 'ethers';
 import { request } from 'graphql-request';
+import { ValidatorStake } from '../types';
 import { graphql } from './../gql/gql';
 import type {
   GetEpochByToTimeStampQueryVariables,
@@ -10,7 +11,6 @@ import type {
   GetValidatorStakesQueryVariables,
   GetValidatorsQueryVariables,
 } from './../gql/graphql';
-import { ValidatorStake } from '../types';
 
 const GetEpoch = graphql(`
   query GetEpoch($epoch: BigInt!) {
@@ -102,6 +102,7 @@ const GetGraphValidatorStakes = graphql(`
         }
         rewards
       }
+      totalStake
     }
   }
 `);
@@ -215,6 +216,7 @@ export class Subgraph {
       validators: [
         {
           stakes: [],
+          totalStake: 0,
         },
       ],
     };
@@ -229,15 +231,17 @@ export class Subgraph {
       if (data.validators[0].stakes.length === 0) break; // All stake information already retrieved.
       validatorStakes.validators[0].stakes =
         validatorStakes.validators[0].stakes.concat(data.validators[0].stakes);
+
+      validatorStakes.validators[0].totalStake = data.validators[0].totalStake;
     }
     return validatorStakes;
   };
 
-  public getValidatorStake = async (
+  public statisticValidatorStake = async (
     epoch: number,
     block: number,
     validator_address: string,
-    staker: string,
+    staker_address: string,
   ) => {
     const validators: any = await this.getValidators(block, validator_address);
 
@@ -272,39 +276,25 @@ export class Subgraph {
               : BigNumber.from('0'),
           totalCommission: BigNumber.from(validator.commissions),
           stakingReward: BigNumber.from('0'),
+          totalStaked: BigNumber.from('0'),
         };
 
         const data = await this.getValidatorStakes(
           validatorAddress,
           block,
-          staker,
+          staker_address,
         );
 
         data.validators[0].stakes.forEach((stake) => {
-          if (
-            typeof stake.oas === 'string' &&
-            typeof stake.soas === 'string' &&
-            typeof stake.woas === 'string' &&
-            typeof stake.rewards === 'string'
-          ) {
-            validatorStake.oas = validatorStake.oas.add(
-              BigNumber.from(stake.oas),
-            );
-            validatorStake.soas = validatorStake.soas.add(
-              BigNumber.from(stake.soas),
-            );
-            validatorStake.woas = validatorStake.woas.add(
-              BigNumber.from(stake.woas),
-            );
-            validatorStake.stakingReward = validatorStake.stakingReward.add(
-              BigNumber.from(stake.rewards),
-            );
-          } else {
-            throw new Error(
-              'Can not get stake.oas or stake.soas or stake.woas',
-            );
-          }
+          validatorStake.stakingReward = validatorStake.stakingReward.add(
+            BigNumber.from(stake.rewards),
+          );
         });
+
+        validatorStake.totalStaked = validatorStake.totalStaked.add(
+          BigNumber.from(data.validators[0].totalStake),
+        );
+
         return validatorStake;
       }),
     );

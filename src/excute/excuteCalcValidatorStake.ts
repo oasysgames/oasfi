@@ -17,6 +17,7 @@ export const main = async (argv: commissionRewardArgs) => {
   const subgraph = new Subgraph(argv.chain);
   let header: string[] = HEADER_FOR_GENERAL;
   const validator_address = argv.validator_address?.toLocaleLowerCase();
+  const staker_address = argv.staker_address?.toLocaleLowerCase();
 
   if (process.env.COINGECKO_API_KEY) {
     header = argv.price
@@ -63,11 +64,11 @@ export const main = async (argv: commissionRewardArgs) => {
         process.env.COINGECKO_API_KEY &&
         (await getOasPricesForEpoch(argv, epochData));
 
-      const validatorStake = await subgraph.getValidatorStake(
+      const validatorStake = await subgraph.statisticValidatorStake(
         parseInt(epoch, 10),
         parseInt(block, 10),
         validator_address,
-        argv.staker,
+        staker_address,
       );
 
       const timeData = {
@@ -94,7 +95,13 @@ export const main = async (argv: commissionRewardArgs) => {
     if (argv.export_csv_online) {
       await exportCsvOnline(doc, rowData, timestamp, header);
     } else {
-      await exportCsvLocal(rowData, header, validator_address, argv.output);
+      await exportCsvLocal(
+        rowData,
+        header,
+        validator_address,
+        staker_address,
+        argv.output,
+      );
     }
     await sleep(1500);
   }

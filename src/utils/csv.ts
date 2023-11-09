@@ -31,10 +31,13 @@ export const exportCsvOnline = async (
 export const exportCsvLocal = async (
   rowData: string[][],
   header,
-  address: string,
+  validator_address: string,
+  staker_address: string,
   oputput: string,
 ) => {
-  const output_csv = oputput || `output_csv/comission-reward-${address}.csv`;
+  const output_csv =
+    oputput ||
+    `output_csv/comission-reward-${validator_address}-${staker_address}.csv`;
   try {
     await writeFile(output_csv, Papa.unparse({ fields: header }));
   } catch (error) {
