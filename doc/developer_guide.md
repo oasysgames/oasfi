@@ -15,6 +15,6 @@ npm run compile
 
 * Executing the above six commands will generate the executable file locally. After that, you can...
 
-- watch [ユーザー向けガイド](./user_guide.md)
+- watch [UserGuide](./user_guide.md)
 
 
