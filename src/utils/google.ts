@@ -16,7 +16,7 @@ const INITIAL_MONTH = '202209';
 export const HEADER_FOR_COMMISSION_REWARD: string[] = [
   'epoch',
   'block',
-  'timestamp(UTC)',
+  'timestamp',
   'Total staked(OAS+SOAS+WOAS)',
   'Daily validator commission(OAS)',
 ];
@@ -24,7 +24,7 @@ export const HEADER_FOR_COMMISSION_REWARD: string[] = [
 export const HEADER_FOR_STAKING_REWARD: string[] = [
   'epoch',
   'block',
-  'timestamp(UTC)',
+  'timestamp',
   'Total staked(OAS+SOAS+WOAS)',
   'Staking reward(OAS)',
 ];
