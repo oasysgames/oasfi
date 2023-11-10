@@ -1,6 +1,7 @@
 import { Arguments, Argv } from 'yargs';
-import { processCorrectCsv } from '../excute/excuteCorrectCsv';
+import { main } from '../excute/excuteCorrectCsv';
 import { CorrectCsvArgs } from '../types';
+import { LogUtils } from '../utils/Logger';
 
 export const defineCorrectCsvCommand = (yargs: Argv) => {
   return yargs.options({
@@ -28,5 +29,11 @@ export const defineCorrectCsvCommand = (yargs: Argv) => {
 export const processCorrectCsvCommand = async (
   argv: Arguments<CorrectCsvArgs>,
 ) => {
-  await processCorrectCsv(argv);
+  try {
+    await main(argv);
+  } catch (error) {
+    const Logger = new LogUtils('logs', 'log-correctCsv/log-error.txt');
+    console.log(error);
+    Logger.log('error', `${error}`);
+  }
 };

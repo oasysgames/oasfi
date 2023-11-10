@@ -4,13 +4,8 @@ import {
   GoogleSpreadsheetWorksheet,
 } from 'google-spreadsheet';
 import { google } from 'googleapis';
-import {
-  OasPrices,
-  TimeData,
-  TotalStakeData,
-  ValidatorStake,
-} from './../types';
-import { getDate, getMonthDate, getTime } from './date';
+import { TotalStakeData } from './../types';
+import { getMonthDate } from './date';
 
 const SPREADSHEET_ID = process.env.SPREADSHEET_ID ?? '';
 // set service account info path when local development
@@ -18,14 +13,22 @@ const CREDENTIALS = process.env.GOOGLE_APPLICATION_CREDENTIALS;
 
 const INITIAL_MONTH = '202209';
 
-export const HEADER_FOR_GENERAL: string[] = [
+export const HEADER_FOR_COMMISSION_REWARD: string[] = [
   'epoch',
   'block',
   'timestamp(UTC)',
   'Total staked(OAS+SOAS+WOAS)',
   'Daily validator commission(OAS)',
+];
+
+export const HEADER_FOR_STAKING_REWARD: string[] = [
+  'epoch',
+  'block',
+  'timestamp(UTC)',
+  'Total staked(OAS+SOAS+WOAS)',
   'Staking reward(OAS)',
 ];
+
 export const DEFAULT_LIST_PRICE: string[] = [
   'Oas price(jpy)',
   'Oas price(usd)',
@@ -252,44 +255,4 @@ export const getLatestSheet = async (
   sheet = await doc.addSheet({ title, headerValues: header });
   await setHeaderWidth(sheet, header);
   return sheet;
-};
-
-export const getAdditionalData = (
-  oasPrices: OasPrices,
-  validatorStakes: ValidatorStake[],
-  timeData: TimeData,
-  price: string,
-): {
-  rowData: string[][];
-} => {
-  const { epoch, block, timestamp } = timeData;
-
-  const date = getDate(timestamp);
-  const time = getTime(timestamp);
-  let prices = [];
-  if (oasPrices) {
-    const jpy = oasPrices['jpy'] ?? '';
-    const usd = oasPrices['usd'] ?? '';
-    const krw = oasPrices['krw'] ?? '';
-    const eur = oasPrices['eur'] ?? '';
-    const sgd = oasPrices['sgd'] ?? '';
-    prices = price ? [oasPrices[price]] : [jpy, usd, krw, eur, sgd];
-  }
-
-  const rowData = validatorStakes.map((validatorStake: ValidatorStake) => {
-    const validatorTotalStake = validatorStake.totalStaked;
-    return [
-      epoch,
-      block,
-      `${date} ${time}`,
-      utils.formatEther(validatorTotalStake).toString(),
-      utils.formatEther(validatorStake.dailyCommission).toString(),
-      utils.formatEther(validatorStake.stakingReward).toString(),
-      ...prices,
-    ];
-  });
-
-  return {
-    rowData: rowData,
-  };
 };

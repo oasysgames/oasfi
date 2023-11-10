@@ -1,12 +1,13 @@
 import { BigNumber } from 'ethers';
 import { request } from 'graphql-request';
-import { ValidatorStake } from '../types';
+import { validatorTotalStake } from '../types';
 import { graphql } from './../gql/gql';
 import type {
   GetEpochByToTimeStampQueryVariables,
   GetEpochQueryVariables,
   GetEpochRewardsQuery,
   GetEpochRewardsQueryVariables,
+  GetStakingRewardQueryVariables,
   GetValidatorStakesQuery,
   GetValidatorStakesQueryVariables,
   GetValidatorsQueryVariables,
@@ -84,25 +85,29 @@ const GetValidators = graphql(`
   }
 `);
 
-const GetGraphValidatorStakes = graphql(`
+const GetValidatorStakes = graphql(`
   query GetValidatorStakes(
     $validator: ID!
-    $staker: String!
     $block: Int!
     $first: Int!
     $skip: Int!
   ) {
     validators(where: { id: $validator }, block: { number: $block }) {
-      stakes(where: { staker: $staker }, first: $first, skip: $skip) {
+      stakes(first: $first, skip: $skip) {
         oas
         soas
         woas
-        staker {
-          id
-        }
+      }
+    }
+  }
+`);
+
+const GetStakingReward = graphql(`
+  query GetStakingReward($validator: String!, $staker: ID!, $block: Int!) {
+    staker(id: $staker, block: { number: $block }) {
+      stakes(where: { validator: $validator }) {
         rewards
       }
-      totalStake
     }
   }
 `);
@@ -199,24 +204,18 @@ export class Subgraph {
     const data = await request(this.baseGraphUrl, GetValidators, variables);
     return data;
   };
-  public getValidatorStakes = async (
-    validator: string,
-    block: number,
-    staker: string,
-  ) => {
+  public getValidatorStakes = async (validator: string, block: number) => {
     const variables: GetValidatorStakesQueryVariables = {
       validator,
       block,
       skip: 0,
       first: 1000,
-      staker,
     };
 
     const validatorStakes: GetValidatorStakesQuery = {
       validators: [
         {
           stakes: [],
-          totalStake: 0,
         },
       ],
     };
@@ -224,24 +223,48 @@ export class Subgraph {
       variables.skip = variables.first * i;
       const data: any = await request(
         this.baseGraphUrl,
-        GetGraphValidatorStakes,
+        GetValidatorStakes,
         variables,
       );
 
       if (data.validators[0].stakes.length === 0) break; // All stake information already retrieved.
       validatorStakes.validators[0].stakes =
         validatorStakes.validators[0].stakes.concat(data.validators[0].stakes);
-
-      validatorStakes.validators[0].totalStake = data.validators[0].totalStake;
     }
     return validatorStakes;
   };
 
-  public statisticValidatorStake = async (
+  public getStakingReward = async (
+    block: number,
+    validator: string,
+    staker: string,
+  ): Promise<BigNumber> => {
+    const variables: GetStakingRewardQueryVariables = {
+      validator,
+      block,
+      staker,
+    };
+
+    const data: any = await request(
+      this.baseGraphUrl,
+      GetStakingReward,
+      variables,
+    );
+    let stakingReward = BigNumber.from('0');
+
+    if (data.staker.stakes.length === 0) {
+      return stakingReward;
+    }
+    data.staker.stakes.forEach((stake) => {
+      stakingReward = stakingReward.add(stake.rewards);
+    });
+    return stakingReward;
+  };
+
+  public getValidatorTotalStake = async (
     epoch: number,
     block: number,
     validator_address: string,
-    staker_address: string,
   ) => {
     const validators: any = await this.getValidators(block, validator_address);
 
@@ -264,7 +287,7 @@ export class Subgraph {
           throw new Error('Can not get validator total commission');
         }
 
-        const validatorStake: ValidatorStake = {
+        const validatorTotalStake: validatorTotalStake = {
           address: validatorAddress,
           oas: BigNumber.from('0'),
           soas: BigNumber.from('0'),
@@ -275,27 +298,33 @@ export class Subgraph {
               ? BigNumber.from(validatorEpochReward.commissions)
               : BigNumber.from('0'),
           totalCommission: BigNumber.from(validator.commissions),
-          stakingReward: BigNumber.from('0'),
-          totalStaked: BigNumber.from('0'),
         };
 
-        const data = await this.getValidatorStakes(
-          validatorAddress,
-          block,
-          staker_address,
-        );
+        const data = await this.getValidatorStakes(validatorAddress, block);
 
         data.validators[0].stakes.forEach((stake) => {
-          validatorStake.stakingReward = validatorStake.stakingReward.add(
-            BigNumber.from(stake.rewards),
-          );
+          if (
+            typeof stake.oas === 'string' &&
+            typeof stake.soas === 'string' &&
+            typeof stake.woas === 'string'
+          ) {
+            validatorTotalStake.oas = validatorTotalStake.oas.add(
+              BigNumber.from(stake.oas),
+            );
+            validatorTotalStake.soas = validatorTotalStake.soas.add(
+              BigNumber.from(stake.soas),
+            );
+            validatorTotalStake.woas = validatorTotalStake.woas.add(
+              BigNumber.from(stake.woas),
+            );
+          } else {
+            throw new Error(
+              'Can not get stake.oas or stake.soas or stake.woas',
+            );
+          }
         });
 
-        validatorStake.totalStaked = validatorStake.totalStaked.add(
-          BigNumber.from(data.validators[0].totalStake),
-        );
-
-        return validatorStake;
+        return validatorTotalStake;
       }),
     );
 

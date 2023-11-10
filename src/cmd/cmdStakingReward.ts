@@ -1,8 +1,9 @@
 import { Arguments, Argv } from 'yargs';
-import { processValidatorStake } from '../excute/excuteCalcValidatorStake';
-import { commissionRewardArgs } from '../types';
+import { main } from '../excute/excuteStakingReward';
+import { stakingRewardArgs } from '../types';
+import { LogUtils } from '../utils/Logger';
 
-export const defineValidatorStakeCommand = (yargs: Argv) => {
+export const defineStakingRewardCommand = (yargs: Argv) => {
   return yargs.options({
     validator_address: {
       description: 'validator address',
@@ -61,8 +62,14 @@ export const defineValidatorStakeCommand = (yargs: Argv) => {
   });
 };
 
-export const processValidatorStakeCommand = async (
-  argv: Arguments<commissionRewardArgs>,
+export const processStakingRewardCommand = async (
+  argv: Arguments<stakingRewardArgs>,
 ) => {
-  await processValidatorStake(argv);
+  try {
+    await main(argv);
+  } catch (error) {
+    const Logger = new LogUtils('logs', 'log-staking-reward/log-error.txt');
+    console.log(error);
+    Logger.log('error', `${error}`);
+  }
 };
