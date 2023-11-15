@@ -34,11 +34,11 @@ export const getEpoches = async (
     from = to - 31;
   }
 
-  if (argv.from_data) {
+  if (argv.from_date) {
     //specified timezone or local timezone
     const from_time = argv.time_zone
-      ? moment(argv.from_data).tz(argv.time_zone)
-      : moment(argv.from_data);
+      ? moment(argv.from_date).tz(argv.time_zone)
+      : moment(argv.from_date);
 
     const epochData = await subgraph.getEpochByFromTimestamp(
       from_time.utc().unix(),
@@ -49,10 +49,10 @@ export const getEpoches = async (
         : latestEpoch.epoches[0].epoch;
   }
 
-  if (argv.to_data) {
+  if (argv.to_date) {
     const to_time = argv.time_zone
-      ? moment(argv.to_data).tz(argv.time_zone)
-      : moment(argv.to_data);
+      ? moment(argv.to_date).tz(argv.time_zone)
+      : moment(argv.to_date);
 
     const epochData = await subgraph.getEpochByFromTimestamp(
       to_time.utc().unix(),
@@ -182,7 +182,7 @@ export const handleExport = async (
 
 export const getAdditionalDataForCommissionReward = (
   oasPrices: OasPrices,
-  stakeDate: validatorTotalStake[],
+  stakeData: validatorTotalStake[],
   timeData: TimeData,
   price: string,
 ): {
@@ -206,7 +206,7 @@ export const getAdditionalDataForCommissionReward = (
   let totalSoasStake = BigNumber.from('0');
   let totalWoasStake = BigNumber.from('0');
 
-  const rowData = stakeDate
+  const rowData = stakeData
     .filter((stake) => {
       const validatorTotalStake = stake.oas.add(stake.soas).add(stake.woas);
       return validatorTotalStake.gt(0);
@@ -240,7 +240,7 @@ export const getAdditionalDataForCommissionReward = (
 
 export const getAdditionalDataForStakingReward = (
   oasPrices: OasPrices,
-  stakeDate: validatorTotalStake[],
+  stakeData: validatorTotalStake[],
   timeData: TimeData,
   price: string,
   stakingReward: BigNumber,
@@ -259,21 +259,12 @@ export const getAdditionalDataForStakingReward = (
     prices = price ? [oasPrices[price]] : [jpy, usd, krw, eur, sgd];
   }
 
-  let totalStake = BigNumber.from('0');
-  let totalOasStake = BigNumber.from('0');
-  let totalSoasStake = BigNumber.from('0');
-  let totalWoasStake = BigNumber.from('0');
-
-  const rowData = stakeDate
+  const rowData = stakeData
     .filter((stake) => {
       const validatorTotalStake = stake.oas.add(stake.soas).add(stake.woas);
       return validatorTotalStake.gt(0);
     })
     .map((stake) => {
-      totalStake = totalStake.add(stake.oas).add(stake.soas).add(stake.woas);
-      totalOasStake = totalOasStake.add(stake.oas);
-      totalSoasStake = totalSoasStake.add(stake.soas);
-      totalWoasStake = totalWoasStake.add(stake.woas);
       const validatorTotalStake = stake.oas.add(stake.soas).add(stake.woas);
       return [
         epoch,

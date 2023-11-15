@@ -82,13 +82,13 @@ export COINGECKO_API_KEY=xx
 
 ### optional command:  
 
-#### from_data, to_data
+#### from_date, to_date
 
-* --from_data、--to_dataを指定することで特定の期間のデータを取得するのに役立ちます。
+* --from_date、--to_dateを指定することで特定の期間のデータを取得するのに役立ちます。
 * デフォルトはローカルタイムゾーンで、タイムゾーンを変更する場合は、--time_zone=timezone を使用できます。
 
 ```bash
-./oasfi-linux  export-commission-reward 0x272d6bd040c2b8454f4f6f43115758fbe318ee2c -c=hub_mainnet --from_data=2023-08-16T10:00:00 --to_data=2023-10-16T10:00:00
+./oasfi-linux  export-commission-reward 0x272d6bd040c2b8454f4f6f43115758fbe318ee2c -c=hub_mainnet --from_date=2023-08-16T10:00:00 --to_date=2023-10-16T10:00:00
 ```
 
 #### --price

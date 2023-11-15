@@ -15,18 +15,22 @@ import { Subgraph } from '../utils/subgraph';
 
 export const main = async (argv: commissionRewardArgs) => {
   const subgraph = new Subgraph(argv.chain);
+  //set the address to lowercase
   const validator_address = argv.validator_address?.toLocaleLowerCase();
+  //header for staking reward
   let header: string[] = HEADER_FOR_COMMISSION_REWARD;
+  //if API_KEY exists and price option exists => export that price otherwise export default price
 
   if (process.env.COINGECKO_API_KEY) {
     header = argv.price
       ? [...header, 'Oas price']
       : [...header, ...DEFAULT_LIST_PRICE];
   }
+  //get the list of epochs based on the passed options
   const epoches = await getEpoches(argv, subgraph);
 
-  const loopAsync = generateNumberArray(epoches.from, epoches.to);
-
+  const loopAsync: number[] = generateNumberArray(epoches.from, epoches.to);
+  //fetch data per epoch
   const data = await Promise.all(
     loopAsync.map(async (i: number) => {
       console.log('RUNNING EPOCH ', i);
@@ -49,10 +53,11 @@ export const main = async (argv: commissionRewardArgs) => {
       if (!block) throw new Error('Can not get block data');
 
       //get price by time UTC
+      //get oas price per epoch
       const oasPrices =
         process.env.COINGECKO_API_KEY &&
         (await getOasPricesForEpoch(argv, epochData));
-
+      //get totalStake of validator
       const validatorStake = await subgraph.getValidatorTotalStake(
         parseInt(epoch, 10),
         parseInt(block, 10),
@@ -68,6 +73,7 @@ export const main = async (argv: commissionRewardArgs) => {
         timestamp,
       };
 
+      //format data
       const { rowData } = getAdditionalDataForCommissionReward(
         oasPrices,
         validatorStake,
@@ -80,7 +86,9 @@ export const main = async (argv: commissionRewardArgs) => {
       };
     }),
   );
+  //fileName is exported
   const fileName = `comission-reward-${argv.validator_address}`;
+
   await handleExport(
     data,
     Boolean(argv.export_csv_online),

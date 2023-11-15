@@ -1,7 +1,7 @@
 import { Arguments, Argv } from 'yargs';
-import { main } from '../excute/excuteCorrectCsv';
 import { CorrectCsvArgs } from '../types';
 import { LogUtils } from '../utils/Logger';
+import { main } from '../execute/executeCorrectCsv';
 
 export const defineCorrectCsvCommand = (yargs: Argv) => {
   return yargs.options({

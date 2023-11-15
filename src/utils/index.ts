@@ -2,7 +2,7 @@ export function sleep(ms: number) {
   return new Promise((resolve) => setTimeout(resolve, ms));
 }
 
-export function generateNumberArray(from: number, to: number) {
+export function generateNumberArray(from: number, to: number): number[] {
   const array = [];
   for (let i = from; i <= to; i++) {
     array.push(i);

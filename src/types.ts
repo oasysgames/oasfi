@@ -37,8 +37,8 @@ export interface commissionRewardArgs {
   chain: string;
   from_epoch: number;
   to_epoch: number;
-  from_data: string;
-  to_data: string;
+  from_date: string;
+  to_date: string;
   price_time: string;
   time_zone: string;
   price: string;
@@ -52,8 +52,8 @@ export interface stakingRewardArgs {
   chain: string;
   from_epoch: number;
   to_epoch: number;
-  from_data: string;
-  to_data: string;
+  from_date: string;
+  to_date: string;
   price_time: string;
   time_zone: string;
   price: string;

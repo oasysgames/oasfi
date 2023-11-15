@@ -1,7 +1,7 @@
 import { Arguments, Argv } from 'yargs';
-import { main } from '../excute/excuteCommissionReward';
 import { commissionRewardArgs } from '../types';
 import { LogUtils } from '../utils/Logger';
+import { main } from '../execute/executeCommissionReward';
 
 export const defineCommissionRewardCommand = (yargs: Argv) => {
   return yargs.options({
@@ -25,11 +25,11 @@ export const defineCommissionRewardCommand = (yargs: Argv) => {
       type: 'number',
       description: 'to epoch',
     },
-    from_data: {
+    from_date: {
       type: 'string',
       description: 'from datetime YYYY-MM-DDTHH:MM:SS',
     },
-    to_data: {
+    to_date: {
       type: 'string',
       description: 'to datetime YYYY-MM-DDTHH:MM:SS',
     },

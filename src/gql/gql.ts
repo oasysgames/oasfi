@@ -13,14 +13,22 @@ import { TypedDocumentNode as DocumentNode } from '@graphql-typed-document-node/
  * Therefore it is highly recommended to use the babel-plugin for production.
  */
 const documents = {
-    "\n  query GetEpoch($epoch: BigInt!) {\n    epoches(where: { epoch: $epoch }) {\n      epoch\n      block\n      timestamp\n    }\n  }\n": types.GetEpochDocument,
-    "\n  query GetEpochByFromTimeStamp($timestamp: BigInt!) {\n    epoches(\n      where: { timestamp_gte: $timestamp }\n      orderBy: timestamp\n      orderDirection: asc\n      first: 1\n    ) {\n      epoch\n      block\n      timestamp\n    }\n  }\n": types.GetEpochByFromTimeStampDocument,
-    "\n  query GetEpochByToTimeStamp($timestamp: BigInt!) {\n    epoches(\n      where: { timestamp_lte: $timestamp }\n      orderBy: timestamp\n      orderDirection: desc\n      first: 1\n    ) {\n      epoch\n      block\n      timestamp\n    }\n  }\n": types.GetEpochByToTimeStampDocument,
-    "\n  query GetLatestEpoch {\n    epoches(first: 1, orderBy: epoch, orderDirection: desc) {\n      epoch\n      block\n      timestamp\n    }\n  }\n": types.GetLatestEpochDocument,
-    "\n  query GetEpochRewards($epoch: BigInt!, $first: Int!, $skip: Int!) {\n    epochRewards(where: { epoch: $epoch }, first: $first, skip: $skip) {\n      epoch\n      address\n      commissions\n      rewards\n    }\n  }\n": types.GetEpochRewardsDocument,
-    "\n  query GetValidators($block: Int!, $validator: ID!) {\n    validators(\n      orderBy: id\n      first: 1000\n      block: { number: $block }\n      where: { id: $validator }\n    ) {\n      id\n      commissions\n    }\n  }\n": types.GetValidatorsDocument,
-    "\n  query GetValidatorStakes(\n    $validator: ID!\n    $block: Int!\n    $first: Int!\n    $skip: Int!\n  ) {\n    validators(where: { id: $validator }, block: { number: $block }) {\n      stakes(first: $first, skip: $skip) {\n        oas\n        soas\n        woas\n      }\n    }\n  }\n": types.GetValidatorStakesDocument,
-    "\n  query GetStakingReward($validator: String!, $staker: ID!, $block: Int!) {\n    staker(id: $staker, block: { number: $block }) {\n      stakes(where: { validator: $validator }) {\n        rewards\n      }\n    }\n  }\n": types.GetStakingRewardDocument,
+  '\n  query GetEpoch($epoch: BigInt!) {\n    epoches(where: { epoch: $epoch }) {\n      epoch\n      block\n      timestamp\n    }\n  }\n':
+    types.GetEpochDocument,
+  '\n  query GetEpochByFromTimeStamp($timestamp: BigInt!) {\n    epoches(\n      where: { timestamp_gte: $timestamp }\n      orderBy: timestamp\n      orderDirection: asc\n      first: 1\n    ) {\n      epoch\n      block\n      timestamp\n    }\n  }\n':
+    types.GetEpochByFromTimeStampDocument,
+  '\n  query GetEpochByToTimeStamp($timestamp: BigInt!) {\n    epoches(\n      where: { timestamp_lte: $timestamp }\n      orderBy: timestamp\n      orderDirection: desc\n      first: 1\n    ) {\n      epoch\n      block\n      timestamp\n    }\n  }\n':
+    types.GetEpochByToTimeStampDocument,
+  '\n  query GetLatestEpoch {\n    epoches(first: 1, orderBy: epoch, orderDirection: desc) {\n      epoch\n      block\n      timestamp\n    }\n  }\n':
+    types.GetLatestEpochDocument,
+  '\n  query GetEpochRewards($epoch: BigInt!, $first: Int!, $skip: Int!) {\n    epochRewards(where: { epoch: $epoch }, first: $first, skip: $skip) {\n      epoch\n      address\n      commissions\n      rewards\n    }\n  }\n':
+    types.GetEpochRewardsDocument,
+  '\n  query GetValidators($block: Int!, $validator: ID!) {\n    validators(\n      orderBy: id\n      first: 1000\n      block: { number: $block }\n      where: { id: $validator }\n    ) {\n      id\n      commissions\n    }\n  }\n':
+    types.GetValidatorsDocument,
+  '\n  query GetValidatorStakes(\n    $validator: ID!\n    $block: Int!\n    $first: Int!\n    $skip: Int!\n  ) {\n    validators(where: { id: $validator }, block: { number: $block }) {\n      stakes(first: $first, skip: $skip) {\n        oas\n        soas\n        woas\n      }\n    }\n  }\n':
+    types.GetValidatorStakesDocument,
+  '\n  query GetStakingReward($validator: String!, $staker: ID!, $block: Int!) {\n    staker(id: $staker, block: { number: $block }) {\n      stakes(where: { validator: $validator }) {\n        rewards\n      }\n    }\n  }\n':
+    types.GetStakingRewardDocument,
 };
 
 /**
@@ -40,38 +48,55 @@ export function graphql(source: string): unknown;
 /**
  * The graphql function is used to parse GraphQL queries into a document that can be used by GraphQL clients.
  */
-export function graphql(source: "\n  query GetEpoch($epoch: BigInt!) {\n    epoches(where: { epoch: $epoch }) {\n      epoch\n      block\n      timestamp\n    }\n  }\n"): (typeof documents)["\n  query GetEpoch($epoch: BigInt!) {\n    epoches(where: { epoch: $epoch }) {\n      epoch\n      block\n      timestamp\n    }\n  }\n"];
+export function graphql(
+  source: '\n  query GetEpoch($epoch: BigInt!) {\n    epoches(where: { epoch: $epoch }) {\n      epoch\n      block\n      timestamp\n    }\n  }\n',
+): (typeof documents)['\n  query GetEpoch($epoch: BigInt!) {\n    epoches(where: { epoch: $epoch }) {\n      epoch\n      block\n      timestamp\n    }\n  }\n'];
 /**
  * The graphql function is used to parse GraphQL queries into a document that can be used by GraphQL clients.
  */
-export function graphql(source: "\n  query GetEpochByFromTimeStamp($timestamp: BigInt!) {\n    epoches(\n      where: { timestamp_gte: $timestamp }\n      orderBy: timestamp\n      orderDirection: asc\n      first: 1\n    ) {\n      epoch\n      block\n      timestamp\n    }\n  }\n"): (typeof documents)["\n  query GetEpochByFromTimeStamp($timestamp: BigInt!) {\n    epoches(\n      where: { timestamp_gte: $timestamp }\n      orderBy: timestamp\n      orderDirection: asc\n      first: 1\n    ) {\n      epoch\n      block\n      timestamp\n    }\n  }\n"];
+export function graphql(
+  source: '\n  query GetEpochByFromTimeStamp($timestamp: BigInt!) {\n    epoches(\n      where: { timestamp_gte: $timestamp }\n      orderBy: timestamp\n      orderDirection: asc\n      first: 1\n    ) {\n      epoch\n      block\n      timestamp\n    }\n  }\n',
+): (typeof documents)['\n  query GetEpochByFromTimeStamp($timestamp: BigInt!) {\n    epoches(\n      where: { timestamp_gte: $timestamp }\n      orderBy: timestamp\n      orderDirection: asc\n      first: 1\n    ) {\n      epoch\n      block\n      timestamp\n    }\n  }\n'];
 /**
  * The graphql function is used to parse GraphQL queries into a document that can be used by GraphQL clients.
  */
-export function graphql(source: "\n  query GetEpochByToTimeStamp($timestamp: BigInt!) {\n    epoches(\n      where: { timestamp_lte: $timestamp }\n      orderBy: timestamp\n      orderDirection: desc\n      first: 1\n    ) {\n      epoch\n      block\n      timestamp\n    }\n  }\n"): (typeof documents)["\n  query GetEpochByToTimeStamp($timestamp: BigInt!) {\n    epoches(\n      where: { timestamp_lte: $timestamp }\n      orderBy: timestamp\n      orderDirection: desc\n      first: 1\n    ) {\n      epoch\n      block\n      timestamp\n    }\n  }\n"];
+export function graphql(
+  source: '\n  query GetEpochByToTimeStamp($timestamp: BigInt!) {\n    epoches(\n      where: { timestamp_lte: $timestamp }\n      orderBy: timestamp\n      orderDirection: desc\n      first: 1\n    ) {\n      epoch\n      block\n      timestamp\n    }\n  }\n',
+): (typeof documents)['\n  query GetEpochByToTimeStamp($timestamp: BigInt!) {\n    epoches(\n      where: { timestamp_lte: $timestamp }\n      orderBy: timestamp\n      orderDirection: desc\n      first: 1\n    ) {\n      epoch\n      block\n      timestamp\n    }\n  }\n'];
 /**
  * The graphql function is used to parse GraphQL queries into a document that can be used by GraphQL clients.
  */
-export function graphql(source: "\n  query GetLatestEpoch {\n    epoches(first: 1, orderBy: epoch, orderDirection: desc) {\n      epoch\n      block\n      timestamp\n    }\n  }\n"): (typeof documents)["\n  query GetLatestEpoch {\n    epoches(first: 1, orderBy: epoch, orderDirection: desc) {\n      epoch\n      block\n      timestamp\n    }\n  }\n"];
+export function graphql(
+  source: '\n  query GetLatestEpoch {\n    epoches(first: 1, orderBy: epoch, orderDirection: desc) {\n      epoch\n      block\n      timestamp\n    }\n  }\n',
+): (typeof documents)['\n  query GetLatestEpoch {\n    epoches(first: 1, orderBy: epoch, orderDirection: desc) {\n      epoch\n      block\n      timestamp\n    }\n  }\n'];
 /**
  * The graphql function is used to parse GraphQL queries into a document that can be used by GraphQL clients.
  */
-export function graphql(source: "\n  query GetEpochRewards($epoch: BigInt!, $first: Int!, $skip: Int!) {\n    epochRewards(where: { epoch: $epoch }, first: $first, skip: $skip) {\n      epoch\n      address\n      commissions\n      rewards\n    }\n  }\n"): (typeof documents)["\n  query GetEpochRewards($epoch: BigInt!, $first: Int!, $skip: Int!) {\n    epochRewards(where: { epoch: $epoch }, first: $first, skip: $skip) {\n      epoch\n      address\n      commissions\n      rewards\n    }\n  }\n"];
+export function graphql(
+  source: '\n  query GetEpochRewards($epoch: BigInt!, $first: Int!, $skip: Int!) {\n    epochRewards(where: { epoch: $epoch }, first: $first, skip: $skip) {\n      epoch\n      address\n      commissions\n      rewards\n    }\n  }\n',
+): (typeof documents)['\n  query GetEpochRewards($epoch: BigInt!, $first: Int!, $skip: Int!) {\n    epochRewards(where: { epoch: $epoch }, first: $first, skip: $skip) {\n      epoch\n      address\n      commissions\n      rewards\n    }\n  }\n'];
 /**
  * The graphql function is used to parse GraphQL queries into a document that can be used by GraphQL clients.
  */
-export function graphql(source: "\n  query GetValidators($block: Int!, $validator: ID!) {\n    validators(\n      orderBy: id\n      first: 1000\n      block: { number: $block }\n      where: { id: $validator }\n    ) {\n      id\n      commissions\n    }\n  }\n"): (typeof documents)["\n  query GetValidators($block: Int!, $validator: ID!) {\n    validators(\n      orderBy: id\n      first: 1000\n      block: { number: $block }\n      where: { id: $validator }\n    ) {\n      id\n      commissions\n    }\n  }\n"];
+export function graphql(
+  source: '\n  query GetValidators($block: Int!, $validator: ID!) {\n    validators(\n      orderBy: id\n      first: 1000\n      block: { number: $block }\n      where: { id: $validator }\n    ) {\n      id\n      commissions\n    }\n  }\n',
+): (typeof documents)['\n  query GetValidators($block: Int!, $validator: ID!) {\n    validators(\n      orderBy: id\n      first: 1000\n      block: { number: $block }\n      where: { id: $validator }\n    ) {\n      id\n      commissions\n    }\n  }\n'];
 /**
  * The graphql function is used to parse GraphQL queries into a document that can be used by GraphQL clients.
  */
-export function graphql(source: "\n  query GetValidatorStakes(\n    $validator: ID!\n    $block: Int!\n    $first: Int!\n    $skip: Int!\n  ) {\n    validators(where: { id: $validator }, block: { number: $block }) {\n      stakes(first: $first, skip: $skip) {\n        oas\n        soas\n        woas\n      }\n    }\n  }\n"): (typeof documents)["\n  query GetValidatorStakes(\n    $validator: ID!\n    $block: Int!\n    $first: Int!\n    $skip: Int!\n  ) {\n    validators(where: { id: $validator }, block: { number: $block }) {\n      stakes(first: $first, skip: $skip) {\n        oas\n        soas\n        woas\n      }\n    }\n  }\n"];
+export function graphql(
+  source: '\n  query GetValidatorStakes(\n    $validator: ID!\n    $block: Int!\n    $first: Int!\n    $skip: Int!\n  ) {\n    validators(where: { id: $validator }, block: { number: $block }) {\n      stakes(first: $first, skip: $skip) {\n        oas\n        soas\n        woas\n      }\n    }\n  }\n',
+): (typeof documents)['\n  query GetValidatorStakes(\n    $validator: ID!\n    $block: Int!\n    $first: Int!\n    $skip: Int!\n  ) {\n    validators(where: { id: $validator }, block: { number: $block }) {\n      stakes(first: $first, skip: $skip) {\n        oas\n        soas\n        woas\n      }\n    }\n  }\n'];
 /**
  * The graphql function is used to parse GraphQL queries into a document that can be used by GraphQL clients.
  */
-export function graphql(source: "\n  query GetStakingReward($validator: String!, $staker: ID!, $block: Int!) {\n    staker(id: $staker, block: { number: $block }) {\n      stakes(where: { validator: $validator }) {\n        rewards\n      }\n    }\n  }\n"): (typeof documents)["\n  query GetStakingReward($validator: String!, $staker: ID!, $block: Int!) {\n    staker(id: $staker, block: { number: $block }) {\n      stakes(where: { validator: $validator }) {\n        rewards\n      }\n    }\n  }\n"];
+export function graphql(
+  source: '\n  query GetStakingReward($validator: String!, $staker: ID!, $block: Int!) {\n    staker(id: $staker, block: { number: $block }) {\n      stakes(where: { validator: $validator }) {\n        rewards\n      }\n    }\n  }\n',
+): (typeof documents)['\n  query GetStakingReward($validator: String!, $staker: ID!, $block: Int!) {\n    staker(id: $staker, block: { number: $block }) {\n      stakes(where: { validator: $validator }) {\n        rewards\n      }\n    }\n  }\n'];
 
 export function graphql(source: string) {
   return (documents as any)[source] ?? {};
 }
 
-export type DocumentType<TDocumentNode extends DocumentNode<any, any>> = TDocumentNode extends DocumentNode<  infer TType,  any>  ? TType  : never;
+export type DocumentType<TDocumentNode extends DocumentNode<any, any>> =
+  TDocumentNode extends DocumentNode<infer TType, any> ? TType : never;
