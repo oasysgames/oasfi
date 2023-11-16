@@ -1,24 +1,24 @@
 import moment = require('moment-timezone');
 import { GoogleSpreadsheet } from 'google-spreadsheet';
 import {
-  getAdditionalDataForStakingReward,
+  getAdditionalDataForStakerReward,
   getEpoches,
   getOasPricesForEpoch,
   handleExport,
 } from '../module/ValidatorStake';
-import { stakingRewardArgs } from '../types';
+import { stakerRewardArgs } from '../types';
 import { generateNumberArray } from '../utils';
 import {
   DEFAULT_LIST_PRICE,
-  HEADER_FOR_STAKING_REWARD,
+  HEADER_FOR_STAKER_REWARD,
   getSpreadSheet,
 } from '../utils/google';
 import { Subgraph } from '../utils/subgraph';
 
-export const main = async (argv: stakingRewardArgs) => {
+export const main = async (argv: stakerRewardArgs) => {
   const subgraph = new Subgraph(argv.chain);
-  //header for staking reward
-  let header: string[] = HEADER_FOR_STAKING_REWARD;
+  //header for staker reward
+  let header: string[] = HEADER_FOR_STAKER_REWARD;
 
   //set the address to lowercase
   const validator_address = argv.validator_address?.toLocaleLowerCase();
@@ -82,20 +82,20 @@ export const main = async (argv: stakingRewardArgs) => {
         block,
         timestamp,
       };
-      //get stakingReward of staker  by validator
-      const stakingReward = await subgraph.getStakingReward(
+      //get stakerReward of staker  by validator
+      const stakerReward = await subgraph.getStakerReward(
         parseInt(block, 10),
         validator_address,
         staker_address,
       );
 
       //format data
-      const { rowData } = getAdditionalDataForStakingReward(
+      const { rowData } = getAdditionalDataForStakerReward(
         oasPrices,
         validatorStake,
         timeData,
         argv.price,
-        stakingReward,
+        stakerReward,
       );
       return {
         rowData,
@@ -104,7 +104,7 @@ export const main = async (argv: stakingRewardArgs) => {
     }),
   );
   //fileName is exported
-  const fileName = `staking-reward-${argv.staker_address}`;
+  const fileName = `staker-reward-${argv.staker_address}`;
   await handleExport(
     data,
     Boolean(argv.export_csv_online),

@@ -11,9 +11,10 @@ import {
   processCorrectCsvCommand,
 } from './cmd/cmdCorrectCsv';
 import {
-  defineStakingRewardCommand,
-  processStakingRewardCommand,
-} from './cmd/cmdStakingReward';
+  defineStakerRewardCommand,
+  processStakerRewardCommand,
+} from './cmd/cmdStakerReward';
+
 void yargs(hideBin(process.argv))
   .usage('<command>  [OPTIONS]')
   .help('help')
@@ -33,10 +34,10 @@ void yargs(hideBin(process.argv))
     processCommissionRewardCommand,
   )
   .command(
-    'export-staking-reward [validator_address] [staker_address]',
-    'Export staking reward',
-    defineStakingRewardCommand,
-    processStakingRewardCommand,
+    'export-staker-reward [validator_address] [staker_address]',
+    'Export staker reward',
+    defineStakerRewardCommand,
+    processStakerRewardCommand,
   )
 
   .help().argv;

@@ -7,7 +7,7 @@ import type {
   GetEpochQueryVariables,
   GetEpochRewardsQuery,
   GetEpochRewardsQueryVariables,
-  GetStakingRewardQueryVariables,
+  GetStakerRewardQueryVariables,
   GetValidatorStakesQuery,
   GetValidatorStakesQueryVariables,
   GetValidatorsQueryVariables,
@@ -102,8 +102,8 @@ const GetValidatorStakes = graphql(`
   }
 `);
 
-const GetStakingReward = graphql(`
-  query GetStakingReward($validator: String!, $staker: ID!, $block: Int!) {
+const GetStakerReward = graphql(`
+  query GetStakerReward($validator: String!, $staker: ID!, $block: Int!) {
     staker(id: $staker, block: { number: $block }) {
       stakes(where: { validator: $validator }) {
         rewards
@@ -234,12 +234,12 @@ export class Subgraph {
     return validatorStakes;
   };
 
-  public getStakingReward = async (
+  public getStakerReward = async (
     block: number,
     validator: string,
     staker: string,
   ): Promise<BigNumber> => {
-    const variables: GetStakingRewardQueryVariables = {
+    const variables: GetStakerRewardQueryVariables = {
       validator,
       block,
       staker,
@@ -247,18 +247,18 @@ export class Subgraph {
 
     const data: any = await request(
       this.baseGraphUrl,
-      GetStakingReward,
+      GetStakerReward,
       variables,
     );
-    let stakingReward = BigNumber.from('0');
+    let stakerReward = BigNumber.from('0');
 
     if (data.staker.stakes.length === 0) {
-      return stakingReward;
+      return stakerReward;
     }
     data.staker.stakes.forEach((stake) => {
-      stakingReward = stakingReward.add(stake.rewards);
+      stakerReward = stakerReward.add(stake.rewards);
     });
-    return stakingReward;
+    return stakerReward;
   };
 
   public getValidatorTotalStake = async (

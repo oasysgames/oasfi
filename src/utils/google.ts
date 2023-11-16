@@ -17,12 +17,12 @@ export const HEADER_FOR_COMMISSION_REWARD: string[] = [
   'Daily validator commission(OAS)',
 ];
 
-export const HEADER_FOR_STAKING_REWARD: string[] = [
+export const HEADER_FOR_STAKER_REWARD: string[] = [
   'epoch',
   'block',
   'timestamp',
   'Total staked(OAS+SOAS+WOAS)',
-  'Staking reward(OAS)',
+  'Staker reward(OAS)',
 ];
 
 export const DEFAULT_LIST_PRICE: string[] = [

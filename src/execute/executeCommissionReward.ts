@@ -17,7 +17,7 @@ export const main = async (argv: commissionRewardArgs) => {
   const subgraph = new Subgraph(argv.chain);
   //set the address to lowercase
   const validator_address = argv.validator_address?.toLocaleLowerCase();
-  //header for staking reward
+  //header for staker reward
   let header: string[] = HEADER_FOR_COMMISSION_REWARD;
   //if API_KEY exists and price option exists => export that price otherwise export default price
 

@@ -238,12 +238,12 @@ export const getAdditionalDataForCommissionReward = (
   };
 };
 
-export const getAdditionalDataForStakingReward = (
+export const getAdditionalDataForStakerReward = (
   oasPrices: OasPrices,
   stakeData: validatorTotalStake[],
   timeData: TimeData,
   price: string,
-  stakingReward: BigNumber,
+  stakerReward: BigNumber,
 ): {
   rowData: string[][];
 } => {
@@ -271,7 +271,7 @@ export const getAdditionalDataForStakingReward = (
         block,
         timestamp.format('YYYY-MM-DD HH:mm:ss'),
         utils.formatEther(validatorTotalStake).toString(),
-        utils.formatEther(stakingReward).toString(),
+        utils.formatEther(stakerReward).toString(),
         ...prices,
       ];
     });

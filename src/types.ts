@@ -46,7 +46,7 @@ export interface commissionRewardArgs {
   output: string;
 }
 
-export interface stakingRewardArgs {
+export interface stakerRewardArgs {
   validator_address: string;
   staker_address: string;
   chain: string;
