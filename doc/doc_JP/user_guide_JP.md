@@ -153,22 +153,10 @@ export GOOGLE_APPLICATION_CREDENTIALS=xx
 * https://docs.biztex.co.jp/cobit-docs/google_spreadsheet_settings/for_serviceaccount.html
 
 
-
-
-
-
-
-
-
-
-
-
-
-
 ## export-staker-rewardスクリプト
 
 * 特定のaddressのcommision rewardによって生じたお金の記録を出力するスクリプトです。
-* アドレスとして、Validator Ownerキーを指定する必要があります
+* アドレスとして、Validator OwnerキーとStaker Ownerキーを指定する必要があります。
   * Validator Ownerキーについて https://docs.oasys.games/docs/architecture/hub-layer/validator-account#validator-owner
 
 * OASトークンの価格を出力したい場合はCOINGECKOのAPIキーを取得して、以下のコマンドを実行します。(APIキーはcoingeckoと各自が契約してユーザー自身が取得してください)
@@ -265,7 +253,7 @@ export GOOGLE_APPLICATION_CREDENTIALS=xx
 #### --output
 
 * 出力するファイル先を指定
-* デフォルトはcommision-reward-(address).csv
+* デフォルトはstaker-reward-(address).csv
 
 ```bash
  ./oasfi-linux  export-staker-reward validator_address staker_address -c=hub_mainnet -o=output.csv
@@ -281,15 +269,3 @@ export GOOGLE_APPLICATION_CREDENTIALS=xx
 * GOOGLE_APPLICATION_CREDENTIALSの環境変数を取得するために使用
 * https://firebase.google.com/docs/app-distribution/authenticate-service-account?hl=ja&platform=ios
 * https://docs.biztex.co.jp/cobit-docs/google_spreadsheet_settings/for_serviceaccount.html
-
-
-
-
-
-
-
-
-
-
-
-
