@@ -3,9 +3,9 @@
 import yargs from 'yargs';
 import { hideBin } from 'yargs/helpers';
 import {
-  defineCommissionRewardCommand,
-  processCommissionRewardCommand,
-} from './cmd/cmdCommissionReward';
+  defineValidatorRewardCommand,
+  processValidatorRewardCommand,
+} from './cmd/cmdValidatorReward';
 import {
   defineCorrectCsvCommand,
   processCorrectCsvCommand,
@@ -28,10 +28,10 @@ void yargs(hideBin(process.argv))
     processCorrectCsvCommand,
   )
   .command(
-    'export-commission-reward [validator_address]',
-    'Export commission reward',
-    defineCommissionRewardCommand,
-    processCommissionRewardCommand,
+    'export-validator-reward [validator_address]',
+    'Export validator reward',
+    defineValidatorRewardCommand,
+    processValidatorRewardCommand,
   )
   .command(
     'export-staker-reward [validator_address] [staker_address]',

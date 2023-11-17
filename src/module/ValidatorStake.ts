@@ -9,7 +9,7 @@ import {
   OasPrices,
   TimeData,
   TotalStakeData,
-  commissionRewardArgs,
+  validatorRewardArgs,
   validatorTotalStake,
 } from '../types';
 import { sleep } from '../utils';
@@ -19,7 +19,7 @@ import { getDataSheet, getSpreadSheet } from '../utils/google';
 import { Subgraph } from '../utils/subgraph';
 
 export const getEpoches = async (
-  argv: commissionRewardArgs,
+  argv: validatorRewardArgs,
   subgraph: Subgraph,
 ) => {
   const latestEpoch = await subgraph.getLatestEpoch();

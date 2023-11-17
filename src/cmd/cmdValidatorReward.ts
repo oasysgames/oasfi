@@ -1,9 +1,9 @@
 import { Arguments, Argv } from 'yargs';
-import { commissionRewardArgs } from '../types';
+import { validatorRewardArgs } from '../types';
 import { LogUtils } from '../utils/Logger';
-import { main } from '../execute/executeCommissionReward';
+import { main } from '../execute/executeValidatorReward';
 
-export const defineCommissionRewardCommand = (yargs: Argv) => {
+export const defineValidatorRewardCommand = (yargs: Argv) => {
   return yargs.options({
     validator_address: {
       description: 'validator address',
@@ -56,13 +56,13 @@ export const defineCommissionRewardCommand = (yargs: Argv) => {
   });
 };
 
-export const processCommissionRewardCommand = async (
-  argv: Arguments<commissionRewardArgs>,
+export const processValidatorRewardCommand = async (
+  argv: Arguments<validatorRewardArgs>,
 ) => {
   try {
     await main(argv);
   } catch (error) {
-    const Logger = new LogUtils('logs', 'log-commission/log-error.txt');
+    const Logger = new LogUtils('logs', 'log-validator/log-error.txt');
     console.log(error);
     Logger.log('error', `${error}`);
   }

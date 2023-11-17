@@ -32,7 +32,7 @@ export interface CorrectCsvArgs {
   chain: string;
 }
 
-export interface commissionRewardArgs {
+export interface validatorRewardArgs {
   validator_address: string;
   chain: string;
   from_epoch: number;

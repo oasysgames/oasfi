@@ -9,7 +9,7 @@ const SPREADSHEET_ID = process.env.SPREADSHEET_ID ?? '';
 // set service account info path when local development
 const CREDENTIALS = process.env.GOOGLE_APPLICATION_CREDENTIALS;
 
-export const HEADER_FOR_COMMISSION_REWARD: string[] = [
+export const HEADER_FOR_VALIDATOR_REWARD: string[] = [
   'epoch',
   'block',
   'timestamp',
