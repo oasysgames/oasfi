@@ -179,9 +179,8 @@ export GOOGLE_APPLICATION_CREDENTIALS=xx
   * about Validator Owner key https://docs.oasys.games/docs/architecture/hub-layer/validator-account#validator-owner
 * To retrieve the price of the OAS token, you need to obtain an API key from CoinGecko and execute the following command. (Please note that you should contract with CoinGecko and obtain the API key yourself.)
 
-* staker reward (9%)
-* validator reward (1%)
-* staker reward + validator reward = staking reward (10%)
+* The APY (Annual Percentage Yield) is 10%, with a breakdown of 90% for staker rewards and 10% for validator rewards.
+
 
 ```bash
 export COINGECKO_API_KEY=xx

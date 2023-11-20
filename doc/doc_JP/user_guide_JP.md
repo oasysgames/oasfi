@@ -161,9 +161,7 @@ export GOOGLE_APPLICATION_CREDENTIALS=xx
 
 * OASトークンの価格を出力したい場合はCOINGECKOのAPIキーを取得して、以下のコマンドを実行します。(APIキーはcoingeckoと各自が契約してユーザー自身が取得してください)
 
-* staker reward (9%)
-* validator reward (1%)
-* staker reward + validator reward = staking reward (10%)
+* APY(stakingした時の年間金利)は10%で、その内訳としては、staker reward(90%)とvalidator reward(10%)である
 
 ```bash
 export COINGECKO_API_KEY=xx
