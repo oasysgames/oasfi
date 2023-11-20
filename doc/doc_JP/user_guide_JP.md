@@ -42,7 +42,7 @@ blockscout v5から取得されるtoken transferのデータに誤りがあり�
 
 ## export-validator-rewardスクリプト
 
-* 特定のaddressのcommision rewardによって生じたお金の記録を出力するスクリプトです。
+* 特定のaddressのstaker rewardによって生じたお金の記録を出力するスクリプトです。
 * アドレスとして、Validator Ownerキーを指定する必要があります
   * Validator Ownerキーについて https://docs.oasys.games/docs/architecture/hub-layer/validator-account#validator-owner
 
@@ -135,7 +135,7 @@ export GOOGLE_APPLICATION_CREDENTIALS=xx
 #### --output
 
 * 出力するファイル先を指定
-* デフォルトはcommision-reward-(address).csv
+* デフォルトはcommision-reward-(address).csv　(validator rewardはcommision-rewardと同義)
 
 ```bash
  ./oasfi-linux  export-validator-reward 0x272d6bd040c2b8454f4f6f43115758fbe318ee2c -c=hub_mainnet -o=output.csv
@@ -155,7 +155,7 @@ export GOOGLE_APPLICATION_CREDENTIALS=xx
 
 ## export-staker-rewardスクリプト
 
-* 特定のaddressのcommision rewardによって生じたお金の記録を出力するスクリプトです。
+* 特定のaddressのstaker rewardによって生じたお金の記録を出力するスクリプトです。
 * アドレスとして、Validator OwnerキーとStaker Ownerキーを指定する必要があります。
   * Validator Ownerキーについて https://docs.oasys.games/docs/architecture/hub-layer/validator-account#validator-owner
 
