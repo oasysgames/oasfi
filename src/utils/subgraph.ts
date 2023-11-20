@@ -1,16 +1,17 @@
 import { BigNumber } from 'ethers';
 import { request } from 'graphql-request';
+import { validatorTotalStake } from '../types';
 import { graphql } from './../gql/gql';
 import type {
   GetEpochByToTimeStampQueryVariables,
   GetEpochQueryVariables,
   GetEpochRewardsQuery,
   GetEpochRewardsQueryVariables,
+  GetStakerRewardQueryVariables,
   GetValidatorStakesQuery,
   GetValidatorStakesQueryVariables,
   GetValidatorsQueryVariables,
 } from './../gql/graphql';
-import { ValidatorTotalStake } from './../types';
 
 const GetEpoch = graphql(`
   query GetEpoch($epoch: BigInt!) {
@@ -96,6 +97,16 @@ const GetValidatorStakes = graphql(`
         oas
         soas
         woas
+      }
+    }
+  }
+`);
+
+const GetStakerReward = graphql(`
+  query GetStakerReward($validator: String!, $staker: ID!, $block: Int!) {
+    staker(id: $staker, block: { number: $block }) {
+      stakes(where: { validator: $validator }) {
+        rewards
       }
     }
   }
@@ -223,6 +234,33 @@ export class Subgraph {
     return validatorStakes;
   };
 
+  public getStakerReward = async (
+    block: number,
+    validator: string,
+    staker: string,
+  ): Promise<BigNumber> => {
+    const variables: GetStakerRewardQueryVariables = {
+      validator,
+      block,
+      staker,
+    };
+
+    const data: any = await request(
+      this.baseGraphUrl,
+      GetStakerReward,
+      variables,
+    );
+    let stakerReward = BigNumber.from('0');
+
+    if (data.staker.stakes.length === 0) {
+      return stakerReward;
+    }
+    data.staker.stakes.forEach((stake) => {
+      stakerReward = stakerReward.add(stake.rewards);
+    });
+    return stakerReward;
+  };
+
   public getValidatorTotalStake = async (
     epoch: number,
     block: number,
@@ -232,7 +270,7 @@ export class Subgraph {
 
     const epochRewards = await this.getEpochRewards(epoch);
 
-    const validatorTotalStakes = await Promise.all(
+    const validatorStakes = await Promise.all(
       validators.validators.map(async (validator) => {
         const validatorAddress = validator.id;
         const validatorEpochReward = epochRewards.epochRewards.find(
@@ -249,7 +287,7 @@ export class Subgraph {
           throw new Error('Can not get validator total commission');
         }
 
-        const validatorTotalStake: ValidatorTotalStake = {
+        const validatorTotalStake: validatorTotalStake = {
           address: validatorAddress,
           oas: BigNumber.from('0'),
           soas: BigNumber.from('0'),
@@ -285,10 +323,11 @@ export class Subgraph {
             );
           }
         });
+
         return validatorTotalStake;
       }),
     );
 
-    return validatorTotalStakes;
+    return validatorStakes;
   };
 }

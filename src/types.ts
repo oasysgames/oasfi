@@ -1,6 +1,7 @@
 import { BigNumber } from 'ethers';
+import { Moment } from 'moment-timezone';
 
-export interface ValidatorTotalStake {
+export interface validatorTotalStake {
   address: string;
   oas: BigNumber;
   soas: BigNumber;
@@ -19,7 +20,7 @@ export interface TotalStakeData {
 export interface TimeData {
   epoch: string;
   block: string;
-  timestamp: Date;
+  timestamp: Moment;
 }
 
 export interface OasPrices {
@@ -31,13 +32,28 @@ export interface CorrectCsvArgs {
   chain: string;
 }
 
-export interface commissionRewardArgs {
+export interface validatorRewardArgs {
   validator_address: string;
   chain: string;
   from_epoch: number;
   to_epoch: number;
-  from_data: string;
-  to_data: string;
+  from_date: string;
+  to_date: string;
+  price_time: string;
+  time_zone: string;
+  price: string;
+  export_csv_online: string;
+  output: string;
+}
+
+export interface stakerRewardArgs {
+  validator_address: string;
+  staker_address: string;
+  chain: string;
+  from_epoch: number;
+  to_epoch: number;
+  from_date: string;
+  to_date: string;
   price_time: string;
   time_zone: string;
   price: string;
