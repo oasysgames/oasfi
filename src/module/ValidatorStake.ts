@@ -22,12 +22,13 @@ export const getEpoches = async (
   argv: validatorRewardArgs,
   subgraph: Subgraph,
 ) => {
-  const latestEpoch = await subgraph.getLatestEpoch();
+  const latestEpochResult = await subgraph.getLatestEpoch();
+  const latestEpoch = latestEpochResult.epoches[0]?.epoch;
   let from = argv.from_epoch;
   let to = argv.to_epoch;
 
   if (!argv.to_epoch) {
-    to = latestEpoch.epoches[0]?.epoch - 1;
+    to = latestEpoch - 1;
   }
 
   if (!argv.from_epoch) {
@@ -44,9 +45,7 @@ export const getEpoches = async (
       from_time.utc().unix(),
     );
     from =
-      epochData.epoches.length > 0
-        ? epochData.epoches[0].epoch
-        : latestEpoch.epoches[0].epoch;
+      epochData.epoches.length > 0 ? epochData.epoches[0].epoch : latestEpoch;
   }
 
   if (argv.to_date) {
@@ -58,17 +57,15 @@ export const getEpoches = async (
       to_time.utc().unix(),
     );
     to =
-      epochData.epoches.length > 0
-        ? epochData.epoches[0].epoch
-        : latestEpoch.epoches[0].epoch;
+      epochData.epoches.length > 0 ? epochData.epoches[0].epoch : latestEpoch;
   }
 
   if (from > to) {
     to = from;
   }
 
-  if (to > latestEpoch.epoches[0].epoch) {
-    to = latestEpoch.epoches[0].epoch;
+  if (to >= latestEpoch) {
+    to = latestEpoch - 1;
   }
   console.log('FROM EPOCH: ', from);
   console.log('TO EPOCH: ', to);
