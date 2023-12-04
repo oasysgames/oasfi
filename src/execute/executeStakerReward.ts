@@ -22,8 +22,8 @@ export const main = async (argv: stakerRewardArgs) => {
   let header: string[] = HEADER_FOR_STAKER_REWARD;
 
   //set the address to lowercase
-  const validator_address = argv.validator_address?.toLocaleLowerCase();
-  const staker_address = argv.staker_address?.toLocaleLowerCase();
+  const validator_address = argv.validator_address?.toLowerCase();
+  const staker_address = argv.staker_address?.toLowerCase();
 
   //if API_KEY exists and price option exists => export that price otherwise export default price
   if (process.env.COINGECKO_API_KEY) {
@@ -46,7 +46,7 @@ export const main = async (argv: stakerRewardArgs) => {
     loopAsync.map(async (i: number) => {
       console.log('RUNNING EPOCH ', i);
       const epochData = await subgraph.getEpoch(i);
-      const nextEpochData = await subgraph.getEpoch(i + 1);
+      const prevEpochData = await subgraph.getEpoch(i - 1);
 
       //validate epoches
       const epoch =
@@ -58,8 +58,8 @@ export const main = async (argv: stakerRewardArgs) => {
           ? epochData.epoches[0].block
           : '';
       const nextBlockByEpoch =
-        typeof nextEpochData.epoches[0].block === 'string'
-          ? nextEpochData.epoches[0].block
+        typeof prevEpochData.epoches[0].block === 'string'
+          ? prevEpochData.epoches[0].block
           : '';
       if (!epoch) throw new Error('Can not get epoch data');
       if (!block) throw new Error('Can not get block data');
@@ -94,15 +94,15 @@ export const main = async (argv: stakerRewardArgs) => {
         staker_address,
       );
 
-      const nextReward = await subgraph.getStakerReward(
+      const prevReward = await subgraph.getStakerReward(
         parseInt(nextBlockByEpoch, 10),
         validator_address,
         staker_address,
       );
 
       //get staker reward gap between epochs
-      const stakerReward = BigNumber.from(nextReward).sub(
-        BigNumber.from(reward),
+      const stakerReward = BigNumber.from(reward).sub(
+        BigNumber.from(prevReward),
       );
 
       //format data
