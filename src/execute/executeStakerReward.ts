@@ -1,4 +1,5 @@
 import moment = require('moment-timezone');
+import { BigNumber } from 'ethers';
 import { GoogleSpreadsheet } from 'google-spreadsheet';
 import {
   getAdditionalDataForStakerReward,
@@ -45,12 +46,9 @@ export const main = async (argv: stakerRewardArgs) => {
     loopAsync.map(async (i: number) => {
       console.log('RUNNING EPOCH ', i);
       const epochData = await subgraph.getEpoch(i);
+      const nextEpochData = await subgraph.getEpoch(i + 1);
 
       //validate epoches
-      if (epochData.epoches.length == 0) {
-        console.log(`epoch: can not nex to epoch ${epochData}`);
-        return;
-      }
       const epoch =
         typeof epochData.epoches[0].epoch === 'string'
           ? epochData.epoches[0].epoch
@@ -59,8 +57,13 @@ export const main = async (argv: stakerRewardArgs) => {
         typeof epochData.epoches[0].block === 'string'
           ? epochData.epoches[0].block
           : '';
+      const nextBlockByEpoch =
+        typeof nextEpochData.epoches[0].block === 'string'
+          ? nextEpochData.epoches[0].block
+          : '';
       if (!epoch) throw new Error('Can not get epoch data');
       if (!block) throw new Error('Can not get block data');
+      if (!nextBlockByEpoch) throw new Error('Can not get block data');
 
       //get oas price per epoch
       //get price by time UTC
@@ -82,11 +85,24 @@ export const main = async (argv: stakerRewardArgs) => {
         block,
         timestamp,
       };
-      //get stakerReward of staker  by validator
-      const stakerReward = await subgraph.getStakerReward(
+
+      //Because use promise All, must get the staking reward of both epochs to calculate it
+      // reward of this epoch
+      const reward = await subgraph.getStakerReward(
         parseInt(block, 10),
         validator_address,
         staker_address,
+      );
+
+      const nextReward = await subgraph.getStakerReward(
+        parseInt(nextBlockByEpoch, 10),
+        validator_address,
+        staker_address,
+      );
+
+      //get staker reward gap between epochs
+      const stakerReward = BigNumber.from(nextReward).sub(
+        BigNumber.from(reward),
       );
 
       //format data
