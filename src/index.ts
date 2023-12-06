@@ -28,13 +28,13 @@ void yargs(hideBin(process.argv))
     processCorrectCsvCommand,
   )
   .command(
-    'export-validator-reward [validator_address]',
+    'export-validator-reward [validator_addresses]',
     'Export validator reward',
     defineValidatorRewardCommand,
     processValidatorRewardCommand,
   )
   .command(
-    'export-staker-reward [validator_address] [staker_address]',
+    'export-staker-reward [staker_address]',
     'Export staker reward',
     defineStakerRewardCommand,
     processStakerRewardCommand,

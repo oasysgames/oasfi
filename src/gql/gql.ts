@@ -20,7 +20,8 @@ const documents = {
     "\n  query GetEpochRewards($epoch: BigInt!, $first: Int!, $skip: Int!) {\n    epochRewards(where: { epoch: $epoch }, first: $first, skip: $skip) {\n      epoch\n      address\n      commissions\n      rewards\n    }\n  }\n": types.GetEpochRewardsDocument,
     "\n  query GetValidators($block: Int!, $validator: ID!) {\n    validators(\n      orderBy: id\n      first: 1000\n      block: { number: $block }\n      where: { id: $validator }\n    ) {\n      id\n      commissions\n    }\n  }\n": types.GetValidatorsDocument,
     "\n  query GetValidatorStakes(\n    $validator: ID!\n    $block: Int!\n    $first: Int!\n    $skip: Int!\n  ) {\n    validators(where: { id: $validator }, block: { number: $block }) {\n      stakes(first: $first, skip: $skip) {\n        oas\n        soas\n        woas\n      }\n    }\n  }\n": types.GetValidatorStakesDocument,
-    "\n  query GetStakerReward($validator: String!, $staker: ID!, $block: Int!) {\n    staker(id: $staker, block: { number: $block }) {\n      stakes(where: { validator: $validator }) {\n        rewards\n      }\n    }\n  }\n": types.GetStakerRewardDocument,
+    "\n  query GetStakerReward($staker: ID!, $block: Int!) {\n    staker(id: $staker, block: { number: $block }) {\n      stakes {\n        rewards\n        validator {\n          id\n        }\n      }\n    }\n  }\n": types.GetStakerRewardDocument,
+    "\n  query GetStakerStake($staker: ID!, $block: Int!) {\n    staker(id: $staker, block: { number: $block }) {\n      stakes {\n        oas\n        soas\n        woas\n      }\n    }\n  }\n": types.GetStakerStakeDocument,
 };
 
 /**
@@ -68,7 +69,11 @@ export function graphql(source: "\n  query GetValidatorStakes(\n    $validator: 
 /**
  * The graphql function is used to parse GraphQL queries into a document that can be used by GraphQL clients.
  */
-export function graphql(source: "\n  query GetStakerReward($validator: String!, $staker: ID!, $block: Int!) {\n    staker(id: $staker, block: { number: $block }) {\n      stakes(where: { validator: $validator }) {\n        rewards\n      }\n    }\n  }\n"): (typeof documents)["\n  query GetStakerReward($validator: String!, $staker: ID!, $block: Int!) {\n    staker(id: $staker, block: { number: $block }) {\n      stakes(where: { validator: $validator }) {\n        rewards\n      }\n    }\n  }\n"];
+export function graphql(source: "\n  query GetStakerReward($staker: ID!, $block: Int!) {\n    staker(id: $staker, block: { number: $block }) {\n      stakes {\n        rewards\n        validator {\n          id\n        }\n      }\n    }\n  }\n"): (typeof documents)["\n  query GetStakerReward($staker: ID!, $block: Int!) {\n    staker(id: $staker, block: { number: $block }) {\n      stakes {\n        rewards\n        validator {\n          id\n        }\n      }\n    }\n  }\n"];
+/**
+ * The graphql function is used to parse GraphQL queries into a document that can be used by GraphQL clients.
+ */
+export function graphql(source: "\n  query GetStakerStake($staker: ID!, $block: Int!) {\n    staker(id: $staker, block: { number: $block }) {\n      stakes {\n        oas\n        soas\n        woas\n      }\n    }\n  }\n"): (typeof documents)["\n  query GetStakerStake($staker: ID!, $block: Int!) {\n    staker(id: $staker, block: { number: $block }) {\n      stakes {\n        oas\n        soas\n        woas\n      }\n    }\n  }\n"];
 
 export function graphql(source: string) {
   return (documents as any)[source] ?? {};

@@ -9,6 +9,8 @@ import {
   OasPrices,
   TimeData,
   TotalStakeData,
+  stakerRewardArgs,
+  stakerStake,
   validatorRewardArgs,
   validatorTotalStake,
 } from '../types';
@@ -19,7 +21,7 @@ import { getDataSheet, getSpreadSheet } from '../utils/google';
 import { Subgraph } from '../utils/subgraph';
 
 export const getEpoches = async (
-  argv: validatorRewardArgs,
+  argv: validatorRewardArgs | stakerRewardArgs,
   subgraph: Subgraph,
 ) => {
   const latestEpochResult = await subgraph.getLatestEpoch();
@@ -77,6 +79,9 @@ export const getEpoches = async (
 };
 
 export async function getOasPricesForEpoch(argv, epochData) {
+  if (!process.env.COINGECKO_API_KEY) {
+    return;
+  }
   //timestamp utc
   const timestamp = epochData.epoches[0].timestamp * 1000;
 
@@ -168,11 +173,9 @@ export const handleExport = async (
 
   for (let i = 0; i < array.length; i++) {
     const { rowData, timestamp } = array[i];
-    if (isOnline) {
-      await exportCsvOnline(doc, rowData, timestamp, header);
-    } else {
-      await exportCsvLocal(rowData, header, fileName, output);
-    }
+    isOnline
+      ? await exportCsvOnline(doc, rowData, timestamp, header)
+      : await exportCsvLocal(rowData, header, fileName, output);
     await sleep(1500);
   }
 };
@@ -182,6 +185,7 @@ export const getAdditionalDataForCommissionReward = (
   stakeData: validatorTotalStake[],
   timeData: TimeData,
   price: string,
+  validator_address: string,
 ): {
   rowData: string[][];
   totalStakeData: TotalStakeData;
@@ -215,6 +219,7 @@ export const getAdditionalDataForCommissionReward = (
       totalWoasStake = totalWoasStake.add(stake.woas);
       const validatorTotalStake = stake.oas.add(stake.soas).add(stake.woas);
       return [
+        validator_address,
         epoch,
         block,
         timestamp.format('YYYY/MM/DD HH:mm:ss'),
@@ -237,7 +242,7 @@ export const getAdditionalDataForCommissionReward = (
 
 export const getAdditionalDataForStakerReward = (
   oasPrices: OasPrices,
-  stakeData: validatorTotalStake[],
+  stakeData: stakerStake,
   timeData: TimeData,
   price: string,
   stakerReward: BigNumber,
@@ -256,23 +261,16 @@ export const getAdditionalDataForStakerReward = (
     prices = price ? [oasPrices[price]] : [jpy, usd, krw, eur, sgd];
   }
 
-  const rowData = stakeData
-    .filter((stake) => {
-      const validatorTotalStake = stake.oas.add(stake.soas).add(stake.woas);
-      return validatorTotalStake.gt(0);
-    })
-    .map((stake) => {
-      const validatorTotalStake = stake.oas.add(stake.soas).add(stake.woas);
-      return [
-        epoch,
-        block,
-        timestamp.format('YYYY-MM-DD HH:mm:ss'),
-        utils.formatEther(validatorTotalStake).toString(),
-        utils.formatEther(stakerReward).toString(),
-        ...prices,
-      ];
-    });
-
+  const rowData = [
+    [
+      epoch,
+      block,
+      timestamp.format('YYYY-MM-DD HH:mm:ss'),
+      utils.formatEther(stakeData.totalStake).toString(),
+      utils.formatEther(stakerReward).toString(),
+      ...prices,
+    ],
+  ];
   return {
     rowData: rowData,
   };

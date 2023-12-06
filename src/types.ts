@@ -10,6 +10,10 @@ export interface validatorTotalStake {
   totalCommission: BigNumber;
 }
 
+export interface stakerStake {
+  address: string;
+  totalStake: BigNumber;
+}
 export interface TotalStakeData {
   totalStake: BigNumber;
   totalOasStake: BigNumber;
@@ -33,7 +37,7 @@ export interface CorrectCsvArgs {
 }
 
 export interface validatorRewardArgs {
-  validator_address: string;
+  validator_addresses: string;
   chain: string;
   from_epoch: number;
   to_epoch: number;
@@ -47,7 +51,6 @@ export interface validatorRewardArgs {
 }
 
 export interface stakerRewardArgs {
-  validator_address: string;
   staker_address: string;
   chain: string;
   from_epoch: number;

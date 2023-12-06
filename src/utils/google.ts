@@ -10,17 +10,18 @@ const SPREADSHEET_ID = process.env.SPREADSHEET_ID ?? '';
 const CREDENTIALS = process.env.GOOGLE_APPLICATION_CREDENTIALS;
 
 export const HEADER_FOR_VALIDATOR_REWARD: string[] = [
-  'epoch',
-  'block',
-  'timestamp',
+  'Validator address',
+  'Epoch',
+  'Block',
+  'Timestamp',
   'Total staked(OAS+SOAS+WOAS)',
   'Daily validator commission(OAS)',
 ];
 
 export const HEADER_FOR_STAKER_REWARD: string[] = [
-  'epoch',
-  'block',
-  'timestamp',
+  'Epoch',
+  'Block',
+  'Timestamp',
   'Total staked(OAS+SOAS+WOAS)',
   'Staker reward(OAS)',
 ];
@@ -37,7 +38,7 @@ const GOOGLE_API_SCOPES = ['https://www.googleapis.com/auth/spreadsheets'];
 type ColumnWidth = { [columnName: string]: number };
 const COLUMN_WIDTHS: ColumnWidth = {
   address: 400,
-  'timestamp(UTC)': 150,
+  'Timestamp(UTC)': 150,
   'All validator total staked(OAS+SOAS+WOAS)': 280,
   'Total staked(OAS+SOAS+WOAS)': 220,
   'Total staked(OAS)': 220,
