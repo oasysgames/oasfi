@@ -1,18 +1,12 @@
 import { Arguments, Argv } from 'yargs';
+import { main } from '../execute/executeStakerReward';
 import { stakerRewardArgs } from '../types';
 import { LogUtils } from '../utils/Logger';
-import { main } from '../execute/executeStakerReward';
 
 export const defineStakerRewardCommand = (yargs: Argv) => {
   return yargs.options({
-    validator_address: {
-      description: 'validator address',
-      requiresArg: true,
-      required: true,
-      type: 'string',
-    },
-    staker_address: {
-      description: 'staker address',
+    staker_addresses: {
+      description: 'staker_addresses',
       requiresArg: true,
       required: true,
       type: 'string',

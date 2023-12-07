@@ -3,24 +3,25 @@ import {
   GoogleSpreadsheetWorksheet,
 } from 'google-spreadsheet';
 import { google } from 'googleapis';
-import { getMonthDate } from './date';
 
 const SPREADSHEET_ID = process.env.SPREADSHEET_ID ?? '';
 // set service account info path when local development
 const CREDENTIALS = process.env.GOOGLE_APPLICATION_CREDENTIALS;
 
 export const HEADER_FOR_VALIDATOR_REWARD: string[] = [
-  'epoch',
-  'block',
-  'timestamp',
+  'Validator address',
+  'Epoch',
+  'Block',
+  'Timestamp',
   'Total staked(OAS+SOAS+WOAS)',
   'Daily validator commission(OAS)',
 ];
 
-export const HEADER_FOR_STAKER_REWARD: string[] = [
-  'epoch',
-  'block',
-  'timestamp',
+export const HEADER_FOR_STAKING_REWARD: string[] = [
+  'Staker Address',
+  'Epoch',
+  'Block',
+  'Timestamp',
   'Total staked(OAS+SOAS+WOAS)',
   'Staker reward(OAS)',
 ];
@@ -37,7 +38,7 @@ const GOOGLE_API_SCOPES = ['https://www.googleapis.com/auth/spreadsheets'];
 type ColumnWidth = { [columnName: string]: number };
 const COLUMN_WIDTHS: ColumnWidth = {
   address: 400,
-  'timestamp(UTC)': 150,
+  'Timestamp(UTC)': 150,
   'All validator total staked(OAS+SOAS+WOAS)': 280,
   'Total staked(OAS+SOAS+WOAS)': 220,
   'Total staked(OAS)': 220,
@@ -105,11 +106,11 @@ const setHeaderWidth = async (
 
 export const getDataSheet = async (
   doc: GoogleSpreadsheet,
-  timestamp: Date,
+  timestamp: moment.Moment,
   header: Array<string>,
 ): Promise<GoogleSpreadsheetWorksheet> => {
   // get year and month date
-  const title = getMonthDate(timestamp);
+  const title = timestamp.format('YYYYMM');
 
   let sheet = doc.sheetsByTitle[title];
 

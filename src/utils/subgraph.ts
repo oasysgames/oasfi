@@ -1,13 +1,17 @@
 import { BigNumber } from 'ethers';
 import { request } from 'graphql-request';
-import { validatorTotalStake } from '../types';
+import { IEpochReward, stakerStake, validatorTotalStake } from '../types';
 import { graphql } from './../gql/gql';
 import type {
   GetEpochByToTimeStampQueryVariables,
   GetEpochQueryVariables,
+  GetEpochRewardsByAddressQuery,
+  GetEpochRewardsByAddressQueryVariables,
   GetEpochRewardsQuery,
   GetEpochRewardsQueryVariables,
   GetStakerRewardQueryVariables,
+  GetStakerStakeQuery,
+  GetStakerStakeQueryVariables,
   GetValidatorStakesQuery,
   GetValidatorStakesQueryVariables,
   GetValidatorsQueryVariables,
@@ -71,6 +75,17 @@ const GetEpochRewards = graphql(`
   }
 `);
 
+const GetEpochRewardsByAddress = graphql(`
+  query GetEpochRewardsByAddress($epoch: BigInt!, $address: Bytes!) {
+    epochRewards(where: { epoch: $epoch, address: $address }) {
+      epoch
+      address
+      commissions
+      rewards
+    }
+  }
+`);
+
 const GetValidators = graphql(`
   query GetValidators($block: Int!, $validator: ID!) {
     validators(
@@ -103,10 +118,25 @@ const GetValidatorStakes = graphql(`
 `);
 
 const GetStakerReward = graphql(`
-  query GetStakerReward($validator: String!, $staker: ID!, $block: Int!) {
+  query GetStakerReward($staker: ID!, $block: Int!) {
     staker(id: $staker, block: { number: $block }) {
-      stakes(where: { validator: $validator }) {
+      stakes {
         rewards
+        validator {
+          id
+        }
+      }
+    }
+  }
+`);
+
+const GetStakerStake = graphql(`
+  query GetStakerStake($staker: ID!, $block: Int!) {
+    staker(id: $staker, block: { number: $block }) {
+      stakes {
+        oas
+        soas
+        woas
       }
     }
   }
@@ -135,7 +165,7 @@ export class Subgraph {
   }
   public getEpoch = async (epoch: number) => {
     const variables: GetEpochQueryVariables = {
-      epoch: epoch.toString(),
+      epoch: parseInt(`${epoch}`, 10),
     };
 
     const data = await request(this.baseGraphUrl, GetEpoch, variables);
@@ -170,7 +200,7 @@ export class Subgraph {
 
   public getEpochRewards = async (epoch: number) => {
     const variables: GetEpochRewardsQueryVariables = {
-      epoch: epoch.toString(),
+      epoch: parseInt(`${epoch}`, 10),
       skip: 0,
       first: 1000,
     };
@@ -198,7 +228,7 @@ export class Subgraph {
   public getValidators = async (block: number, validator_address: string) => {
     const variables: GetValidatorsQueryVariables = {
       validator: validator_address,
-      block: block,
+      block: parseInt(`${block}`, 10),
     };
 
     const data = await request(this.baseGraphUrl, GetValidators, variables);
@@ -207,7 +237,7 @@ export class Subgraph {
   public getValidatorStakes = async (validator: string, block: number) => {
     const variables: GetValidatorStakesQueryVariables = {
       validator,
-      block,
+      block: parseInt(`${block}`, 10),
       skip: 0,
       first: 1000,
     };
@@ -236,12 +266,10 @@ export class Subgraph {
 
   public getStakerReward = async (
     block: number,
-    validator: string,
     staker: string,
   ): Promise<BigNumber> => {
     const variables: GetStakerRewardQueryVariables = {
-      validator,
-      block,
+      block: parseInt(`${block}`, 10),
       staker,
     };
 
@@ -259,6 +287,37 @@ export class Subgraph {
       stakerReward = stakerReward.add(stake.rewards);
     });
     return stakerReward;
+  };
+
+  public getEpochRewardByAddress = async (
+    epoch: number,
+    address: string,
+  ): Promise<IEpochReward> => {
+    const variables: GetEpochRewardsByAddressQueryVariables = {
+      epoch: parseInt(`${epoch}`, 10),
+      address: address,
+    };
+
+    const data: GetEpochRewardsByAddressQuery = await request(
+      this.baseGraphUrl,
+      GetEpochRewardsByAddress,
+      variables,
+    );
+
+    const epochReward: IEpochReward = {
+      address,
+      commissions: BigNumber.from(0),
+      epoch,
+      rewards: BigNumber.from(0),
+    };
+    if (data.epochRewards.length === 0) {
+      return epochReward;
+    }
+    data.epochRewards?.forEach((reward: IEpochReward) => {
+      epochReward.commissions = epochReward.commissions.add(reward.commissions);
+      epochReward.rewards = epochReward.rewards.add(reward.rewards);
+    });
+    return epochReward;
   };
 
   public getValidatorTotalStake = async (
@@ -329,5 +388,55 @@ export class Subgraph {
     );
 
     return validatorStakes;
+  };
+
+  public getListStakerStake = async (
+    block: number,
+    staker_address: string,
+    epoch: number,
+  ): Promise<stakerStake> => {
+    const stakerStakes = await this.getStakerStake(block, staker_address);
+
+    let totalStake = BigNumber.from('0');
+    const epochReward = await this.getEpochRewardByAddress(
+      epoch,
+      staker_address,
+    );
+
+    if (!(stakerStakes.staker?.stakes.length > 0)) {
+      return {
+        address: staker_address,
+        totalStake,
+        stakerReward: epochReward.rewards,
+      };
+    }
+    stakerStakes.staker.stakes.forEach((stake) => {
+      totalStake = totalStake
+        .add(BigNumber.from(stake.woas))
+        .add(BigNumber.from(stake.soas))
+        .add(BigNumber.from(stake.oas));
+    });
+    // GetEpochRewardsByAddress
+    return {
+      address: staker_address,
+      totalStake,
+      stakerReward: epochReward.rewards,
+    };
+  };
+  public getStakerStake = async (
+    block: number,
+    staker: string,
+  ): Promise<GetStakerStakeQuery> => {
+    const variables: GetStakerStakeQueryVariables = {
+      block: parseInt(`${block}`, 10),
+      staker,
+    };
+
+    const data: GetStakerStakeQuery = await request(
+      this.baseGraphUrl,
+      GetStakerStake,
+      variables,
+    );
+    return data;
   };
 }

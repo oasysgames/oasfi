@@ -5,8 +5,8 @@ import { main } from '../execute/executeValidatorReward';
 
 export const defineValidatorRewardCommand = (yargs: Argv) => {
   return yargs.options({
-    validator_address: {
-      description: 'validator address',
+    validator_addresses: {
+      description: 'validator addresses',
       requiresArg: true,
       required: true,
       type: 'string',

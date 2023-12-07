@@ -1,37 +1,32 @@
 import moment = require('moment-timezone');
-import { BigNumber } from 'ethers';
 import { GoogleSpreadsheet } from 'google-spreadsheet';
 import {
   getAdditionalDataForStakerReward,
   getEpoches,
   getOasPricesForEpoch,
   handleExport,
-} from '../module/ValidatorStake';
-import { stakerRewardArgs } from '../types';
-import { generateNumberArray } from '../utils';
+} from '../module/RewardStakes';
+import {
+  DataExport,
+  OasPrices,
+  PrepareData,
+  TimeData,
+  stakerRewardArgs,
+} from '../types';
+import { generateNumberArray, sortByTimeStamp } from '../utils';
 import {
   DEFAULT_LIST_PRICE,
-  HEADER_FOR_STAKER_REWARD,
+  HEADER_FOR_STAKING_REWARD,
   getSpreadSheet,
 } from '../utils/google';
 import { Subgraph } from '../utils/subgraph';
 
 export const main = async (argv: stakerRewardArgs) => {
   const subgraph = new Subgraph(argv.chain);
-  //header for staker reward
-  let header: string[] = HEADER_FOR_STAKER_REWARD;
+  // header for staker reward
+  const header: string[] = getHeader(argv);
 
-  //set the address to lowercase
-  const validator_address = argv.validator_address?.toLowerCase();
-  const staker_address = argv.staker_address?.toLowerCase();
-
-  //if API_KEY exists and price option exists => export that price otherwise export default price
-  if (process.env.COINGECKO_API_KEY) {
-    header = argv.price
-      ? [...header, 'Oas price']
-      : [...header, ...DEFAULT_LIST_PRICE];
-  }
-  //get the list of epochs based on the passed options
+  // get the list of epoches based on the passed options
   const epoches = await getEpoches(argv, subgraph);
 
   let doc: GoogleSpreadsheet;
@@ -41,91 +36,119 @@ export const main = async (argv: stakerRewardArgs) => {
   }
 
   const loopAsync: number[] = generateNumberArray(epoches.from, epoches.to);
-  //fetch data per epoch
-  const data = await Promise.all(
+
+  const prepareData: PrepareData[] = await getPrepareData(
+    loopAsync,
+    subgraph,
+    argv,
+  );
+  // data to export
+  let dataExport: DataExport[] = await getDataExport(
+    prepareData,
+    subgraph,
+    argv,
+  );
+
+  //sort by timestamp
+  dataExport = sortByTimeStamp(dataExport, 'asc');
+
+  // process export
+  await handleExport(
+    dataExport,
+    Boolean(argv.export_csv_online),
+    argv.output,
+    `staker-reward`,
+    header,
+  );
+};
+
+const getHeader = (argv: stakerRewardArgs): string[] => {
+  let header: string[] = HEADER_FOR_STAKING_REWARD;
+  // if API_KEY exists and price option exists => export that price otherwise export default price
+  if (process.env.COINGECKO_API_KEY) {
+    header = argv.price
+      ? [...header, 'Oas price']
+      : [...header, ...DEFAULT_LIST_PRICE];
+  }
+  return header;
+};
+
+const getPrepareData = async (
+  loopAsync: number[],
+  subgraph: Subgraph,
+  argv: stakerRewardArgs,
+): Promise<PrepareData[]> => {
+  return await Promise.all(
     loopAsync.map(async (i: number) => {
-      console.log('RUNNING EPOCH ', i);
       const epochData = await subgraph.getEpoch(i);
-      const prevEpochData = await subgraph.getEpoch(i - 1);
 
-      //validate epoches
-      const epoch =
-        typeof epochData.epoches[0].epoch === 'string'
-          ? epochData.epoches[0].epoch
-          : '';
-      const block =
-        typeof epochData.epoches[0].block === 'string'
-          ? epochData.epoches[0].block
-          : '';
-      const nextBlockByEpoch =
-        typeof prevEpochData.epoches[0].block === 'string'
-          ? prevEpochData.epoches[0].block
-          : '';
+      // validate epoches
+      const epoch = epochData?.epoches?.[0]?.epoch;
       if (!epoch) throw new Error('Can not get epoch data');
+
+      const block = epochData.epoches?.[0]?.block;
       if (!block) throw new Error('Can not get block data');
-      if (!nextBlockByEpoch) throw new Error('Can not get block data');
 
-      //get oas price per epoch
-      //get price by time UTC
-      const oasPrices =
-        process.env.COINGECKO_API_KEY &&
-        (await getOasPricesForEpoch(argv, epochData));
+      // get price by time UTC
+      // get oas price per epoch
+      const oasPrices: OasPrices = await getOasPricesForEpoch(argv, epochData);
 
-      //get totalStake of validator
-      const validatorStake = await subgraph.getValidatorTotalStake(
-        parseInt(epoch, 10),
-        parseInt(block, 10),
-        validator_address,
-      );
-      //export time local
+      // export time local
       const timestamp = moment(epochData.epoches[0].timestamp * 1000);
 
-      const timeData = {
+      const timeData: TimeData = {
         epoch,
         block,
         timestamp,
       };
 
-      //Because use promise All, must get the staking reward of both epochs to calculate it
-      // reward of this epoch
-      const reward = await subgraph.getStakerReward(
-        parseInt(block, 10),
-        validator_address,
-        staker_address,
-      );
-
-      const prevReward = await subgraph.getStakerReward(
-        parseInt(nextBlockByEpoch, 10),
-        validator_address,
-        staker_address,
-      );
-
-      //get staker reward gap between epochs
-      const stakerReward = BigNumber.from(reward).sub(
-        BigNumber.from(prevReward),
-      );
-
-      //format data
-      const { rowData } = getAdditionalDataForStakerReward(
-        oasPrices,
-        validatorStake,
-        timeData,
-        argv.price,
-        stakerReward,
-      );
       return {
-        rowData,
-        timestamp,
+        oasPrices,
+        timeData,
       };
     }),
   );
-  //fileName is exported
-  const fileName = `staker-reward-${argv.staker_address}`;
-  await handleExport(
-    data,
-    Boolean(argv.export_csv_online),
-    argv.output,
-    fileName,
-    header,
-  );
+};
+const getDataExport = async (
+  prepareData: PrepareData[],
+  subgraph: Subgraph,
+  argv: stakerRewardArgs,
+): Promise<DataExport[]> => {
+  // set the address to lowercase
+  const addresses = argv.staker_addresses?.toLowerCase().split(',');
+  const resultsPromise = prepareData.map(async (item: PrepareData) => {
+    const { oasPrices, timeData } = item;
+    const { block, epoch, timestamp } = timeData;
+    console.log('RUNNING EPOCH ', epoch);
+
+    const validatorResults = await Promise.all(
+      addresses?.map(async (address: string) => {
+        const trimAddress = address?.trim();
+
+        const listStakerStake = await subgraph.getListStakerStake(
+          block,
+          trimAddress,
+          epoch,
+        );
+
+        // format data
+        const { rowData } = getAdditionalDataForStakerReward(
+          oasPrices,
+          listStakerStake,
+          timeData,
+          argv.price,
+          address,
+        );
+        return {
+          rowData,
+          timestamp,
+        };
+      }),
+    );
+
+    return validatorResults;
+  });
+
+  const results = await Promise.all(resultsPromise);
+  return results.flat();
 };
