@@ -4,9 +4,15 @@ import {
   getEpoches,
   getOasPricesForEpoch,
   handleExport,
-} from '../module/ValidatorStake';
-import { validatorRewardArgs } from '../types';
-import { generateNumberArray } from '../utils';
+} from '../module/RewardStakes';
+import {
+  DataExport,
+  OasPrices,
+  PrepareData,
+  TimeData,
+  validatorRewardArgs,
+} from '../types';
+import { generateNumberArray, sortByTimeStamp } from '../utils';
 import {
   DEFAULT_LIST_PRICE,
   HEADER_FOR_VALIDATOR_REWARD,
@@ -24,10 +30,21 @@ export const main = async (argv: validatorRewardArgs) => {
 
   const loopAsync: number[] = generateNumberArray(epoches.from, epoches.to);
 
-  const prepareData = await getPrepareData(loopAsync, subgraph, argv);
+  const prepareData: PrepareData[] = await getPrepareData(
+    loopAsync,
+    subgraph,
+    argv,
+  );
 
   // data to export
-  const dataExport = await getDataExport(prepareData, subgraph, argv);
+  let dataExport: DataExport[] = await getDataExport(
+    prepareData,
+    subgraph,
+    argv,
+  );
+
+  //sort by timestamp
+  dataExport = sortByTimeStamp(dataExport, 'asc');
 
   // process export
   await handleExport(
@@ -55,7 +72,7 @@ const getPrepareData = async (
   loopAsync: number[],
   subgraph: Subgraph,
   argv: validatorRewardArgs,
-) => {
+): Promise<PrepareData[]> => {
   return await Promise.all(
     loopAsync.map(async (i: number) => {
       const epochData = await subgraph.getEpoch(i);
@@ -69,12 +86,12 @@ const getPrepareData = async (
 
       // get price by time UTC
       // get oas price per epoch
-      const oasPrices = await getOasPricesForEpoch(argv, epochData);
+      const oasPrices: OasPrices = await getOasPricesForEpoch(argv, epochData);
 
       // export time local
       const timestamp = moment(epochData.epoches[0].timestamp * 1000);
 
-      const timeData = {
+      const timeData: TimeData = {
         epoch,
         block,
         timestamp,
@@ -82,35 +99,34 @@ const getPrepareData = async (
 
       return {
         oasPrices,
-        timestamp,
         timeData,
-        epoch,
-        block,
       };
     }),
   );
 };
 
 const getDataExport = async (
-  prepareData,
+  prepareData: PrepareData[],
   subgraph: Subgraph,
   argv: validatorRewardArgs,
-) => {
+): Promise<DataExport[]> => {
   // Set the address to lowercase
-  const validator_addresses = argv.validator_addresses?.toLowerCase();
-  const listValidatorAddress = validator_addresses?.split(',');
+  const validator_addresses = argv.validator_addresses
+    ?.toLowerCase()
+    ?.split(',');
 
-  const resultsPromise = prepareData.map(async (item) => {
-    const { epoch, oasPrices, timeData, timestamp, block } = item;
+  const resultsPromise = prepareData.map(async (item: PrepareData) => {
+    const { oasPrices, timeData } = item;
+    const { block, epoch, timestamp } = timeData;
     console.log('RUNNING EPOCH ', epoch);
 
     const validatorResults = await Promise.all(
-      listValidatorAddress?.map(async (address: string) => {
+      validator_addresses?.map(async (address: string) => {
         const validatorAddress = address?.trim();
         // Get totalStake of validator
         const validatorStake = await subgraph.getValidatorTotalStake(
-          parseInt(epoch, 10),
-          parseInt(block, 10),
+          epoch,
+          block,
           validatorAddress,
         );
 
