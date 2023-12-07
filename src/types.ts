@@ -13,6 +13,13 @@ export interface validatorTotalStake {
 export interface stakerStake {
   address: string;
   totalStake: BigNumber;
+  stakerReward: BigNumber;
+}
+export interface IEpochReward {
+  address: string;
+  commissions: BigNumber;
+  rewards: BigNumber;
+  epoch: number;
 }
 export interface TotalStakeData {
   totalStake: BigNumber;
@@ -22,8 +29,9 @@ export interface TotalStakeData {
 }
 
 export interface TimeData {
-  epoch: string;
-  block: string;
+  epoch: number;
+  block: number;
+  prevBlockByEpoch?: number;
   timestamp: Moment;
 }
 
@@ -51,7 +59,7 @@ export interface validatorRewardArgs {
 }
 
 export interface stakerRewardArgs {
-  staker_address: string;
+  staker_addresses: string;
   chain: string;
   from_epoch: number;
   to_epoch: number;
@@ -62,4 +70,15 @@ export interface stakerRewardArgs {
   price: string;
   export_csv_online: string;
   output: string;
+}
+
+export interface PrepareData {
+  oasPrices: OasPrices;
+  timeData: TimeData;
+  prevBlockByEpoch?: string;
+}
+
+export interface DataExport {
+  rowData: string[][];
+  timestamp: moment.Moment;
 }
