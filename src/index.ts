@@ -34,7 +34,7 @@ void yargs(hideBin(process.argv))
     processValidatorRewardCommand,
   )
   .command(
-    'export-staker-reward [staker_address]',
+    'export-staker-reward [staker_addresses]',
     'Export staker reward',
     defineStakerRewardCommand,
     processStakerRewardCommand,

@@ -3,7 +3,6 @@ import {
   GoogleSpreadsheetWorksheet,
 } from 'google-spreadsheet';
 import { google } from 'googleapis';
-import { getMonthDate } from './date';
 
 const SPREADSHEET_ID = process.env.SPREADSHEET_ID ?? '';
 // set service account info path when local development
@@ -18,7 +17,8 @@ export const HEADER_FOR_VALIDATOR_REWARD: string[] = [
   'Daily validator commission(OAS)',
 ];
 
-export const HEADER_FOR_STAKER_REWARD: string[] = [
+export const HEADER_FOR_STAKING_REWARD: string[] = [
+  'Staker Address',
   'Epoch',
   'Block',
   'Timestamp',
@@ -106,11 +106,11 @@ const setHeaderWidth = async (
 
 export const getDataSheet = async (
   doc: GoogleSpreadsheet,
-  timestamp: Date,
+  timestamp: moment.Moment,
   header: Array<string>,
 ): Promise<GoogleSpreadsheetWorksheet> => {
   // get year and month date
-  const title = getMonthDate(timestamp);
+  const title = timestamp.format('YYYYMM');
 
   let sheet = doc.sheetsByTitle[title];
 
