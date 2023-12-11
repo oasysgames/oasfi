@@ -1,6 +1,6 @@
 ## export-validator-rewardスクリプト
 
-* 特定のaddressのstaker rewardによって生じたお金の記録を出力するスクリプトです。
+* 特定のaddressのstaker rewardの記録を出力するスクリプトです。
 * アドレスとして、Validator Ownerを指定する必要があります
   * Validator Ownerについて https://docs.oasys.games/docs/architecture/hub-layer/validator-account#validator-owner
 
