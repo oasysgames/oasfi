@@ -51,7 +51,7 @@ export const main = async (argv: validatorRewardArgs) => {
     dataExport,
     Boolean(argv.export_csv_online),
     argv.output,
-    'validator-reward',
+    'commission-reward',
     header,
   );
 };

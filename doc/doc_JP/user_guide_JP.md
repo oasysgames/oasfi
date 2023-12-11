@@ -56,28 +56,28 @@ export COINGECKO_API_KEY=xx
 #### MacOS:
 
 ```bash
-./oasfi-macos  export-validator-reward address -c=chain_name
+./oasfi-macos  export-validator-reward addresses -c=chain_name
 
 # example
-# ./oasfi-macos  export-validator-reward 0x272d6bd040c2b8454f4f6f43115758fbe318ee2c -c=hub_mainnet 
+# ./oasfi-macos  export-validator-reward 0x272d6bd040c2b8454f4f6f43115758fbe318ee2c,0x4e5e774d3837bd9302b83cad94a112575411f07b -c=hub_mainnet 
 ```
 
 #### windows:
 
 ```bash
-./oasfi-win.exe  export-validator-reward address -c=chain_name
+./oasfi-win.exe  export-validator-reward addresses -c=chain_name
 
 # example
-# ./oasfi-win.exe  export-validator-reward 0x272d6bd040c2b8454f4f6f43115758fbe318ee2c -c=hub_mainnet 
+# ./oasfi-win.exe  export-validator-reward 0x272d6bd040c2b8454f4f6f43115758fbe318ee2c,0x4e5e774d3837bd9302b83cad94a112575411f07b -c=hub_mainnet 
 ```
 
 #### linux:
 
 ```bash
-./oasfi-linux  export-validator-reward address -c=chain_name
+./oasfi-linux  export-validator-reward addresses -c=chain_name
 
 # example
-# ./oasfi-linux  export-validator-reward 0x272d6bd040c2b8454f4f6f43115758fbe318ee2c -c=hub_mainnet 
+# ./oasfi-linux  export-validator-reward 0x272d6bd040c2b8454f4f6f43115758fbe318ee2c,0x4e5e774d3837bd9302b83cad94a112575411f07b -c=hub_mainnet 
 ```
 
 ### optional command:  
@@ -88,7 +88,7 @@ export COINGECKO_API_KEY=xx
 * デフォルトはローカルタイムゾーンで、タイムゾーンを変更する場合は、--time_zone=timezone を使用できます。
 
 ```bash
-./oasfi-linux  export-validator-reward 0x272d6bd040c2b8454f4f6f43115758fbe318ee2c -c=hub_mainnet --from_date=2023-08-16T10:00:00 --to_date=2023-10-16T10:00:00
+./oasfi-linux  export-validator-reward 0x272d6bd040c2b8454f4f6f43115758fbe318ee2c,0x4e5e774d3837bd9302b83cad94a112575411f07b -c=hub_mainnet --from_date=2023-08-16T10:00:00 --to_date=2023-10-16T10:00:00
 ```
 
 #### --price
@@ -97,7 +97,7 @@ export COINGECKO_API_KEY=xx
 * 通貨はcoingeckoに対応のものが利用できます
 
 ```bash
- ./oasfi-linux  export-validator-reward 0x272d6bd040c2b8454f4f6f43115758fbe318ee2c -c=hub_mainnet --price=jpy
+ ./oasfi-linux  export-validator-reward 0x272d6bd040c2b8454f4f6f43115758fbe318ee2c,0x4e5e774d3837bd9302b83cad94a112575411f07b -c=hub_mainnet --price=jpy
 ```
 
 #### --from_epoch, --to_epoch
@@ -105,7 +105,7 @@ export COINGECKO_API_KEY=xx
 * 特定のepochの範囲を指定して、その範囲のデータをcsvに出力する。
 
 ```bash
- ./oasfi-linux  export-validator-reward 0x272d6bd040c2b8454f4f6f43115758fbe318ee2c -c=hub_mainnet  --from_epoch=246 --to_epoch=247
+ ./oasfi-linux  export-validator-reward 0x272d6bd040c2b8454f4f6f43115758fbe318ee2c,0x4e5e774d3837bd9302b83cad94a112575411f07b -c=hub_mainnet  --from_epoch=246 --to_epoch=247
 ```
 
 #### --price_time
@@ -113,7 +113,7 @@ export COINGECKO_API_KEY=xx
 * --price_time は価格を取得する時間(UTC)を渡します。 --price_time フラグが設定されていない場合、デフォルトは 00:00:00 UTC になります。
 
 ```bash
- ./oasfi-linux  export-validator-reward 0x272d6bd040c2b8454f4f6f43115758fbe318ee2c --price_time=10:00:00
+ ./oasfi-linux  export-validator-reward 0x272d6bd040c2b8454f4f6f43115758fbe318ee2c,0x4e5e774d3837bd9302b83cad94a112575411f07b --price_time=10:00:00
 ```
 
 #### --export_csv_online
@@ -129,16 +129,16 @@ export GOOGLE_APPLICATION_CREDENTIALS=xx
 を実行しましょう。
 
 ```bash
- ./oasfi-linux  export-validator-reward 0x272d6bd040c2b8454f4f6f43115758fbe318ee2c -c=hub_mainnet --export_csv_online=true
+ ./oasfi-linux  export-validator-reward 0x272d6bd040c2b8454f4f6f43115758fbe318ee2c,0x4e5e774d3837bd9302b83cad94a112575411f07b -c=hub_mainnet --export_csv_online=true
 ```
 
 #### --output
 
 * 出力するファイル先を指定
-* デフォルトはcommision-reward-(address).csv　(validator rewardはcommision-rewardと同義)
+* デフォルトはcommission-reward.csv　(validator rewardはcommission-rewardと同義)
 
 ```bash
- ./oasfi-linux  export-validator-reward 0x272d6bd040c2b8454f4f6f43115758fbe318ee2c -c=hub_mainnet -o=output.csv
+ ./oasfi-linux  export-validator-reward 0x272d6bd040c2b8454f4f6f43115758fbe318ee2c,0x4e5e774d3837bd9302b83cad94a112575411f07b -c=hub_mainnet -o=output.csv
 ```
 
 ### 参考
@@ -156,11 +156,8 @@ export GOOGLE_APPLICATION_CREDENTIALS=xx
 ## export-staker-rewardスクリプト
 
 * 特定のaddressのstaker rewardによって生じたお金の記録を出力するスクリプトです。
-* アドレスとして、Validator OwnerキーとStaker Ownerキーを指定する必要があります。
-  * Validator Ownerキーについて https://docs.oasys.games/docs/architecture/hub-layer/validator-account#validator-owner
-
+* アドレスとして、Staker Ownerキーを指定する必要があります。
 * OASトークンの価格を出力したい場合はCOINGECKOのAPIキーを取得して、以下のコマンドを実行します。(APIキーはcoingeckoと各自が契約してユーザー自身が取得してください)
-
 * APY(stakingした時の年間金利)は10%で、その内訳としては、staker reward(90%)とvalidator reward(10%)である
 
 ```bash
@@ -172,28 +169,28 @@ export COINGECKO_API_KEY=xx
 #### MacOS:
 
 ```bash
-./oasfi-macos  export-staker-reward validator_address staker_address -c=chain_name
+./oasfi-macos  export-staker-reward staker_addresses -c=chain_name
 
 # example
-# ./oasfi-macos  export-staker-reward validator_address staker_address -c=hub_mainnet 
+# ./oasfi-macos  export-staker-reward staker_addresses -c=hub_mainnet 
 ```
 
 #### windows:
 
 ```bash
-./oasfi-win.exe  export-staker-reward validator_address staker_address -c=chain_name
+./oasfi-win.exe  export-staker-reward staker_addresses -c=chain_name
 
 # example
-# ./oasfi-win.exe  export-staker-reward validator_address staker_address -c=hub_mainnet 
+# ./oasfi-win.exe  export-staker-reward staker_addresses -c=hub_mainnet 
 ```
 
 #### linux:
 
 ```bash
-./oasfi-linux  export-staker-reward validator_address staker_address -c=chain_name
+./oasfi-linux  export-staker-reward staker_addresses -c=chain_name
 
 # example
-# ./oasfi-linux  export-staker-reward validator_address staker_address -c=hub_mainnet 
+# ./oasfi-linux  export-staker-reward staker_addresses -c=hub_mainnet 
 ```
 
 ### optional command:  
@@ -204,7 +201,7 @@ export COINGECKO_API_KEY=xx
 * デフォルトはローカルタイムゾーンで、タイムゾーンを変更する場合は、--time_zone=timezone を使用できます。
 
 ```bash
-./oasfi-linux  export-staker-reward validator_address staker_address -c=hub_mainnet --from_date=2023-08-16T10:00:00 --to_date=2023-10-16T10:00:00
+./oasfi-linux  export-staker-reward staker_addresses -c=hub_mainnet --from_date=2023-08-16T10:00:00 --to_date=2023-10-16T10:00:00
 ```
 
 #### --price
@@ -213,7 +210,7 @@ export COINGECKO_API_KEY=xx
 * 通貨はcoingeckoに対応のものが利用できます
 
 ```bash
- ./oasfi-linux  export-staker-reward validator_address staker_address -c=hub_mainnet --price=jpy
+ ./oasfi-linux  export-staker-reward staker_addresses -c=hub_mainnet --price=jpy
 ```
 
 #### --from_epoch, --to_epoch
@@ -221,7 +218,7 @@ export COINGECKO_API_KEY=xx
 * 特定のepochの範囲を指定して、その範囲のデータをcsvに出力する。
 
 ```bash
- ./oasfi-linux  export-staker-reward validator_address staker_address -c=hub_mainnet  --from_epoch=246 --to_epoch=247
+ ./oasfi-linux  export-staker-reward staker_addresses -c=hub_mainnet  --from_epoch=246 --to_epoch=247
 ```
 
 #### --price_time
@@ -229,7 +226,7 @@ export COINGECKO_API_KEY=xx
 * --price_time は価格を取得する時間(UTC)を渡します。 --price_time フラグが設定されていない場合、デフォルトは 00:00:00 UTC になります。
 
 ```bash
- ./oasfi-linux  export-staker-reward validator_address staker_address --price_time=10:00:00
+ ./oasfi-linux  export-staker-reward staker_addresses --price_time=10:00:00
 ```
 
 #### --export_csv_online
@@ -245,16 +242,16 @@ export GOOGLE_APPLICATION_CREDENTIALS=xx
 を実行しましょう。
 
 ```bash
- ./oasfi-linux  export-staker-reward validator_address staker_address -c=hub_mainnet --export_csv_online=true
+ ./oasfi-linux  export-staker-reward staker_addresses -c=hub_mainnet --export_csv_online=true
 ```
 
 #### --output
 
 * 出力するファイル先を指定
-* デフォルトはstaker-reward-(address).csv
+* デフォルトはstaker-reward.csv
 
 ```bash
- ./oasfi-linux  export-staker-reward validator_address staker_address -c=hub_mainnet -o=output.csv
+ ./oasfi-linux  export-staker-reward staker_addresses -c=hub_mainnet -o=output.csv
 ```
 
 ### 参考
