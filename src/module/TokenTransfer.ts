@@ -36,8 +36,8 @@ export type TokenTransferData = {
 export class TokenTransfer {
   private baseRpcUrl: string;
 
-  constructor(private readonly chain: string) {
-    this.baseRpcUrl = this.getRpcUrlForChain(chain);
+  constructor(private readonly chain?: string) {
+    this.baseRpcUrl = this.getRpcUrlForChain('hub_mainnet'); // set default hub mainnet
   }
 
   private getRpcUrlForChain(chain: string): string {

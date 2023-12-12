@@ -20,7 +20,7 @@ import {
 import { Subgraph } from '../utils/subgraph';
 // main process
 export const main = async (argv: validatorRewardArgs) => {
-  const subgraph = new Subgraph(argv.chain);
+  const subgraph = new Subgraph();
 
   // header for validator reward
   const header: string[] = getHeader(argv);

@@ -22,7 +22,7 @@ import {
 import { Subgraph } from '../utils/subgraph';
 
 export const main = async (argv: stakerRewardArgs) => {
-  const subgraph = new Subgraph(argv.chain);
+  const subgraph = new Subgraph();
   // header for staker reward
   const header: string[] = getHeader(argv);
 

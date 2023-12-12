@@ -151,8 +151,8 @@ const BASE_GRAPH_URL: Record<string, string> = {
 export class Subgraph {
   private baseGraphUrl: string;
 
-  constructor(private readonly chain: string) {
-    this.baseGraphUrl = this.getGraphUrlForChain(chain);
+  constructor(private readonly chain?: string) {
+    this.baseGraphUrl = this.getGraphUrlForChain('hub_mainnet'); // set default hub mainnet
   }
 
   private getGraphUrlForChain(chain: string): string {
