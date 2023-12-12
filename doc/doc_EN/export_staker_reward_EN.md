@@ -11,31 +11,35 @@ export COINGECKO_API_KEY=xx
 
 ### basic command
 
+**Require: Do not enter spaces.
+Correct: 0x272d6bd040c2b8454f4f6f43115758fbe318ee2c,0x4e5e774d3837bd9302b83cad94a112575411f07b  
+Incorrect: 0x272d6bd040c2b8454f4f6f43115758fbe318ee2c,  0x4e5e774d3837bd9302b83cad94a112575411f07b  
+
 #### MacOS:
 
 ```bash
-./oasfi-macos  export-staker-reward staker_addresses -c=chain_name
+./oasfi-macos  export-staker-reward addresses
 
 # example
-# ./oasfi-macos  export-staker-reward staker_addresses -c=hub_mainnet 
+# ./oasfi-macos  export-staker-reward 0x272d6bd040c2b8454f4f6f43115758fbe318ee2c,0x4e5e774d3837bd9302b83cad94a112575411f07b  
 ```
 
 #### windows:
 
 ```bash
-./oasfi-win.exe  export-staker-reward staker_addresses -c=chain_name
+./oasfi-win.exe  export-staker-reward addresses
 
 # example
-# ./oasfi-win.exe  export-staker-reward staker_addresses -c=hub_mainnet 
+# ./oasfi-win.exe  export-staker-reward 0x272d6bd040c2b8454f4f6f43115758fbe318ee2c,0x4e5e774d3837bd9302b83cad94a112575411f07b  
 ```
 
 #### linux:
 
 ```bash
-./oasfi-linux  export-staker-reward staker_addresses -c=chain_name
+./oasfi-linux  export-staker-reward addresses
 
 # example
-# ./oasfi-linux  export-staker-reward staker_addresses -c=hub_mainnet 
+# ./oasfi-linux  export-staker-reward 0x272d6bd040c2b8454f4f6f43115758fbe318ee2c,0x4e5e774d3837bd9302b83cad94a112575411f07b  
 ```
 
 ### optional command:  
@@ -46,7 +50,7 @@ export COINGECKO_API_KEY=xx
 * The default is set to the local timezone. If you need to change the timezone, you can use --time_zone=timezone.
 
 ```bash
-./oasfi-linux  export-staker-reward staker_addresses -c=hub_mainnet --from_date=2023-08-16T10:00:00 --to_date=2023-10-16T10:00:00
+./oasfi-linux  export-staker-reward 0x272d6bd040c2b8454f4f6f43115758fbe318ee2c,0x4e5e774d3837bd9302b83cad94a112575411f07b  --from_date=2023-08-16T10:00:00 --to_date=2023-10-16T10:00:00
 ```
 
 #### --price
@@ -55,7 +59,7 @@ export COINGECKO_API_KEY=xx
 * The currencies available are those supported by Coingecko.
 
 ```bash
- ./oasfi-linux  export-staker-reward staker_addresses -c=hub_mainnet --price=jpy
+ ./oasfi-linux  export-staker-reward 0x272d6bd040c2b8454f4f6f43115758fbe318ee2c,0x4e5e774d3837bd9302b83cad94a112575411f07b  --price=jpy
 ```
 
 #### --from_epoch, --to_epoch
@@ -63,7 +67,7 @@ export COINGECKO_API_KEY=xx
 * Specify a range of specific epochs to export the data for that range into a CSV file.
 
 ```bash
- ./oasfi-linux  export-staker-reward staker_addresses -c=hub_mainnet  --from_epoch=246 --to_epoch=247
+ ./oasfi-linux  export-staker-reward 0x272d6bd040c2b8454f4f6f43115758fbe318ee2c,0x4e5e774d3837bd9302b83cad94a112575411f07b   --from_epoch=246 --to_epoch=247
 ```
 
 #### --price_time
@@ -71,7 +75,7 @@ export COINGECKO_API_KEY=xx
 * --price_time passes the time (UTC) for fetching the price. If the --price_time flag is not set, the default will be at 00:00:00 UTC.
 
 ```bash
- ./oasfi-linux  export-staker-reward staker_addresses --price_time=10:00:00
+ ./oasfi-linux  export-staker-reward 0x272d6bd040c2b8454f4f6f43115758fbe318ee2c,0x4e5e774d3837bd9302b83cad94a112575411f07b --price_time=10:00:00
 ```
 
 #### --export_csv_online
@@ -85,7 +89,7 @@ export GOOGLE_APPLICATION_CREDENTIALS=xx
 ```
 
 ```bash
- ./oasfi-linux  export-staker-reward staker_addresses -c=hub_mainnet --export_csv_online=true
+ ./oasfi-linux  export-staker-reward 0x272d6bd040c2b8454f4f6f43115758fbe318ee2c,0x4e5e774d3837bd9302b83cad94a112575411f07b  --export_csv_online=true
 ```
 
 #### --output
@@ -94,7 +98,7 @@ export GOOGLE_APPLICATION_CREDENTIALS=xx
 * Default is staker-reward.csv
 
 ```bash
- ./oasfi-linux  export-staker-reward staker_addresses -c=hub_mainnet -o=output.csv
+ ./oasfi-linux  export-staker-reward 0x272d6bd040c2b8454f4f6f43115758fbe318ee2c,0x4e5e774d3837bd9302b83cad94a112575411f07b  -o=output.csv
 ```
 
 ### 参考

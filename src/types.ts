@@ -41,12 +41,10 @@ export interface OasPrices {
 export interface CorrectCsvArgs {
   input: string;
   output: string;
-  chain: string;
 }
 
 export interface validatorRewardArgs {
   validator_addresses: string;
-  chain: string;
   from_epoch: number;
   to_epoch: number;
   from_date: string;
@@ -60,7 +58,6 @@ export interface validatorRewardArgs {
 
 export interface stakerRewardArgs {
   staker_addresses: string;
-  chain: string;
   from_epoch: number;
   to_epoch: number;
   from_date: string;

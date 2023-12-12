@@ -17,12 +17,6 @@ export const defineCorrectCsvCommand = (yargs: Argv) => {
       requiresArg: true,
       required: true,
     },
-    chain: {
-      alias: 'c',
-      description: 'Chain name',
-      requiresArg: true,
-      required: true,
-    },
   });
 };
 

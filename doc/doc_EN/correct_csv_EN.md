@@ -5,26 +5,26 @@ This script was created to correct errors in token transfer data obtained from B
 #### MacOS:
 
 ```bash
-./oasfi-macos correct-csv -i=input.csv -o=output.csv -c=chain_name
+./oasfi-macos correct-csv -i=input.csv -o=output.csv 
 
 # example
-# ./oasfi-macos correct-csv -i=blockscoutV5.csv -o=correctTransferData.csv -c=hub_mainnet
+# ./oasfi-macos correct-csv -i=blockscoutV5.csv -o=correctTransferData.csv
 ```
 
 #### Windows:
 
 ```bash
-./oasfi-win.exe correct-csv -i=input.csv -o=output.csv -c=chain_name
+./oasfi-win.exe correct-csv -i=input.csv -o=output.csv 
 
 # example
-# ./oasfi-win.exe correct-csv -i=blockscoutV5.csv -o=correctTransferData.csv -c=hub_mainnet
+# ./oasfi-win.exe correct-csv -i=blockscoutV5.csv -o=correctTransferData.csv
 ```
 
 #### Linux:
 
 ```bash
-./oasfi-linux correct-csv -i=input.csv -o=output.csv -c=chain_name
+./oasfi-linux correct-csv -i=input.csv -o=output.csv 
 
 # example
-# ./oasfi-linux correct-csv -i=blockscoutV5.csv -o=correctTransferData.csv -c=hub_mainnet
+# ./oasfi-linux correct-csv -i=blockscoutV5.csv -o=correctTransferData.csv
 ```
