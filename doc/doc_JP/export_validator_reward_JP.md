@@ -18,7 +18,7 @@ export COINGECKO_API_KEY=xx
 #### MacOS:
 
 ```bash
-./oasfi-macos  export-validator-reward addresses
+./oasfi-macos  export-validator-reward 0xXX..XX,0xYY..YY
 
 # example
 # ./oasfi-macos  export-validator-reward 0x272d6bd040c2b8454f4f6f43115758fbe318ee2c,0x4e5e774d3837bd9302b83cad94a112575411f07b  
@@ -27,7 +27,7 @@ export COINGECKO_API_KEY=xx
 #### windows:
 
 ```bash
-./oasfi-win.exe  export-validator-reward addresses
+./oasfi-win.exe  export-validator-reward 0xXX..XX,0xYY..YY
 
 # example
 # ./oasfi-win.exe  export-validator-reward 0x272d6bd040c2b8454f4f6f43115758fbe318ee2c,0x4e5e774d3837bd9302b83cad94a112575411f07b  
@@ -36,7 +36,7 @@ export COINGECKO_API_KEY=xx
 #### linux:
 
 ```bash
-./oasfi-linux  export-validator-reward addresses
+./oasfi-linux  export-validator-reward 0xXX..XX,0xYY..YY
 
 # example
 # ./oasfi-linux  export-validator-reward 0x272d6bd040c2b8454f4f6f43115758fbe318ee2c,0x4e5e774d3837bd9302b83cad94a112575411f07b  

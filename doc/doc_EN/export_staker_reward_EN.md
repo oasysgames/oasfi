@@ -18,7 +18,7 @@ Incorrect: 0x272d6bd040c2b8454f4f6f43115758fbe318ee2c,  0x4e5e774d3837bd9302b83c
 #### MacOS:
 
 ```bash
-./oasfi-macos  export-staker-reward addresses
+./oasfi-macos  export-staker-reward 0xXX..XX,0xYY..YY
 
 # example
 # ./oasfi-macos  export-staker-reward 0x272d6bd040c2b8454f4f6f43115758fbe318ee2c,0x4e5e774d3837bd9302b83cad94a112575411f07b  
@@ -27,7 +27,7 @@ Incorrect: 0x272d6bd040c2b8454f4f6f43115758fbe318ee2c,  0x4e5e774d3837bd9302b83c
 #### windows:
 
 ```bash
-./oasfi-win.exe  export-staker-reward addresses
+./oasfi-win.exe  export-staker-reward 0xXX..XX,0xYY..YY
 
 # example
 # ./oasfi-win.exe  export-staker-reward 0x272d6bd040c2b8454f4f6f43115758fbe318ee2c,0x4e5e774d3837bd9302b83cad94a112575411f07b  
@@ -36,7 +36,7 @@ Incorrect: 0x272d6bd040c2b8454f4f6f43115758fbe318ee2c,  0x4e5e774d3837bd9302b83c
 #### linux:
 
 ```bash
-./oasfi-linux  export-staker-reward addresses
+./oasfi-linux  export-staker-reward 0xXX..XX,0xYY..YY
 
 # example
 # ./oasfi-linux  export-staker-reward 0x272d6bd040c2b8454f4f6f43115758fbe318ee2c,0x4e5e774d3837bd9302b83cad94a112575411f07b  
