@@ -12,31 +12,35 @@ export COINGECKO_API_KEY=xx
 
 ### Basic Command
 
+**Require: Do not enter spaces.
+Correct: 0x272d6bd040c2b8454f4f6f43115758fbe318ee2c,0x4e5e774d3837bd9302b83cad94a112575411f07b  
+Incorrect: 0x272d6bd040c2b8454f4f6f43115758fbe318ee2c,  0x4e5e774d3837bd9302b83cad94a112575411f07b  
+
 #### MacOS:
 
 ```bash
-./oasfi-macos  export-validator-reward addresses -c=chain_name
+./oasfi-macos  export-validator-reward addresses
 
 # example
-# ./oasfi-macos  export-validator-reward 0x272d6bd040c2b8454f4f6f43115758fbe318ee2c,0x4e5e774d3837bd9302b83cad94a112575411f07b -c=hub_mainnet 
+# ./oasfi-macos  export-validator-reward 0x272d6bd040c2b8454f4f6f43115758fbe318ee2c,0x4e5e774d3837bd9302b83cad94a112575411f07b  
 ```
 
 #### windows:
 
 ```bash
-./oasfi-win.exe  export-validator-reward addresses -c=chain_name
+./oasfi-win.exe  export-validator-reward addresses
 
 # example
-# ./oasfi-win.exe  export-validator-reward 0x272d6bd040c2b8454f4f6f43115758fbe318ee2c,0x4e5e774d3837bd9302b83cad94a112575411f07b -c=hub_mainnet 
+# ./oasfi-win.exe  export-validator-reward 0x272d6bd040c2b8454f4f6f43115758fbe318ee2c,0x4e5e774d3837bd9302b83cad94a112575411f07b  
 ```
 
 #### linux:
 
 ```bash
-./oasfi-linux  export-validator-reward addresses -c=chain_name
+./oasfi-linux  export-validator-reward addresses
 
 # example
-# ./oasfi-linux  export-validator-reward 0x272d6bd040c2b8454f4f6f43115758fbe318ee2c,0x4e5e774d3837bd9302b83cad94a112575411f07b -c=hub_mainnet 
+# ./oasfi-linux  export-validator-reward 0x272d6bd040c2b8454f4f6f43115758fbe318ee2c,0x4e5e774d3837bd9302b83cad94a112575411f07b  
 ```
 
 ### optional command:  
@@ -47,7 +51,7 @@ export COINGECKO_API_KEY=xx
 * The default is the local timezone, and if you need to change the timezone, you can use --time_zone=timezone.
 
 ```bash
-./oasfi-linux  export-validator-reward 0x272d6bd040c2b8454f4f6f43115758fbe318ee2c,0x4e5e774d3837bd9302b83cad94a112575411f07b -c=hub_mainnet --from_date=2023-08-16T10:00:00 --to_date=2023-10-16T10:00:00
+./oasfi-linux  export-validator-reward 0x272d6bd040c2b8454f4f6f43115758fbe318ee2c,0x4e5e774d3837bd9302b83cad94a112575411f07b  --from_date=2023-08-16T10:00:00 --to_date=2023-10-16T10:00:00
 ```
 
 #### --price
@@ -56,7 +60,7 @@ export COINGECKO_API_KEY=xx
 * Currencies supported by Coingecko can be used.
 
 ```bash
- ./oasfi-linux  export-validator-reward 0x272d6bd040c2b8454f4f6f43115758fbe318ee2c,0x4e5e774d3837bd9302b83cad94a112575411f07b -c=hub_mainnet --price=jpy
+ ./oasfi-linux  export-validator-reward 0x272d6bd040c2b8454f4f6f43115758fbe318ee2c,0x4e5e774d3837bd9302b83cad94a112575411f07b  --price=jpy
 ```
 
 #### --from_epoch, --to_epoch
@@ -64,7 +68,7 @@ export COINGECKO_API_KEY=xx
 * Specify a range of specific epochs to export the data for that range into a CSV file.
 
 ```bash
- ./oasfi-linux  export-validator-reward 0x272d6bd040c2b8454f4f6f43115758fbe318ee2c,0x4e5e774d3837bd9302b83cad94a112575411f07b -c=hub_mainnet  --from_epoch=246 --to_epoch=247
+ ./oasfi-linux  export-validator-reward 0x272d6bd040c2b8454f4f6f43115758fbe318ee2c,0x4e5e774d3837bd9302b83cad94a112575411f07b   --from_epoch=246 --to_epoch=247
 ```
 
 #### --price_time
@@ -86,7 +90,7 @@ export GOOGLE_APPLICATION_CREDENTIALS=xx
 ```
 
 ```bash
- ./oasfi-linux  export-validator-reward 0x272d6bd040c2b8454f4f6f43115758fbe318ee2c,0x4e5e774d3837bd9302b83cad94a112575411f07b -c=hub_mainnet --export_csv_online=true
+ ./oasfi-linux  export-validator-reward 0x272d6bd040c2b8454f4f6f43115758fbe318ee2c,0x4e5e774d3837bd9302b83cad94a112575411f07b  --export_csv_online=true
 ```
 
 #### --output
@@ -95,7 +99,7 @@ export GOOGLE_APPLICATION_CREDENTIALS=xx
 * The default is commission-reward.csv (commission reward is synonymous with validator reward).
 
 ```bash
- ./oasfi-linux  export-validator-reward 0x272d6bd040c2b8454f4f6f43115758fbe318ee2c,0x4e5e774d3837bd9302b83cad94a112575411f07b -c=hub_mainnet -o=output.csv
+ ./oasfi-linux  export-validator-reward 0x272d6bd040c2b8454f4f6f43115758fbe318ee2c,0x4e5e774d3837bd9302b83cad94a112575411f07b  -o=output.csv
 ```
 
 ### References

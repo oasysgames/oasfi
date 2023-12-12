@@ -11,12 +11,6 @@ export const defineValidatorRewardCommand = (yargs: Argv) => {
       required: true,
       type: 'string',
     },
-    chain: {
-      alias: 'c',
-      description: 'Chain name',
-      requiresArg: true,
-      required: true,
-    },
     from_epoch: {
       type: 'number',
       description: 'from epoch',
