@@ -101,7 +101,7 @@ export GOOGLE_APPLICATION_CREDENTIALS=xx
  ./oasfi-linux  export-staker-reward 0x272d6bd040c2b8454f4f6f43115758fbe318ee2c,0x4e5e774d3837bd9302b83cad94a112575411f07b  -o=output.csv
 ```
 
-### 参考
+### References
 
 #### sheet API
 * Used to retrieve the SPREADSHEET_ID environment variable
