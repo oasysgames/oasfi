@@ -1,7 +1,7 @@
 import { Arguments, Argv } from 'yargs';
+import { main } from '../execute/executeValidatorReward';
 import { validatorRewardArgs } from '../types';
 import { LogUtils } from '../utils/Logger';
-import { main } from '../execute/executeValidatorReward';
 
 export const defineValidatorRewardCommand = (yargs: Argv) => {
   return yargs.options({
@@ -10,6 +10,10 @@ export const defineValidatorRewardCommand = (yargs: Argv) => {
       requiresArg: true,
       required: true,
       type: 'string',
+    },
+    chain: {
+      alias: 'c',
+      description: 'Chain name',
     },
     from_epoch: {
       type: 'number',

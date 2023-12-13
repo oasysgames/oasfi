@@ -1,22 +1,9 @@
 import * as dotenv from 'dotenv';
 import { ethers } from 'ethers';
+import { BASE_CHAIN, DEFAULT_CHAIN } from '../contants/chain';
+import { Verse } from '../types';
 import { TokenTransferUtils } from '../utils/TokenTransferUtils';
 dotenv.config();
-const BASE_RPC_URL: Record<string, string> = {
-  tcgv_mainnet: process.env.TCGV_MAINNET_URL || 'https://rpc.tcgverse.xyz/',
-  tcgv_testnet: process.env.TCGV_TESTNET_URL || '',
-  sandv_testnet: process.env.SANDV_TESTNET_URL || '',
-  hub_mainnet: process.env.HUB_MAINNET_URL || 'https://rpc.mainnet.oasys.games',
-  eth_mainnet: process.env.ETH_MAINNET_URL || '',
-  mch_mainnet:
-    process.env.MCH_MAINNET_URL || 'https://rpc.oasys.mycryptoheroes.net/',
-  home_mainnet:
-    process.env.HOME_MAINNET_URL ||
-    'https://rpc.mainnet.oasys.homeverse.games/',
-  saakuru_mainnet:
-    process.env.SAAKURU_MAINNET_URL || 'https://rpc.saakuru.network/',
-  hub_testnet: process.env.HUB_TESTNET_URL || '',
-};
 
 export type TokenTransferData = {
   TxHash: string;
@@ -36,16 +23,15 @@ export type TokenTransferData = {
 export class TokenTransfer {
   private baseRpcUrl: string;
 
-  constructor(private readonly chain?: string) {
-    this.baseRpcUrl = this.getRpcUrlForChain('hub_mainnet'); // set default hub mainnet
+  constructor(private readonly chain?: Verse) {
+    this.baseRpcUrl = this.getRpcUrlForChain(chain);
   }
 
-  private getRpcUrlForChain(chain: string): string {
-    const url = BASE_RPC_URL[chain];
-    if (!url) {
-      throw new Error(`Invalid chain name: ${chain}`);
-    }
-    console.log(`Using chain: ${chain}`);
+  private getRpcUrlForChain(chain: Verse): string {
+    const url = BASE_CHAIN[chain]?.rpc || BASE_CHAIN[DEFAULT_CHAIN]?.rpc || '';
+    const selectedChain =
+      url === BASE_CHAIN[chain]?.rpc ? chain : DEFAULT_CHAIN;
+    console.log(`Using chain: ${selectedChain} with url: ${url}`);
     return url;
   }
 

@@ -11,6 +11,10 @@ export const defineStakerRewardCommand = (yargs: Argv) => {
       required: true,
       type: 'string',
     },
+    chain: {
+      alias: 'c',
+      description: 'Chain name',
+    },
     from_epoch: {
       type: 'number',
       description: 'from epoch',

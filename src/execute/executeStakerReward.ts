@@ -11,6 +11,7 @@ import {
   OasPrices,
   PrepareData,
   TimeData,
+  Verse,
   stakerRewardArgs,
 } from '../types';
 import {
@@ -32,7 +33,7 @@ export const main = async (argv: stakerRewardArgs) => {
   if (!isValidAddresses(addresses)) {
     return;
   }
-  const subgraph = new Subgraph();
+  const subgraph = new Subgraph(argv.chain as Verse);
   // header for staker reward
   const header: string[] = getHeader(argv);
 

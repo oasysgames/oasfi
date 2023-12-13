@@ -10,6 +10,7 @@ import {
   OasPrices,
   PrepareData,
   TimeData,
+  Verse,
   validatorRewardArgs,
 } from '../types';
 import {
@@ -31,7 +32,7 @@ export const main = async (argv: validatorRewardArgs) => {
     return;
   }
 
-  const subgraph = new Subgraph();
+  const subgraph = new Subgraph(argv.chain as Verse);
 
   // header for validator reward
   const header: string[] = getHeader(argv);
