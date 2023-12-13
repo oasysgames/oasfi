@@ -28,3 +28,31 @@ This script was created to correct errors in token transfer data obtained from B
 # example
 # ./oasfi-linux correct-csv -i=blockscoutV5.csv -o=correctTransferData.csv
 ```
+
+### optional command:  
+
+#### --chain
+* You can specify chain. By default is hub mainnet.
+
+```bash
+export HUB_MAINNET_RPC_URL=xx
+
+./oasfi-linux correct-csv -i=blockscoutV5.csv -o=correctTransferData.csv -c=hub_mainnet
+```
+
+Another chain url:
+```
+  export HUB_MAINNET_RPC_URL=xx
+  export HUB_TESTNET_RPC_URL=xx
+  export TCGV_MAINNET_RPC_URL=xx
+  export TCGV_TESTNET_RPC_URL=xx
+  export SANDV_TESTNET_RPC_URL=xx
+  export SANDV_MAINNET_RPC_URL=xx
+  export MCH_MAINNET_RPC_URL=xx
+  export MCH_TESTNET_RPC_URL=xx
+  export HOME_MAINNET_RPC_URL=xx
+  export HOME_TESTNET_RPC_URL=xx
+  export SAAKURU_MAINNET_RPC_URL=xx
+  export SAAKURU_TESTNET_RPC_URL=xx ```
+
+  

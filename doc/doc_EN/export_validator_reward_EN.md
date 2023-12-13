@@ -45,7 +45,7 @@ Incorrect: 0x272d6bd040c2b8454f4f6f43115758fbe318ee2c,  0x4e5e774d3837bd9302b83c
 
 ### optional command:  
 
-#### from_date, to_date
+#### --from_date, --to_date
 
 * Specifying --from_date and --to_date helps to retrieve data for a specific period.
 * The default is the local timezone, and if you need to change the timezone, you can use --time_zone=timezone.
@@ -101,6 +101,30 @@ export GOOGLE_APPLICATION_CREDENTIALS=xx
 ```bash
  ./oasfi-linux  export-validator-reward 0x272d6bd040c2b8454f4f6f43115758fbe318ee2c,0x4e5e774d3837bd9302b83cad94a112575411f07b  -o=output.csv
 ```
+
+#### --chain
+* You can specify chain. By default is hub mainnet.
+
+```bash
+export HUB_MAINNET_GRAPH_URL=xx
+
+./oasfi-linux  export-validator-reward 0x272d6bd040c2b8454f4f6f43115758fbe318ee2c,0x4e5e774d3837bd9302b83cad94a112575411f07b -c=hub_mainnet
+```
+
+Another chain url:
+```
+  export HUB_MAINNET_GRAPH_URL=xx
+  export HUB_TESTNET_GRAPH_URL=xx
+  export TCGV_MAINNET_GRAPH_URL=xx
+  export TCGV_TESTNET_GRAPH_URL=xx
+  export SANDV_TESTNET_GRAPH_URL=xx
+  export SANDV_MAINNET_GRAPH_URL=xx
+  export MCH_MAINNET_GRAPH_URL=xx
+  export MCH_TESTNET_GRAPH_URL=xx
+  export HOME_MAINNET_GRAPH_URL=xx
+  export HOME_TESTNET_GRAPH_URL=xx
+  export SAAKURU_MAINNET_GRAPH_URL=xx
+  export SAAKURU_TESTNET_GRAPH_URL=xx ```
 
 ### References
 
