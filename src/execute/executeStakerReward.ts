@@ -13,7 +13,12 @@ import {
   TimeData,
   stakerRewardArgs,
 } from '../types';
-import { generateNumberArray, sortByTimeStamp } from '../utils';
+import {
+  generateNumberArray,
+  isValidAddresses,
+  sortByTimeStamp,
+} from '../utils';
+import { convertAddressesToArray } from '../utils/convert';
 import {
   DEFAULT_LIST_PRICE,
   HEADER_FOR_STAKING_REWARD,
@@ -22,6 +27,11 @@ import {
 import { Subgraph } from '../utils/subgraph';
 
 export const main = async (argv: stakerRewardArgs) => {
+  // validate address
+  const addresses = convertAddressesToArray(argv.staker_addresses);
+  if (!isValidAddresses(addresses)) {
+    return;
+  }
   const subgraph = new Subgraph();
   // header for staker reward
   const header: string[] = getHeader(argv);
@@ -115,7 +125,7 @@ const getDataExport = async (
   argv: stakerRewardArgs,
 ): Promise<DataExport[]> => {
   // set the address to lowercase
-  const addresses = argv.staker_addresses?.toLowerCase().split(',');
+  const addresses = convertAddressesToArray(argv.staker_addresses);
   const resultsPromise = prepareData.map(async (item: PrepareData) => {
     const { oasPrices, timeData } = item;
     const { block, epoch, timestamp } = timeData;
@@ -123,11 +133,9 @@ const getDataExport = async (
 
     const validatorResults = await Promise.all(
       addresses?.map(async (address: string) => {
-        const trimAddress = address?.trim();
-
         const listStakerStake = await subgraph.getListStakerStake(
           block,
-          trimAddress,
+          address,
           epoch,
         );
 
