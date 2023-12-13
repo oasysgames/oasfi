@@ -4,7 +4,8 @@
     "rootDir": "./src",
     "moduleResolution": "node",
     "target": "es2018",
-    "module": "CommonJS"
+    "module": "CommonJS",
+    "skipLibCheck": true
   },
   "exclude": ["specs", "jest-setup.ts"]
 }

@@ -9,7 +9,7 @@
   },
   "scripts": {
     "test": "jest",
-    "compile": "npx tsc && pkg .",
+    "compile": "npx tsc && npx pkg .",
     "lint": "eslint .",
     "lint:fix": "eslint --fix --ext .ts ./src",
     "codegen": "graphql-codegen --config src/codegen.ts",
