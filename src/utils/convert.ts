@@ -7,3 +7,11 @@ export function convertArrayToObject(inputArray, header) {
 
   return resultObject;
 }
+export function convertAddressesToArray(addresses: string): string[] {
+  return (
+    addresses
+      ?.toLowerCase()
+      .split(',')
+      ?.map((address) => address?.trim()?.replace(/[[\]{}()]/g, '')) || []
+  );
+}

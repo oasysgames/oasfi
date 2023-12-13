@@ -12,14 +12,25 @@ import {
   TimeData,
   validatorRewardArgs,
 } from '../types';
-import { generateNumberArray, sortByTimeStamp } from '../utils';
+import {
+  generateNumberArray,
+  isValidAddresses,
+  sortByTimeStamp,
+} from '../utils';
 import {
   DEFAULT_LIST_PRICE,
   HEADER_FOR_VALIDATOR_REWARD,
 } from '../utils/google';
 import { Subgraph } from '../utils/subgraph';
+import { convertAddressesToArray } from '../utils/convert';
 // main process
 export const main = async (argv: validatorRewardArgs) => {
+  // validate address
+  const addresses = convertAddressesToArray(argv.validator_addresses);
+  if (!isValidAddresses(addresses)) {
+    return;
+  }
+
   const subgraph = new Subgraph();
 
   // header for validator reward
@@ -111,9 +122,7 @@ const getDataExport = async (
   argv: validatorRewardArgs,
 ): Promise<DataExport[]> => {
   // Set the address to lowercase
-  const validator_addresses = argv.validator_addresses
-    ?.toLowerCase()
-    ?.split(',');
+  const validator_addresses = convertAddressesToArray(argv.validator_addresses);
 
   const resultsPromise = prepareData.map(async (item: PrepareData) => {
     const { oasPrices, timeData } = item;
@@ -122,7 +131,7 @@ const getDataExport = async (
 
     const validatorResults = await Promise.all(
       validator_addresses?.map(async (address: string) => {
-        const validatorAddress = address?.trim();
+        const validatorAddress = address;
         // Get totalStake of validator
         const validatorStake = await subgraph.getValidatorTotalStake(
           epoch,

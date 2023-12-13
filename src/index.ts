@@ -3,10 +3,6 @@
 import yargs from 'yargs';
 import { hideBin } from 'yargs/helpers';
 import {
-  defineValidatorRewardCommand,
-  processValidatorRewardCommand,
-} from './cmd/cmdValidatorReward';
-import {
   defineCorrectCsvCommand,
   processCorrectCsvCommand,
 } from './cmd/cmdCorrectCsv';
@@ -14,13 +10,16 @@ import {
   defineStakerRewardCommand,
   processStakerRewardCommand,
 } from './cmd/cmdStakerReward';
+import {
+  defineValidatorRewardCommand,
+  processValidatorRewardCommand,
+} from './cmd/cmdValidatorReward';
 
-void yargs(hideBin(process.argv))
-  .usage('<command>  [OPTIONS]')
-  .help('help')
-  .alias('help', 'h')
+const scriptName = './oasfi-os';
+const argv = yargs(hideBin(process.argv))
+  .scriptName(scriptName)
+  .usage(`Usage: ${scriptName} COMMAND  [OPTIONS]`)
   .version('version', '1.0.1')
-  .alias('version', 'V')
   .command(
     'correct-csv',
     'Check token balance and remove duplicate records from a CSV',
@@ -39,5 +38,8 @@ void yargs(hideBin(process.argv))
     defineStakerRewardCommand,
     processStakerRewardCommand,
   )
-
-  .help().argv;
+  .strictCommands()
+  .recommendCommands()
+  .demandCommand(1, 'You need to specify a command.')
+  .help()
+  .wrap(yargs(process.argv).terminalWidth()).argv;
