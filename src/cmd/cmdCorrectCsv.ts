@@ -1,7 +1,7 @@
 import { Arguments, Argv } from 'yargs';
+import { main } from '../execute/executeCorrectCsv';
 import { CorrectCsvArgs } from '../types';
 import { LogUtils } from '../utils/Logger';
-import { main } from '../execute/executeCorrectCsv';
 
 export const defineCorrectCsvCommand = (yargs: Argv) => {
   return yargs.options({
@@ -10,6 +10,10 @@ export const defineCorrectCsvCommand = (yargs: Argv) => {
       description: 'Input CSV file',
       requiresArg: true,
       required: true,
+    },
+    chain: {
+      alias: 'c',
+      description: 'Chain name',
     },
     output: {
       alias: 'o',

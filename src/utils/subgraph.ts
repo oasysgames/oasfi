@@ -1,6 +1,12 @@
 import { BigNumber } from 'ethers';
 import { request } from 'graphql-request';
-import { IEpochReward, stakerStake, validatorTotalStake } from '../types';
+import { BASE_CHAIN, DEFAULT_CHAIN } from '../contants/chain';
+import {
+  IEpochReward,
+  Verse,
+  stakerStake,
+  validatorTotalStake,
+} from '../types';
 import { graphql } from './../gql/gql';
 import type {
   GetEpochByToTimeStampQueryVariables,
@@ -142,25 +148,19 @@ const GetStakerStake = graphql(`
   }
 `);
 
-const BASE_GRAPH_URL: Record<string, string> = {
-  hub_mainnet:
-    process.env.HUB_MAINNET_GRAPH_URL ||
-    'https://graph.mainnet.oasys.games/subgraphs/name/oasys/staking',
-};
-
 export class Subgraph {
   private baseGraphUrl: string;
 
-  constructor(private readonly chain?: string) {
-    this.baseGraphUrl = this.getGraphUrlForChain('hub_mainnet'); // set default hub mainnet
+  constructor(private readonly chain?: Verse) {
+    this.baseGraphUrl = this.getGraphUrlForChain(chain);
   }
 
-  private getGraphUrlForChain(chain: string): string {
-    const url = BASE_GRAPH_URL[chain];
-    if (!url) {
-      throw new Error(`Invalid chain name: ${chain}`);
-    }
-    console.log(`Using chain: ${chain}`);
+  private getGraphUrlForChain(chain: Verse): string {
+    const url =
+      BASE_CHAIN[chain]?.graph || BASE_CHAIN[DEFAULT_CHAIN]?.graph || '';
+    const selectedChain =
+      url === BASE_CHAIN[chain]?.graph ? chain : DEFAULT_CHAIN;
+    console.log(`Using chain: ${selectedChain} with url: ${url}`);
     return url;
   }
   public getEpoch = async (epoch: number) => {
