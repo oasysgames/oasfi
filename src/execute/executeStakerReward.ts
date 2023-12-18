@@ -20,6 +20,7 @@ import {
   sortByTimeStamp,
 } from '../utils';
 import { convertAddressesToArray } from '../utils/convert';
+import { getTotalSecondProcess } from '../utils/date';
 import {
   DEFAULT_LIST_PRICE,
   HEADER_FOR_STAKING_REWARD,
@@ -28,6 +29,8 @@ import {
 import { Subgraph } from '../utils/subgraph';
 
 export const main = async (argv: stakerRewardArgs) => {
+  const startTimeProcess = Date.now();
+
   // validate address
   const addresses = convertAddressesToArray(argv.staker_addresses);
   if (!isValidAddresses(addresses)) {
@@ -71,6 +74,8 @@ export const main = async (argv: stakerRewardArgs) => {
     `staker-reward`,
     header,
   );
+  const totalSecondsProcess = getTotalSecondProcess(startTimeProcess);
+  console.log(`==> ${totalSecondsProcess} seconds`);
 };
 
 const getHeader = (argv: stakerRewardArgs): string[] => {
@@ -127,37 +132,41 @@ const getDataExport = async (
 ): Promise<DataExport[]> => {
   // set the address to lowercase
   const addresses = convertAddressesToArray(argv.staker_addresses);
-  const resultsPromise = prepareData.map(async (item: PrepareData) => {
+
+  const results: DataExport[] = [];
+
+  for (const item of prepareData) {
     const { oasPrices, timeData } = item;
     const { block, epoch, timestamp } = timeData;
-    console.log('RUNNING EPOCH ', epoch);
+    const startTimeProcess = Date.now();
+    console.log('PROCESSING WITH EPOCH', epoch);
 
-    const validatorResults = await Promise.all(
-      addresses?.map(async (address: string) => {
-        const listStakerStake = await subgraph.getListStakerStake(
-          block,
-          address,
-          epoch,
-        );
+    const promises = addresses?.map(async (address: string) => {
+      const listStakerStake = await subgraph.getListStakerStake(
+        block,
+        address,
+        epoch,
+      );
 
-        // format data
-        const { rowData } = getAdditionalDataForStakerReward(
-          oasPrices,
-          listStakerStake,
-          timeData,
-          argv.price,
-          address,
-        );
-        return {
-          rowData,
-          timestamp,
-        };
-      }),
-    );
+      // format data
+      const { rowData } = getAdditionalDataForStakerReward(
+        oasPrices,
+        listStakerStake,
+        timeData,
+        argv.price,
+        address,
+      );
+      return {
+        rowData,
+        timestamp,
+      };
+    });
 
-    return validatorResults;
-  });
+    const stakerResults = await Promise.all(promises);
 
-  const results = await Promise.all(resultsPromise);
-  return results.flat();
+    results.push(...stakerResults);
+    const totalSecondsEpoch = getTotalSecondProcess(startTimeProcess);
+    console.info(`--> Epoch ${epoch} took ${totalSecondsEpoch} seconds`);
+  }
+  return results;
 };

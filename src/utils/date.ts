@@ -19,3 +19,7 @@ export const getTime = (timestamp: Date) => {
 export const getMonthDate = (timestamp: Date) => {
   return dateParts(timestamp).slice(0, 2).join('');
 };
+
+export const getTotalSecondProcess = (startTimeProcess: number) => {
+  return ((Date.now() - startTimeProcess) / 1000).toFixed(2);
+};

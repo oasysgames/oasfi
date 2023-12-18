@@ -18,14 +18,17 @@ import {
   isValidAddresses,
   sortByTimeStamp,
 } from '../utils';
+import { convertAddressesToArray } from '../utils/convert';
+import { getTotalSecondProcess } from '../utils/date';
 import {
   DEFAULT_LIST_PRICE,
   HEADER_FOR_VALIDATOR_REWARD,
 } from '../utils/google';
 import { Subgraph } from '../utils/subgraph';
-import { convertAddressesToArray } from '../utils/convert';
 // main process
 export const main = async (argv: validatorRewardArgs) => {
+  const startTimeProcess = Date.now();
+
   // validate address
   const addresses = convertAddressesToArray(argv.validator_addresses);
   if (!isValidAddresses(addresses)) {
@@ -66,6 +69,8 @@ export const main = async (argv: validatorRewardArgs) => {
     'commission-reward',
     header,
   );
+  const totalSecondsProcess = getTotalSecondProcess(startTimeProcess);
+  console.log(`==> ${totalSecondsProcess} seconds`);
 };
 
 const getHeader = (argv: validatorRewardArgs): string[] => {
@@ -122,42 +127,44 @@ const getDataExport = async (
   subgraph: Subgraph,
   argv: validatorRewardArgs,
 ): Promise<DataExport[]> => {
-  // Set the address to lowercase
   const validator_addresses = convertAddressesToArray(argv.validator_addresses);
 
-  const resultsPromise = prepareData.map(async (item: PrepareData) => {
+  const results: DataExport[] = [];
+
+  for (const item of prepareData) {
     const { oasPrices, timeData } = item;
     const { block, epoch, timestamp } = timeData;
-    console.log('RUNNING EPOCH ', epoch);
+    const startTimeProcess = Date.now();
+    console.log('PROCESSING WITH EPOCH', epoch);
 
-    const validatorResults = await Promise.all(
-      validator_addresses?.map(async (address: string) => {
-        const validatorAddress = address;
-        // Get totalStake of validator
-        const validatorStake = await subgraph.getValidatorTotalStake(
-          epoch,
-          block,
-          validatorAddress,
-        );
+    const promises = validator_addresses.map(async (address: string) => {
+      const validatorAddress = address;
+      const validatorStake = await subgraph.getValidatorTotalStake(
+        epoch,
+        block,
+        validatorAddress,
+      );
 
-        // Format data
-        const { rowData } = getAdditionalDataForCommissionReward(
-          oasPrices,
-          validatorStake,
-          timeData,
-          argv.price,
-          validatorAddress,
-        );
-        return {
-          rowData,
-          timestamp,
-        };
-      }),
-    );
+      const { rowData } = getAdditionalDataForCommissionReward(
+        oasPrices,
+        validatorStake,
+        timeData,
+        argv.price,
+        validatorAddress,
+      );
 
-    return validatorResults;
-  });
+      return {
+        rowData,
+        timestamp,
+      };
+    });
 
-  const results = await Promise.all(resultsPromise);
-  return results.flat();
+    const validatorResults = await Promise.all(promises);
+
+    results.push(...validatorResults);
+    const totalSecondsEpoch = getTotalSecondProcess(startTimeProcess);
+    console.info(`--> Epoch ${epoch} took ${totalSecondsEpoch} seconds`);
+  }
+
+  return results;
 };

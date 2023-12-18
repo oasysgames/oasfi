@@ -156,6 +156,8 @@ export const handleExport = async (
   fileName: string,
   header: string[],
 ) => {
+  console.info(`Start handle export`);
+
   let doc: GoogleSpreadsheet;
   if (isOnline) {
     doc = await getSpreadSheet();
@@ -168,7 +170,9 @@ export const handleExport = async (
       ? await exportCsvOnline(doc, rowData, timestamp, header)
       : await exportCsvLocal(rowData, header, fileName, output);
     await sleep(1500);
+    console.log(`Exported: ${i + 1}/${array.length}`);
   }
+  console.log('Export process complete!');
 };
 
 export const getAdditionalDataForCommissionReward = (
