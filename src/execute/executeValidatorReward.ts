@@ -1,9 +1,9 @@
 import moment = require('moment-timezone');
 import {
+  exportCsv,
   getAdditionalDataForCommissionReward,
   getEpoches,
   getOasPricesForEpoch,
-  handleExport,
 } from '../module/RewardStakes';
 import {
   DataExport,
@@ -13,11 +13,7 @@ import {
   Verse,
   validatorRewardArgs,
 } from '../types';
-import {
-  generateNumberArray,
-  isValidAddresses,
-  sortByTimeStamp,
-} from '../utils';
+import { generateNumberArray, isValidAddresses } from '../utils';
 import { convertAddressesToArray } from '../utils/convert';
 import { getTotalSecondProcess } from '../utils/date';
 import {
@@ -52,25 +48,10 @@ export const main = async (argv: validatorRewardArgs) => {
   );
 
   // data to export
-  let dataExport: DataExport[] = await getDataExport(
-    prepareData,
-    subgraph,
-    argv,
-  );
+  await handleExport(prepareData, subgraph, argv, header);
 
-  //sort by timestamp
-  dataExport = sortByTimeStamp(dataExport, 'asc');
-
-  // process export
-  await handleExport(
-    dataExport,
-    Boolean(argv.export_csv_online),
-    argv.output,
-    'commission-reward',
-    header,
-  );
   const totalSecondsProcess = getTotalSecondProcess(startTimeProcess);
-  console.log(`==> ${totalSecondsProcess} seconds`);
+  console.log(`==> Total: ${totalSecondsProcess} seconds`);
 };
 
 const getHeader = (argv: validatorRewardArgs): string[] => {
@@ -122,10 +103,11 @@ const getPrepareData = async (
   );
 };
 
-const getDataExport = async (
+const handleExport = async (
   prepareData: PrepareData[],
   subgraph: Subgraph,
   argv: validatorRewardArgs,
+  header: string[],
 ): Promise<DataExport[]> => {
   const validator_addresses = convertAddressesToArray(argv.validator_addresses);
 
@@ -159,11 +141,22 @@ const getDataExport = async (
       };
     });
 
-    const validatorResults = await Promise.all(promises);
+    const dataExport = await Promise.all(promises);
+    //sort by timestamp
 
-    results.push(...validatorResults);
+    // process export
+    await exportCsv(
+      dataExport,
+      Boolean(argv.export_csv_online),
+      argv.output,
+      'commission-reward',
+      header,
+    );
+    results.push(...dataExport);
     const totalSecondsEpoch = getTotalSecondProcess(startTimeProcess);
-    console.info(`--> Epoch ${epoch} took ${totalSecondsEpoch} seconds`);
+    console.info(
+      `-->Export at Epoch ${epoch} took ${totalSecondsEpoch} seconds`,
+    );
   }
 
   return results;

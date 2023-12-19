@@ -149,14 +149,14 @@ export const exportCsvLocal = async (
   );
 };
 
-export const handleExport = async (
+export const exportCsv = async (
   array: any,
   isOnline: boolean,
   output: string,
   fileName: string,
   header: string[],
-) => {
-  console.info(`Start handle export`);
+): Promise<boolean> => {
+  // console.info(`Start handle export`);
 
   let doc: GoogleSpreadsheet;
   if (isOnline) {
@@ -169,10 +169,10 @@ export const handleExport = async (
     isOnline
       ? await exportCsvOnline(doc, rowData, timestamp, header)
       : await exportCsvLocal(rowData, header, fileName, output);
-    await sleep(1500);
-    console.log(`Exported: ${i + 1}/${array.length}`);
+    // await sleep(1500);
   }
-  console.log('Export process complete!');
+  // console.log('Export process complete!');
+  return true;
 };
 
 export const getAdditionalDataForCommissionReward = (

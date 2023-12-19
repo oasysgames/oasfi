@@ -1,10 +1,10 @@
 import moment = require('moment-timezone');
 import { GoogleSpreadsheet } from 'google-spreadsheet';
 import {
+  exportCsv,
   getAdditionalDataForStakerReward,
   getEpoches,
   getOasPricesForEpoch,
-  handleExport,
 } from '../module/RewardStakes';
 import {
   DataExport,
@@ -14,11 +14,7 @@ import {
   Verse,
   stakerRewardArgs,
 } from '../types';
-import {
-  generateNumberArray,
-  isValidAddresses,
-  sortByTimeStamp,
-} from '../utils';
+import { generateNumberArray, isValidAddresses } from '../utils';
 import { convertAddressesToArray } from '../utils/convert';
 import { getTotalSecondProcess } from '../utils/date';
 import {
@@ -57,25 +53,10 @@ export const main = async (argv: stakerRewardArgs) => {
     argv,
   );
   // data to export
-  let dataExport: DataExport[] = await getDataExport(
-    prepareData,
-    subgraph,
-    argv,
-  );
+  await handleExport(prepareData, subgraph, argv, header);
 
-  //sort by timestamp
-  dataExport = sortByTimeStamp(dataExport, 'asc');
-
-  // process export
-  await handleExport(
-    dataExport,
-    Boolean(argv.export_csv_online),
-    argv.output,
-    `staker-reward`,
-    header,
-  );
   const totalSecondsProcess = getTotalSecondProcess(startTimeProcess);
-  console.log(`==> ${totalSecondsProcess} seconds`);
+  console.log(`==> Total: ${totalSecondsProcess} seconds`);
 };
 
 const getHeader = (argv: stakerRewardArgs): string[] => {
@@ -125,10 +106,11 @@ const getPrepareData = async (
     }),
   );
 };
-const getDataExport = async (
+const handleExport = async (
   prepareData: PrepareData[],
   subgraph: Subgraph,
   argv: stakerRewardArgs,
+  header: string[],
 ): Promise<DataExport[]> => {
   // set the address to lowercase
   const addresses = convertAddressesToArray(argv.staker_addresses);
@@ -162,11 +144,20 @@ const getDataExport = async (
       };
     });
 
-    const stakerResults = await Promise.all(promises);
-
-    results.push(...stakerResults);
+    const dataExport = await Promise.all(promises);
+    // process export
+    await exportCsv(
+      dataExport,
+      Boolean(argv.export_csv_online),
+      argv.output,
+      `staker-reward`,
+      header,
+    );
+    results.push(...dataExport);
     const totalSecondsEpoch = getTotalSecondProcess(startTimeProcess);
-    console.info(`--> Epoch ${epoch} took ${totalSecondsEpoch} seconds`);
+    console.info(
+      `-->Export at Epoch ${epoch} took ${totalSecondsEpoch} seconds`,
+    );
   }
   return results;
 };
