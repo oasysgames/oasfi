@@ -1,10 +1,10 @@
 import moment = require('moment-timezone');
 import { GoogleSpreadsheet } from 'google-spreadsheet';
 import {
+  exportCsv,
   getAdditionalDataForStakerReward,
   getEpoches,
   getOasPricesForEpoch,
-  handleExport,
 } from '../module/RewardStakes';
 import {
   DataExport,
@@ -14,12 +14,9 @@ import {
   Verse,
   stakerRewardArgs,
 } from '../types';
-import {
-  generateNumberArray,
-  isValidAddresses,
-  sortByTimeStamp,
-} from '../utils';
+import { generateNumberArray, isValidAddresses } from '../utils';
 import { convertAddressesToArray } from '../utils/convert';
+import { getTotalSecondProcess } from '../utils/date';
 import {
   DEFAULT_LIST_PRICE,
   HEADER_FOR_STAKING_REWARD,
@@ -28,6 +25,8 @@ import {
 import { Subgraph } from '../utils/subgraph';
 
 export const main = async (argv: stakerRewardArgs) => {
+  const startTimeProcess = Date.now();
+
   // validate address
   const addresses = convertAddressesToArray(argv.staker_addresses);
   if (!isValidAddresses(addresses)) {
@@ -54,23 +53,10 @@ export const main = async (argv: stakerRewardArgs) => {
     argv,
   );
   // data to export
-  let dataExport: DataExport[] = await getDataExport(
-    prepareData,
-    subgraph,
-    argv,
-  );
+  await handleExport(prepareData, subgraph, argv, header);
 
-  //sort by timestamp
-  dataExport = sortByTimeStamp(dataExport, 'asc');
-
-  // process export
-  await handleExport(
-    dataExport,
-    Boolean(argv.export_csv_online),
-    argv.output,
-    `staker-reward`,
-    header,
-  );
+  const totalSecondsProcess = getTotalSecondProcess(startTimeProcess);
+  console.log(`==> Total: ${totalSecondsProcess} seconds`);
 };
 
 const getHeader = (argv: stakerRewardArgs): string[] => {
@@ -120,44 +106,58 @@ const getPrepareData = async (
     }),
   );
 };
-const getDataExport = async (
+const handleExport = async (
   prepareData: PrepareData[],
   subgraph: Subgraph,
   argv: stakerRewardArgs,
+  header: string[],
 ): Promise<DataExport[]> => {
   // set the address to lowercase
   const addresses = convertAddressesToArray(argv.staker_addresses);
-  const resultsPromise = prepareData.map(async (item: PrepareData) => {
+
+  const results: DataExport[] = [];
+
+  for (const item of prepareData) {
     const { oasPrices, timeData } = item;
     const { block, epoch, timestamp } = timeData;
-    console.log('RUNNING EPOCH ', epoch);
+    const startTimeProcess = Date.now();
+    console.log('PROCESSING WITH EPOCH', epoch);
 
-    const validatorResults = await Promise.all(
-      addresses?.map(async (address: string) => {
-        const listStakerStake = await subgraph.getListStakerStake(
-          block,
-          address,
-          epoch,
-        );
+    const promises = addresses?.map(async (address: string) => {
+      const listStakerStake = await subgraph.getListStakerStake(
+        block,
+        address,
+        epoch,
+      );
 
-        // format data
-        const { rowData } = getAdditionalDataForStakerReward(
-          oasPrices,
-          listStakerStake,
-          timeData,
-          argv.price,
-          address,
-        );
-        return {
-          rowData,
-          timestamp,
-        };
-      }),
+      // format data
+      const { rowData } = getAdditionalDataForStakerReward(
+        oasPrices,
+        listStakerStake,
+        timeData,
+        argv.price,
+        address,
+      );
+      return {
+        rowData,
+        timestamp,
+      };
+    });
+
+    const dataExport = await Promise.all(promises);
+    // process export
+    await exportCsv(
+      dataExport,
+      Boolean(argv.export_csv_online),
+      argv.output,
+      `staker-reward`,
+      header,
     );
-
-    return validatorResults;
-  });
-
-  const results = await Promise.all(resultsPromise);
-  return results.flat();
+    results.push(...dataExport);
+    const totalSecondsEpoch = getTotalSecondProcess(startTimeProcess);
+    console.info(
+      `-->Export at Epoch ${epoch} took ${totalSecondsEpoch} seconds`,
+    );
+  }
+  return results;
 };

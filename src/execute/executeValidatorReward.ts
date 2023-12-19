@@ -1,9 +1,9 @@
 import moment = require('moment-timezone');
 import {
+  exportCsv,
   getAdditionalDataForCommissionReward,
   getEpoches,
   getOasPricesForEpoch,
-  handleExport,
 } from '../module/RewardStakes';
 import {
   DataExport,
@@ -13,19 +13,18 @@ import {
   Verse,
   validatorRewardArgs,
 } from '../types';
-import {
-  generateNumberArray,
-  isValidAddresses,
-  sortByTimeStamp,
-} from '../utils';
+import { generateNumberArray, isValidAddresses } from '../utils';
+import { convertAddressesToArray } from '../utils/convert';
+import { getTotalSecondProcess } from '../utils/date';
 import {
   DEFAULT_LIST_PRICE,
   HEADER_FOR_VALIDATOR_REWARD,
 } from '../utils/google';
 import { Subgraph } from '../utils/subgraph';
-import { convertAddressesToArray } from '../utils/convert';
 // main process
 export const main = async (argv: validatorRewardArgs) => {
+  const startTimeProcess = Date.now();
+
   // validate address
   const addresses = convertAddressesToArray(argv.validator_addresses);
   if (!isValidAddresses(addresses)) {
@@ -49,23 +48,10 @@ export const main = async (argv: validatorRewardArgs) => {
   );
 
   // data to export
-  let dataExport: DataExport[] = await getDataExport(
-    prepareData,
-    subgraph,
-    argv,
-  );
+  await handleExport(prepareData, subgraph, argv, header);
 
-  //sort by timestamp
-  dataExport = sortByTimeStamp(dataExport, 'asc');
-
-  // process export
-  await handleExport(
-    dataExport,
-    Boolean(argv.export_csv_online),
-    argv.output,
-    'commission-reward',
-    header,
-  );
+  const totalSecondsProcess = getTotalSecondProcess(startTimeProcess);
+  console.log(`==> Total: ${totalSecondsProcess} seconds`);
 };
 
 const getHeader = (argv: validatorRewardArgs): string[] => {
@@ -117,47 +103,61 @@ const getPrepareData = async (
   );
 };
 
-const getDataExport = async (
+const handleExport = async (
   prepareData: PrepareData[],
   subgraph: Subgraph,
   argv: validatorRewardArgs,
+  header: string[],
 ): Promise<DataExport[]> => {
-  // Set the address to lowercase
   const validator_addresses = convertAddressesToArray(argv.validator_addresses);
 
-  const resultsPromise = prepareData.map(async (item: PrepareData) => {
+  const results: DataExport[] = [];
+
+  for (const item of prepareData) {
     const { oasPrices, timeData } = item;
     const { block, epoch, timestamp } = timeData;
-    console.log('RUNNING EPOCH ', epoch);
+    const startTimeProcess = Date.now();
+    console.log('PROCESSING WITH EPOCH', epoch);
 
-    const validatorResults = await Promise.all(
-      validator_addresses?.map(async (address: string) => {
-        const validatorAddress = address;
-        // Get totalStake of validator
-        const validatorStake = await subgraph.getValidatorTotalStake(
-          epoch,
-          block,
-          validatorAddress,
-        );
+    const promises = validator_addresses.map(async (address: string) => {
+      const validatorAddress = address;
+      const validatorStake = await subgraph.getValidatorTotalStake(
+        epoch,
+        block,
+        validatorAddress,
+      );
 
-        // Format data
-        const { rowData } = getAdditionalDataForCommissionReward(
-          oasPrices,
-          validatorStake,
-          timeData,
-          argv.price,
-          validatorAddress,
-        );
-        return {
-          rowData,
-          timestamp,
-        };
-      }),
+      const { rowData } = getAdditionalDataForCommissionReward(
+        oasPrices,
+        validatorStake,
+        timeData,
+        argv.price,
+        validatorAddress,
+      );
+
+      return {
+        rowData,
+        timestamp,
+      };
+    });
+
+    const dataExport = await Promise.all(promises);
+    //sort by timestamp
+
+    // process export
+    await exportCsv(
+      dataExport,
+      Boolean(argv.export_csv_online),
+      argv.output,
+      'commission-reward',
+      header,
     );
+    results.push(...dataExport);
+    const totalSecondsEpoch = getTotalSecondProcess(startTimeProcess);
+    console.info(
+      `-->Export at Epoch ${epoch} took ${totalSecondsEpoch} seconds`,
+    );
+  }
 
-    return validatorResults;
-  });
-
-  const results = await Promise.all(resultsPromise);
-  return results.flat();
+  return results;
 };
