@@ -14,7 +14,6 @@ import {
   validatorRewardArgs,
   validatorTotalStake,
 } from '../types';
-import { sleep } from '../utils';
 import { convertArrayToObject } from '../utils/convert';
 import { writeFile } from '../utils/file';
 import { getDataSheet, getSpreadSheet } from '../utils/google';
@@ -26,8 +25,8 @@ export const getEpoches = async (
 ) => {
   const latestEpochResult = await subgraph.getLatestEpoch();
   const latestEpoch = latestEpochResult.epoches[0]?.epoch;
-  let from = argv.from_epoch;
-  let to = argv.to_epoch;
+  let from: number = argv.from_epoch;
+  let to: number = argv.to_epoch;
 
   if (!argv.to_epoch) {
     to = latestEpoch - 1;
@@ -73,8 +72,8 @@ export const getEpoches = async (
   console.log('TO EPOCH: ', to);
 
   return {
-    from,
-    to,
+    from: parseInt(`${from}`),
+    to: parseInt(`${to}`),
   };
 };
 
