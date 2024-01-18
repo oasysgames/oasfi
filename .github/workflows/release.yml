@@ -114,6 +114,7 @@ jobs:
     - name: Build with pkg
       run: |
         npm i
+        export TAG=$(cat tag.txt)
         npx tsc
         npm install -g pkg
         pkg . -t node18-linux-x64 --output ./oasfi-linux

@@ -19,7 +19,7 @@ const scriptName = './oasfi-os';
 const argv = yargs(hideBin(process.argv))
   .scriptName(scriptName)
   .usage(`Usage: ${scriptName} COMMAND  [OPTIONS]`)
-  .version('version', '1.0.1')
+  .version('version', process.env.TAG)
   .command(
     'correct-csv',
     'Check token balance and remove duplicate records from a CSV',
