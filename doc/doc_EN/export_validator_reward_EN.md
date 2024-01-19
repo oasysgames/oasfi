@@ -50,6 +50,11 @@ Incorrect: 0x272d6bd040c2b8454f4f6f43115758fbe318ee2c,  0x4e5e774d3837bd9302b83c
 * Specifying --from_date and --to_date helps to retrieve data for a specific period.
 * The default is the local timezone, and if you need to change the timezone, you can use --time_zone=timezone.
 
+#### --time_zone
+* Do not specify timezone abbreviation, please specify timezoneID
+  example: --time_zone=Asia/Tokyo (not JST)
+reference: https://timezonedb.cơm/time-zones
+
 ```bash
 ./oasfi-linux  export-validator-reward 0x272d6bd040c2b8454f4f6f43115758fbe318ee2c,0x4e5e774d3837bd9302b83cad94a112575411f07b  --from_date=2023-08-16T10:00:00 --to_date=2023-10-16T10:00:00
 ```

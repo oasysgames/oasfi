@@ -13,7 +13,7 @@ import {
   Verse,
   validatorRewardArgs,
 } from '../types';
-import { generateNumberArray, isValidAddresses } from '../utils';
+import { generateNumberArray, isValidAddresses, sleep } from '../utils';
 import { convertAddressesToArray } from '../utils/convert';
 import { getTotalSecondProcess } from '../utils/date';
 import {
@@ -135,6 +135,8 @@ const handleExport = async (
         validatorAddress,
       );
 
+      await sleep(100);
+
       return {
         rowData,
         timestamp,
@@ -153,6 +155,7 @@ const handleExport = async (
       header,
     );
     results.push(...dataExport);
+
     const totalSecondsEpoch = getTotalSecondProcess(startTimeProcess);
     console.info(
       `-->Export at Epoch ${epoch} took ${totalSecondsEpoch} seconds`,

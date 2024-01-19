@@ -114,7 +114,7 @@ jobs:
     - name: Build with pkg
       run: |
         npm i
-        export TAG=$(cat tag.txt)
+        export TAG=$(echo "${{ steps.set_tag.outputs.tag }}")
         npx tsc
         npm install -g pkg
         pkg . -t node18-linux-x64 --output ./oasfi-linux

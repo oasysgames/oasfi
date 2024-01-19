@@ -14,7 +14,7 @@ import {
   Verse,
   stakerRewardArgs,
 } from '../types';
-import { generateNumberArray, isValidAddresses } from '../utils';
+import { generateNumberArray, isValidAddresses, sleep } from '../utils';
 import { convertAddressesToArray } from '../utils/convert';
 import { getTotalSecondProcess } from '../utils/date';
 import {
@@ -138,6 +138,9 @@ const handleExport = async (
         argv.price,
         address,
       );
+
+      await sleep(100);
+
       return {
         rowData,
         timestamp,
