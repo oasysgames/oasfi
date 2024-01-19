@@ -49,6 +49,11 @@ export COINGECKO_API_KEY=xx
 * --from_date、--to_dateを指定することで特定の期間のデータを取得できます。
 * デフォルトはローカルタイムゾーンで、タイムゾーンを変更する場合は、--time_zone=timezone を使用できます。
 
+#### --time_zone 
+タイムゾーンの省略名を指定せず、タイムゾーンのIDをご指定してください。 
+例: --time_zone=Asia/Tokyo（JSTではなく） 
+参照先： https://timezonedb.cơm/time-zones
+
 ```bash
 ./oasfi-linux  export-staker-reward 0x272d6bd040c2b8454f4f6f43115758fbe318ee2c,0x4e5e774d3837bd9302b83cad94a112575411f07b --from_date=2023-08-16T10:00:00 --to_date=2023-10-16T10:00:00
 ```
