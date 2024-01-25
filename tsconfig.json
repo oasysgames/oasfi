@@ -5,7 +5,8 @@
     "moduleResolution": "node",
     "target": "es2018",
     "module": "CommonJS",
-    "skipLibCheck": true
+    "skipLibCheck": true,
+    "resolveJsonModule": true
   },
   "exclude": ["specs", "jest-setup.ts"]
 }
