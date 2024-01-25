@@ -114,7 +114,7 @@ jobs:
     - name: Build with pkg
       run: |
         npm i
-        export TAG=$(echo "${{ steps.set_tag.outputs.tag }}")
+        jq '.version = "${{ needs.prepare-release.outputs.new_tag }}"' src/config.json > src/config_temp.json && mv src/config_temp.json src/config.json
         npx tsc
         npm install -g pkg
         pkg . -t node18-linux-x64 --output ./oasfi-linux

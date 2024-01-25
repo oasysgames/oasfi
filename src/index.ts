@@ -14,12 +14,12 @@ import {
   defineValidatorRewardCommand,
   processValidatorRewardCommand,
 } from './cmd/cmdValidatorReward';
+import { scriptName, version } from './config.json';
 
-const scriptName = './oasfi-os';
 const argv = yargs(hideBin(process.argv))
   .scriptName(scriptName)
   .usage(`Usage: ${scriptName} COMMAND  [OPTIONS]`)
-  .version('version', process.env.TAG)
+  .version('version', version)
   .command(
     'correct-csv',
     'Check token balance and remove duplicate records from a CSV',

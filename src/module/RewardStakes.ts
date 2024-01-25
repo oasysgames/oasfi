@@ -54,7 +54,7 @@ export const getEpoches = async (
       ? moment(argv.to_date).tz(argv.time_zone)
       : moment(argv.to_date);
 
-    const epochData = await subgraph.getEpochByFromTimestamp(
+    const epochData = await subgraph.getEpochByToTimestamp(
       to_time.utc().unix(),
     );
     to =
@@ -89,12 +89,11 @@ export async function getOasPricesForEpoch(argv, epochData) {
   priceTime.setUTCHours(0, 0, 0, 0);
 
   if (argv.price_time) {
-    const datetime = moment(argv.price_time, 'HH:mm:ss');
+    const dateTime = moment(argv.price_time, 'HH:mm:ss');
     priceTime.setUTCHours(
-      datetime.get('hour'),
-      datetime.get('minute'),
-      datetime.get('second'),
-      0,
+      dateTime.get('hour'),
+      dateTime.get('minute'),
+      dateTime.get('second'),
     );
   }
 
@@ -128,9 +127,9 @@ export const exportCsvLocal = async (
   rowData: string[][],
   header,
   fileName: string,
-  oputput: string,
+  outPut: string,
 ) => {
-  const output_csv = oputput || `output_csv/${fileName}.csv`;
+  const output_csv = outPut || `output_csv/${fileName}.csv`;
   try {
     await writeFile(output_csv, Papa.unparse({ fields: header }));
   } catch (error) {
