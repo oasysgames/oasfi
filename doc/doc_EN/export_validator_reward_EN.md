@@ -78,7 +78,7 @@ reference: https://timezonedb.com/time-zones
 
 #### --price_time
 
-* --price_time passes the time (UTC) to fetch the price. If the --price_time flag is not set, the default will be at 00:00:00 UTC.
+* --price_time passes the time (UTC) to fetch the price. If the --price_time flag is not set, the default will be at 23:59:59 UTC.
 
 ```bash
  ./oasfi-linux  export-validator-reward 0x272d6bd040c2b8454f4f6f43115758fbe318ee2c,0x4e5e774d3837bd9302b83cad94a112575411f07b --price_time=10:00:00

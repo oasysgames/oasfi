@@ -86,7 +86,7 @@ export async function getOasPricesForEpoch(argv, epochData) {
 
   //Default 00:00:00 UTC
   const priceTime = new Date(timestamp);
-  priceTime.setUTCHours(0, 0, 0, 0);
+  priceTime.setUTCHours(23, 59, 59, 999);
 
   if (argv.price_time) {
     const dateTime = moment(argv.price_time, 'HH:mm:ss');
