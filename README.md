@@ -11,6 +11,7 @@ This CLI (Command Line Interface) tool contains several commands with the follow
 - Please download the latest version from [releases](https://github.com/oasysgames/oasfi/releases).
 - It is compatible with macOS, Windows, and Linux, so please choose the one that matches your OS.
 - For macOS users, you need to allow the app to run in the privacy settings.
+- Please grant execution permission from console like this `chmod +x oasfi-macos`
 
 # For Developers
 
