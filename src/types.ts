@@ -51,7 +51,6 @@ export interface validatorRewardArgs {
   to_epoch: number;
   from_date: string;
   to_date: string;
-  price_time: string;
   time_zone: string;
   price: string;
   export_csv_online: string;
@@ -65,7 +64,6 @@ export interface stakerRewardArgs {
   to_epoch: number;
   from_date: string;
   to_date: string;
-  price_time: string;
   time_zone: string;
   price: string;
   export_csv_online: string;

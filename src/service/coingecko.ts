@@ -1,5 +1,6 @@
 import { CoinGeckoClient } from 'coingecko-api-v3';
 import { OasPrices } from './../types';
+import moment = require('moment-timezone');
 
 const client = new CoinGeckoClient(
   {
@@ -43,23 +44,49 @@ const getOasPriceByRange = async (
   return undefined; // If multiple oas price can be obtained or when OAS is not listed.
 };
 
+const getOasPriceHistory = async (vsCurrency: string, date: Date) => {
+  const marketChart = await client.coinIdHistory({
+    id,
+    date: moment(date).format('DD-MM-YYYY'),
+  });
+
+  const oasPrice = marketChart?.market_data?.current_price?.[vsCurrency];
+
+  return oasPrice?.toString() || undefined;
+};
+
+// export const getOasPriceBackup = async (vsCurrency: string, date: Date) => {
+//   let oasPrice: string;
+
+//   oasPrice = await getOasPriceByRange(vsCurrency, date, fiveMinuteInterval);
+//   if (oasPrice !== undefined) {
+//     return oasPrice;
+//   }
+
+//   oasPrice = await getOasPriceByRange(vsCurrency, date, hourInterval);
+//   if (oasPrice !== undefined) {
+//     return oasPrice;
+//   }
+
+//   oasPrice = await getOasPriceByRange(vsCurrency, date, dayInterval);
+//   if (oasPrice !== undefined) {
+//     return oasPrice;
+//   }
+//   return '';
+// };
+
 export const getOasPrice = async (vsCurrency: string, date: Date) => {
   let oasPrice: string;
 
-  oasPrice = await getOasPriceByRange(vsCurrency, date, fiveMinuteInterval);
+  oasPrice = await getOasPriceHistory(vsCurrency, date);
   if (oasPrice !== undefined) {
     return oasPrice;
   }
 
-  oasPrice = await getOasPriceByRange(vsCurrency, date, hourInterval);
-  if (oasPrice !== undefined) {
-    return oasPrice;
-  }
+  console.log(vsCurrency);
 
-  oasPrice = await getOasPriceByRange(vsCurrency, date, dayInterval);
-  if (oasPrice !== undefined) {
-    return oasPrice;
-  }
+  console.log(oasPrice);
+
   return '';
 };
 

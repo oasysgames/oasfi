@@ -86,6 +86,8 @@ const getPrepareData = async (
       // get oas price per epoch
       const oasPrices: OasPrices = await getOasPricesForEpoch(argv, epochData);
 
+      await sleep(100);
+
       // export time local
       const timestamp = moment(epochData.epoches[0].timestamp * 1000);
 
@@ -144,8 +146,6 @@ const handleExport = async (
     });
 
     const dataExport = await Promise.all(promises);
-    //sort by timestamp
-
     // process export
     await exportCsv(
       dataExport,
