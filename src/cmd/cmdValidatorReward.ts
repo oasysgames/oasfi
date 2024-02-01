@@ -31,10 +31,6 @@ export const defineValidatorRewardCommand = (yargs: Argv) => {
       type: 'string',
       description: 'to datetime YYYY-MM-DDTHH:MM:SS',
     },
-    price_time: {
-      type: 'string',
-      description: 'UTC time price - format: HH:MM:SS',
-    },
     price: {
       type: 'string',
       description: 'price',

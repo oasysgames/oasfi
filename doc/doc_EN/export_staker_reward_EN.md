@@ -76,14 +76,6 @@ reference: https://timezonedb.com/time-zones
  ./oasfi-linux  export-staker-reward 0x272d6bd040c2b8454f4f6f43115758fbe318ee2c,0x4e5e774d3837bd9302b83cad94a112575411f07b   --from_epoch=246 --to_epoch=247
 ```
 
-#### --price_time
-
-* --price_time passes the time (UTC) for fetching the price. If the --price_time flag is not set, the default will be at 00:00:00 UTC.
-
-```bash
- ./oasfi-linux  export-staker-reward 0x272d6bd040c2b8454f4f6f43115758fbe318ee2c,0x4e5e774d3837bd9302b83cad94a112575411f07b --price_time=10:00:00
-```
-
 #### --export_csv_online
 
 * Specifying --export_csv_online=true will export the data online. If the --export_csv_online flag is not set, the default is to export locally.

@@ -25,7 +25,7 @@ export const getEpoches = async (
 ) => {
   const latestEpochResult = await subgraph.getLatestEpoch();
   const latestEpoch = latestEpochResult.epoches[0]?.epoch;
-  let from: number = argv.from_epoch;
+    let from: number = argv.from_epoch;
   let to: number = argv.to_epoch;
 
   if (!argv.to_epoch) {
@@ -66,7 +66,7 @@ export const getEpoches = async (
   }
 
   if (to >= latestEpoch) {
-    to = latestEpoch;
+    to = latestEpoch - 1;
   }
   console.log('FROM EPOCH: ', from);
   console.log('TO EPOCH: ', to);
@@ -86,18 +86,11 @@ export async function getOasPricesForEpoch(argv, epochData) {
 
   //Default 00:00:00 UTC
   const priceTime = new Date(timestamp);
-  priceTime.setUTCHours(23, 59, 59, 999);
+  
+  //transmitted early the next day
+  priceTime.setUTCDate(priceTime.getUTCDate() + 1);
+  priceTime.setUTCHours(0, 0, 0, 0);
 
-  if (argv.price_time) {
-    const dateTime = moment(argv.price_time, 'HH:mm:ss');
-    priceTime.setUTCHours(
-      dateTime.get('hour'),
-      dateTime.get('minute'),
-      dateTime.get('second'),
-    );
-  }
-
-  console.log('Start getting oas prices');
   let oasPrices = {};
 
   if (argv.price) {
@@ -105,8 +98,7 @@ export async function getOasPricesForEpoch(argv, epochData) {
     oasPrices[argv.price] = oasysPrice;
   } else {
     oasPrices = await getOasPrices(priceTime);
-  }
-  console.log('Finish getting oas prices');
+      }
   return oasPrices;
 }
 
