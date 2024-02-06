@@ -25,7 +25,7 @@ export const getEpoches = async (
 ) => {
   const latestEpochResult = await subgraph.getLatestEpoch();
   const latestEpoch = latestEpochResult.epoches[0]?.epoch;
-    let from: number = argv.from_epoch;
+  let from: number = argv.from_epoch;
   let to: number = argv.to_epoch;
 
   if (!argv.to_epoch) {
@@ -86,7 +86,7 @@ export async function getOasPricesForEpoch(argv, epochData) {
 
   //Default 00:00:00 UTC
   const priceTime = new Date(timestamp);
-  
+
   //transmitted early the next day
   priceTime.setUTCDate(priceTime.getUTCDate() + 1);
   priceTime.setUTCHours(0, 0, 0, 0);
@@ -98,8 +98,11 @@ export async function getOasPricesForEpoch(argv, epochData) {
     oasPrices[argv.price] = oasysPrice;
   } else {
     oasPrices = await getOasPrices(priceTime);
-      }
-  return oasPrices;
+  }
+  return {
+    oasPrices,
+    priceTime,
+  };
 }
 
 export const exportCsvOnline = async (
@@ -171,6 +174,7 @@ export const getAdditionalDataForCommissionReward = (
   timeData: TimeData,
   price: string,
   validator_address: string,
+  priceTime: Date,
 ): {
   rowData: string[][];
   totalStakeData: TotalStakeData;
@@ -210,6 +214,7 @@ export const getAdditionalDataForCommissionReward = (
         timestamp.format('YYYY/MM/DD HH:mm:ss'),
         utils.formatEther(validatorTotalStake).toString(),
         utils.formatEther(stake.dailyCommission).toString(),
+        moment(priceTime).utc().format('YYYY/MM/DD HH:mm:ss'),
         ...prices,
       ];
     });
@@ -231,6 +236,7 @@ export const getAdditionalDataForStakerReward = (
   timeData: TimeData,
   price: string,
   address: string,
+  priceTime: Date,
 ): {
   rowData: string[][];
 } => {
@@ -254,10 +260,11 @@ export const getAdditionalDataForStakerReward = (
       timestamp.format('YYYY-MM-DD HH:mm:ss'),
       utils.formatEther(stakeData.totalStake).toString(),
       utils.formatEther(stakeData.stakerReward).toString(),
+      moment(priceTime).utc().format('YYYY/MM/DD HH:mm:ss'),
       ...prices,
     ],
   ];
-  return {
+    return {
     rowData: rowData,
   };
 };
