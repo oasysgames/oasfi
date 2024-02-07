@@ -7,7 +7,6 @@ import {
 } from '../module/RewardStakes';
 import {
   DataExport,
-  OasPrices,
   PrepareData,
   TimeData,
   Verse,
@@ -60,8 +59,8 @@ const getHeader = (argv: validatorRewardArgs): string[] => {
 
   if (process.env.COINGECKO_API_KEY) {
     header = argv.price
-      ? [...header, 'Oas price']
-      : [...header, ...DEFAULT_LIST_PRICE];
+      ? [...header, 'Price timestamp UTC', 'Oas price']
+      : [...header, 'Price timestamp UTC', ...DEFAULT_LIST_PRICE];
   }
   return header;
 };
@@ -84,7 +83,7 @@ const getPrepareData = async (
 
       // get price by time UTC
       // get oas price per epoch
-      const oasPrices: OasPrices = await getOasPricesForEpoch(argv, epochData);
+      const priceData = await getOasPricesForEpoch(argv, epochData);
 
       await sleep(100);
 
@@ -98,7 +97,8 @@ const getPrepareData = async (
       };
 
       return {
-        oasPrices,
+        oasPrices: priceData?.oasPrices,
+        priceTime: priceData?.priceTime,
         timeData,
       };
     }),
@@ -116,7 +116,7 @@ const handleExport = async (
   const results: DataExport[] = [];
 
   for (const item of prepareData) {
-    const { oasPrices, timeData } = item;
+    const { oasPrices, timeData, priceTime } = item;
     const { block, epoch, timestamp } = timeData;
     const startTimeProcess = Date.now();
     console.log('PROCESSING WITH EPOCH', epoch);
@@ -135,6 +135,7 @@ const handleExport = async (
         timeData,
         argv.price,
         validatorAddress,
+        priceTime,
       );
 
       await sleep(100);

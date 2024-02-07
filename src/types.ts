@@ -73,6 +73,7 @@ export interface stakerRewardArgs {
 export interface PrepareData {
   oasPrices: OasPrices;
   timeData: TimeData;
+  priceTime: Date;
   prevBlockByEpoch?: string;
 }
 
