@@ -1,5 +1,5 @@
 import { Arguments, Argv } from 'yargs';
-import { main } from '../execute/executeStakerReward';
+import main from '../execute/executeStakerReward';
 import { stakerRewardArgs } from '../types';
 import { LogUtils } from '../utils/Logger';
 

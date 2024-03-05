@@ -1,57 +1,23 @@
 import moment = require('moment-timezone');
+import { GoogleSpreadsheet } from 'google-spreadsheet';
+import { MAX_RETRIES, RETRY_INTERVAL_MS } from '../contants/common';
 import {
   exportCsv,
   getAdditionalDataForCommissionReward,
   getEpoches,
+  getLastDataFetchedByEpoch,
   getOasPricesForEpoch,
 } from '../module/RewardStakes';
-import {
-  DataExport,
-  PrepareData,
-  TimeData,
-  Verse,
-  validatorRewardArgs,
-} from '../types';
+import { PrepareData, TimeData, Verse, validatorRewardArgs } from '../types';
 import { generateNumberArray, isValidAddresses, sleep } from '../utils';
 import { convertAddressesToArray } from '../utils/convert';
 import { getTotalSecondProcess } from '../utils/date';
 import {
   DEFAULT_LIST_PRICE,
   HEADER_FOR_VALIDATOR_REWARD,
+  getSpreadSheet,
 } from '../utils/google';
 import { Subgraph } from '../utils/subgraph';
-// main process
-export const main = async (argv: validatorRewardArgs) => {
-  const startTimeProcess = Date.now();
-
-  // validate address
-  const addresses = convertAddressesToArray(argv.validator_addresses);
-  if (!isValidAddresses(addresses)) {
-    return;
-  }
-
-  const subgraph = new Subgraph(argv.chain as Verse);
-
-  // header for validator reward
-  const header: string[] = getHeader(argv);
-
-  // get the list of epochs based on the passed options
-  const epoches = await getEpoches(argv, subgraph);
-
-  const loopAsync: number[] = generateNumberArray(epoches.from, epoches.to);
-
-  const prepareData: PrepareData[] = await getPrepareData(
-    loopAsync,
-    subgraph,
-    argv,
-  );
-
-  // data to export
-  await handleExport(prepareData, subgraph, argv, header);
-
-  const totalSecondsProcess = getTotalSecondProcess(startTimeProcess);
-  console.log(`==> Total: ${totalSecondsProcess} seconds`);
-};
 
 const getHeader = (argv: validatorRewardArgs): string[] => {
   let header: string[] = HEADER_FOR_VALIDATOR_REWARD;
@@ -59,8 +25,8 @@ const getHeader = (argv: validatorRewardArgs): string[] => {
 
   if (process.env.COINGECKO_API_KEY) {
     header = argv.price
-      ? [...header, 'Price timestamp UTC', 'Oas price']
-      : [...header, 'Price timestamp UTC', ...DEFAULT_LIST_PRICE];
+      ? [...header, 'Oas price', 'Price timestamp UTC']
+      : [...header, ...DEFAULT_LIST_PRICE, 'Price timestamp UTC'];
   }
   return header;
 };
@@ -110,43 +76,114 @@ const handleExport = async (
   subgraph: Subgraph,
   argv: validatorRewardArgs,
   header: string[],
-): Promise<DataExport[]> => {
+): Promise<void> => {
   const validator_addresses = convertAddressesToArray(argv.validator_addresses);
+  let numberOfRetries = 0;
 
-  const results: DataExport[] = [];
+  let doc: GoogleSpreadsheet;
+  if (Boolean(argv.export_csv_online)) {
+    doc = await getSpreadSheet();
+    await doc.loadInfo();
+  }
 
-  for (const item of prepareData) {
+  for (let i = 0; i < prepareData.length; i++) {
+
+    try {
+      await processExportByEpoch(
+        prepareData[i],
+        validator_addresses,
+        subgraph,
+        argv,
+        header,
+        doc,
+      );
+    } catch (error) {
+      console.log(error);
+      numberOfRetries += 1;
+      await sleep(RETRY_INTERVAL_MS);
+
+      console.log('\n----------Trying again----------');
+      console.log('\n----------Please wait!----------');
+
+      if (numberOfRetries > MAX_RETRIES) {
+        throw error;
+      }
+      i = -1; // Reset the loop counter to 0 after error
+    }
+  }
+};
+
+const processExportByEpoch = async (
+  item: PrepareData,
+  validator_addresses: string[],
+  subgraph: Subgraph,
+  argv: validatorRewardArgs,
+  header: string[],
+  doc: GoogleSpreadsheet,
+) => {
+  try {
     const { oasPrices, timeData, priceTime } = item;
     const { block, epoch, timestamp } = timeData;
+
+    const result = await getLastDataFetchedByEpoch(
+      doc,
+      header,
+      argv,
+      timestamp,
+      'Validator address',
+      'commission-reward',
+      argv.output,
+    );
+
+    if (epoch < result.epoch) {
+      return;
+    }
+
     const startTimeProcess = Date.now();
     console.log('PROCESSING WITH EPOCH', epoch);
 
-    const promises = validator_addresses.map(async (address: string) => {
+    const promises = [];
+
+    validator_addresses.forEach(async (address: string) => {
       const validatorAddress = address;
-      const validatorStake = await subgraph.getValidatorTotalStake(
-        epoch,
-        block,
-        validatorAddress,
-      );
 
-      const { rowData } = getAdditionalDataForCommissionReward(
-        oasPrices,
-        validatorStake,
-        timeData,
-        argv.price,
-        validatorAddress,
-        priceTime,
-      );
+      if (
+        !(result.epoch == epoch && result.addresses.includes(validatorAddress))
+      ) {
+        const promise = (async () => {
+          const validatorStake = await subgraph.getValidatorTotalStake(
+            epoch,
+            block,
+            validatorAddress,
+          );
 
-      await sleep(100);
+          const { rowData } = getAdditionalDataForCommissionReward(
+            oasPrices,
+            validatorStake,
+            timeData,
+            argv.price,
+            validatorAddress,
+            priceTime,
+          );
 
-      return {
-        rowData,
-        timestamp,
-      };
+          await sleep(100);
+
+          return {
+            rowData,
+            timestamp,
+          };
+        })();
+
+        promises.push(promise);
+      }
     });
 
+    if (promises?.length == 0) {
+      return;
+    }
+
     const dataExport = await Promise.all(promises);
+
     // process export
     await exportCsv(
       dataExport,
@@ -154,14 +191,48 @@ const handleExport = async (
       argv.output,
       'commission-reward',
       header,
+      doc,
     );
-    results.push(...dataExport);
-
     const totalSecondsEpoch = getTotalSecondProcess(startTimeProcess);
     console.info(
       `-->Export at Epoch ${epoch} took ${totalSecondsEpoch} seconds`,
     );
+  } catch (error) {
+    throw error;
+  }
+};
+
+// main process
+const main = async (argv: validatorRewardArgs) => {
+  const startTimeProcess = Date.now();
+
+  // validate address
+  const addresses = convertAddressesToArray(argv.validator_addresses);
+  if (!isValidAddresses(addresses)) {
+    return;
   }
 
-  return results;
+  const subgraph = new Subgraph(argv.chain as Verse);
+
+  // header for validator reward
+  const header: string[] = getHeader(argv);
+
+  // get the list of epochs based on the passed options
+  const epoches = await getEpoches(argv, subgraph);
+
+  const loopAsync: number[] = generateNumberArray(epoches.from, epoches.to);
+
+  const prepareData: PrepareData[] = await getPrepareData(
+    loopAsync,
+    subgraph,
+    argv,
+  );
+
+  // data to export
+  await handleExport(prepareData, subgraph, argv, header);
+
+  const totalSecondsProcess = getTotalSecondProcess(startTimeProcess);
+  console.log(`==> Total: ${totalSecondsProcess} seconds`);
 };
+
+export default main;
