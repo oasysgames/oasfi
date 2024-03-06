@@ -232,6 +232,16 @@ export class Subgraph {
     };
 
     const data = await request(this.baseGraphUrl, GetValidators, variables);
+    if (data?.validators?.length == 0) {
+      return {
+        validators: [
+          {
+            id: validator_address,
+            commissions: '0',
+          },
+        ],
+      };
+    }
     return data;
   };
   public getValidatorStakes = async (validator: string, block: number) => {
@@ -257,7 +267,7 @@ export class Subgraph {
         variables,
       );
 
-      if (data.validators[0].stakes.length === 0) break; // All stake information already retrieved.
+      if (!data.validators[0] || data.validators[0].stakes.length === 0) break; // All stake information already retrieved.
       validatorStakes.validators[0].stakes =
         validatorStakes.validators[0].stakes.concat(data.validators[0].stakes);
     }

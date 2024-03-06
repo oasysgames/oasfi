@@ -1,5 +1,5 @@
 import { Arguments, Argv } from 'yargs';
-import { main } from '../execute/executeValidatorReward';
+import main from '../execute/executeValidatorReward';
 import { validatorRewardArgs } from '../types';
 import { LogUtils } from '../utils/Logger';
 

@@ -15,8 +15,8 @@ import {
   validatorTotalStake,
 } from '../types';
 import { convertArrayToObject } from '../utils/convert';
-import { writeFile } from '../utils/file';
-import { getDataSheet, getSpreadSheet } from '../utils/google';
+import { isExists, writeFile } from '../utils/file';
+import { getDataSheet } from '../utils/google';
 import { Subgraph } from '../utils/subgraph';
 
 export const getEpoches = async (
@@ -106,10 +106,10 @@ export async function getOasPricesForEpoch(argv, epochData) {
 }
 
 export const exportCsvOnline = async (
-  doc,
+  doc: GoogleSpreadsheet,
   rowData: string[][],
   timestamp: moment.Moment,
-  header,
+  header: string[],
 ) => {
   const dataSheet = await getDataSheet(doc, timestamp, header);
   await dataSheet.addRows(rowData, {
@@ -120,7 +120,7 @@ export const exportCsvOnline = async (
 
 export const exportCsvLocal = async (
   rowData: string[][],
-  header,
+  header: string[],
   fileName: string,
   outPut: string,
 ) => {
@@ -132,6 +132,7 @@ export const exportCsvLocal = async (
   }
   const csvContent = await fsPromise.readFile(output_csv, 'utf-8');
   const result = await Papa.parse(csvContent, { header: true });
+
   rowData.forEach((item) => {
     result.data.push(convertArrayToObject(item, header));
   });
@@ -148,25 +149,57 @@ export const exportCsv = async (
   output: string,
   fileName: string,
   header: string[],
+  doc: GoogleSpreadsheet,
 ): Promise<boolean> => {
-  // console.info(`Start handle export`);
-
-  let doc: GoogleSpreadsheet;
-  if (isOnline) {
-    doc = await getSpreadSheet();
-    await doc.loadInfo();
-  }
-
   for (let i = 0; i < array.length; i++) {
     const { rowData, timestamp } = array[i];
     isOnline
       ? await exportCsvOnline(doc, rowData, timestamp, header)
       : await exportCsvLocal(rowData, header, fileName, output);
-    // await sleep(1500);
   }
-  // console.log('Export process complete!');
   return true;
 };
+
+export async function getLastDataFetchedByEpoch(
+  doc: GoogleSpreadsheet,
+  header: string[],
+  argv,
+  timestamp: moment.Moment,
+  addressKey: string,
+  csvFileName: string,
+  output: string,
+) {
+  const isOnlineExport = Boolean(argv.export_csv_online);
+  let output_csv: string;
+  let addresses = [];
+  let epoch = 0;
+  let lastRow;
+  let rows;
+
+  if (isOnlineExport) {
+    const dataSheet = await getDataSheet(doc, timestamp, header);
+    rows = await dataSheet.getRows();
+  } else {
+    output_csv = output || `output_csv/${csvFileName}.csv`;
+    const exist = await isExists(output_csv);
+
+    if (exist) {
+      const csvContent = await fsPromise.readFile(output_csv, 'utf-8');
+      const result = Papa.parse(csvContent, { header: true });
+      rows = result?.data;
+    }
+  }
+
+  lastRow = rows?.[rows.length - 1];
+  if (lastRow && lastRow['Epoch']) {
+    epoch = lastRow['Epoch'];
+    addresses = rows
+      .filter((row) => row['Epoch'] == epoch)
+      .map((row) => row[addressKey]);
+  }
+  return { epoch, addresses };
+}
+
 
 export const getAdditionalDataForCommissionReward = (
   oasPrices: OasPrices,
@@ -199,7 +232,7 @@ export const getAdditionalDataForCommissionReward = (
   const rowData = stakeData
     .filter((stake) => {
       const validatorTotalStake = stake.oas.add(stake.soas).add(stake.woas);
-      return validatorTotalStake.gt(0);
+      return validatorTotalStake;
     })
     .map((stake) => {
       totalStake = totalStake.add(stake.oas).add(stake.soas).add(stake.woas);
@@ -214,8 +247,8 @@ export const getAdditionalDataForCommissionReward = (
         timestamp.format('YYYY/MM/DD HH:mm:ss'),
         utils.formatEther(validatorTotalStake).toString(),
         utils.formatEther(stake.dailyCommission).toString(),
-        moment(priceTime).utc().format('YYYY/MM/DD HH:mm:ss'),
         ...prices,
+        priceTime && moment(priceTime).utc().format('YYYY/MM/DD HH:mm:ss'),
       ];
     });
 
@@ -257,14 +290,14 @@ export const getAdditionalDataForStakerReward = (
       address,
       epoch,
       block,
-      timestamp.format('YYYY-MM-DD HH:mm:ss'),
+      timestamp.format('YYYY/MM/DD HH:mm:ss'),
       utils.formatEther(stakeData.totalStake).toString(),
       utils.formatEther(stakeData.stakerReward).toString(),
-      moment(priceTime).utc().format('YYYY/MM/DD HH:mm:ss'),
       ...prices,
+      priceTime && moment(priceTime).utc().format('YYYY/MM/DD HH:mm:ss'),
     ],
   ];
-    return {
+  return {
     rowData: rowData,
   };
 };
