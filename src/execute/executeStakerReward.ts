@@ -132,7 +132,7 @@ const processExportByEpoch = async (
       argv.output
     );
 
-    if (epoch < result.epoch) {
+    if (Number(epoch) < Number(result.epoch)) {
       return;
     }
 

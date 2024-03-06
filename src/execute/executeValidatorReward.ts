@@ -134,8 +134,9 @@ const processExportByEpoch = async (
       'commission-reward',
       argv.output,
     );
+        
 
-    if (epoch < result.epoch) {
+    if (Number(epoch) < Number(result.epoch)) {
       return;
     }
 
@@ -156,7 +157,7 @@ const processExportByEpoch = async (
             block,
             validatorAddress,
           );
-
+          
           const { rowData } = getAdditionalDataForCommissionReward(
             oasPrices,
             validatorStake,
@@ -165,7 +166,7 @@ const processExportByEpoch = async (
             validatorAddress,
             priceTime,
           );
-
+       
           await sleep(100);
 
           return {
@@ -183,7 +184,7 @@ const processExportByEpoch = async (
     }
 
     const dataExport = await Promise.all(promises);
-
+    
     // process export
     await exportCsv(
       dataExport,
@@ -193,7 +194,7 @@ const processExportByEpoch = async (
       header,
       doc,
     );
-    const totalSecondsEpoch = getTotalSecondProcess(startTimeProcess);
+        const totalSecondsEpoch = getTotalSecondProcess(startTimeProcess);
     console.info(
       `-->Export at Epoch ${epoch} took ${totalSecondsEpoch} seconds`,
     );

@@ -232,7 +232,7 @@ export const getAdditionalDataForCommissionReward = (
   const rowData = stakeData
     .filter((stake) => {
       const validatorTotalStake = stake.oas.add(stake.soas).add(stake.woas);
-      return validatorTotalStake.gt(0);
+      return validatorTotalStake;
     })
     .map((stake) => {
       totalStake = totalStake.add(stake.oas).add(stake.soas).add(stake.woas);
@@ -290,7 +290,7 @@ export const getAdditionalDataForStakerReward = (
       address,
       epoch,
       block,
-      timestamp.format('YYYY-MM-DD HH:mm:ss'),
+      timestamp.format('YYYY/MM/DD HH:mm:ss'),
       utils.formatEther(stakeData.totalStake).toString(),
       utils.formatEther(stakeData.stakerReward).toString(),
       ...prices,
