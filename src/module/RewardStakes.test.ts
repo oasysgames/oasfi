@@ -16,7 +16,13 @@ describe('getEpoches date handling with actual The Graph', () => {
         staker_addresses: '0x272d6bd040c2b8454f4f6f43115758fbe318ee2c,0x4e5e774d3837bd9302b83cad94a112575411f07b',
         from_date: fromDate,
         to_date: '2024-01-16T10:00:00',
-        chain: 'hub_mainnet'
+        chain: 'hub_mainnet',
+        from_epoch: 0,
+        to_epoch: 0,
+        time_zone: 'UTC',
+        price: 'usd',
+        export_csv_online: 'false',
+        output: 'test.csv'
       };
 
       console.log('\n=== Test Details ===');
