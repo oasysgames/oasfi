@@ -1,14 +1,8 @@
 module.exports = {
-  moduleFileExtensions: ["ts", "js", "json"],
+  preset: 'ts-jest',
+  testEnvironment: 'node',
+  moduleFileExtensions: ['ts', 'js'],
   transform: {
-    "^.+\\.ts$": "ts-jest",
+    '^.+\\.ts$': 'ts-jest',
   },
-  testRunner: "jest-jasmine2",
-  globals: {
-    transform: {
-      "*.ts": ["ts-jest", { tsconfig: "tsconfig.json" }],
-    },
-  },
-  testMatch: ["**/specs/**/?(*.)+(spec|test).[jt]s?(x)"],
-  setupFiles: ["./jest-setup.ts"],
 };

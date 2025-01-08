@@ -24,11 +24,14 @@ export const getEpoches = async (
   subgraph: Subgraph,
 ) => {
   const latestEpochResult = await subgraph.getLatestEpoch();
-  const latestEpoch = latestEpochResult.epoches[0]?.epoch;
+  const latestEpoch = Number(latestEpochResult.epoches[0]?.epoch);
   let from: number = argv.from_epoch;
   let to: number = argv.to_epoch;
 
   if (!argv.to_epoch) {
+    to = latestEpoch - 1;
+  } else if (to >= latestEpoch) {
+    console.log('Warning: to >= latestEpoch, adjusting to = latestEpoch - 1');
     to = latestEpoch - 1;
   }
 
@@ -37,7 +40,6 @@ export const getEpoches = async (
   }
 
   if (argv.from_date) {
-    //specified timezone or local timezone
     const from_time = argv.time_zone
       ? moment(argv.from_date).tz(argv.time_zone)
       : moment(argv.from_date);
@@ -46,7 +48,7 @@ export const getEpoches = async (
       from_time.utc().unix(),
     );
     from =
-      epochData.epoches.length > 0 ? epochData.epoches[0].epoch : latestEpoch;
+      epochData.epoches.length > 0 ? Number(epochData.epoches[0].epoch) : latestEpoch;
   }
 
   if (argv.to_date) {
@@ -58,7 +60,7 @@ export const getEpoches = async (
       to_time.utc().unix(),
     );
     to =
-      epochData.epoches.length > 0 ? epochData.epoches[0].epoch : latestEpoch;
+      epochData.epoches.length > 0 ? Number(epochData.epoches[0].epoch) : latestEpoch;
   }
 
   if (from > to) {
