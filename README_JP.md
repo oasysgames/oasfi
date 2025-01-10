@@ -32,3 +32,7 @@ npm run compile
 # 注意
 
 - reorg中に動かすと固まるので、しばらく待ってから再実行すると問題なく動きます。
+
+# linuxでの動作確認
+- compileしたバイナリをdocker上にcopyして実行する
+`./test-linux.sh`
