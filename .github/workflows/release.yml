@@ -35,47 +35,10 @@ jobs:
           echo "${{ steps.create_tag.outputs.tag }}" > tag.txt    
 
       - name: Upload tag as artifact
-        uses: actions/upload-artifact@v2
+        uses: actions/upload-artifact@v3
         with:
           name: tag
           path: tag.txt
-#  test:
-#    strategy:
-#      matrix:
-#        os: [macos-latest]
-#    runs-on: ${{ matrix.os }}
-#
-#    steps:
-#    - name: Checkout code
-#      uses: actions/checkout@v2
-#
-#    - name: Setup Node.js
-#      uses: actions/setup-node@v2
-#      with:
-#        node-version: '18'
-#
-#    - name: Cache node modules
-#      uses: actions/cache@v2
-#      with:
-#        path: ~/.npm
-#        key: ${{ runner.os }}-node-${{ hashFiles('**/package-lock.json') }}
-#        restore-keys: |
-#          ${{ runner.os }}-node-
-#
-#    - name: Install dependencies
-#      run: npm install
-#
-#    - name: Install type definitions
-#      run: npm install --save-dev @types/node @types/fs-extra
-#
-#    - name: Compile TypeScript
-#      run: npx tsc
-#
-#    - name: Lint with eslint
-#      run: npm run lint
-#
-#    - name: Run tests
-#      run: npm run test
 
   prepare-release:
     runs-on: ubuntu-latest
@@ -85,10 +48,10 @@ jobs:
 
     steps:
     - name: Checkout code
-      uses: actions/checkout@v2
+      uses: actions/checkout@v4
 
     - name: Download tag artifact
-      uses: actions/download-artifact@v2
+      uses: actions/download-artifact@v3
       with:
         name: tag
 
@@ -96,7 +59,7 @@ jobs:
       id: set_tag
       run: |
         TAG=$(cat tag.txt)
-        echo "::set-output name=tag::$TAG"
+        echo "tag=$TAG" >> $GITHUB_OUTPUT
 
     - name: Use computed tag
       run: |
@@ -109,7 +72,13 @@ jobs:
 
     steps:
     - name: Checkout code
-      uses: actions/checkout@v2
+      uses: actions/checkout@v4
+
+    - name: Setup Node.js
+      uses: actions/setup-node@v4
+      with:
+        node-version: '18.x'
+        cache: 'npm'
 
     - name: Build with pkg
       run: |
