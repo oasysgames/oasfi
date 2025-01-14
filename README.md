@@ -34,3 +34,6 @@ npm run compile
 
 - If you run it during a reorganization, it may freeze. Therefore, it's advisable to wait for some time and then re-execute the commands, which should then work without any issues.
 
+# Testing on Linux
+- Compile the binary and run it in a Docker container
+`./test-linux.sh`

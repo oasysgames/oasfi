@@ -1,0 +1,17 @@
+FROM ubuntu:22.04
+
+# 必要なパッケージのインストール
+RUN apt-get update && apt-get install -y \
+    curl \
+    jq \
+    && rm -rf /var/lib/apt/lists/*
+
+# 作業ディレクトリの作成
+WORKDIR /app
+
+# バイナリをコピー
+COPY ./oasfi-linux /app/oasfi
+RUN chmod +x /app/oasfi
+
+# テスト用のコマンドを設定
+CMD ["/app/oasfi", "--help"] 
