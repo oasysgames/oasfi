@@ -165,6 +165,7 @@ const processExportByEpoch = async (
             argv.price,
             validatorAddress,
             priceTime,
+            argv.time_zone
           );
        
           await sleep(100);

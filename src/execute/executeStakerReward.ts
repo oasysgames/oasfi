@@ -162,6 +162,7 @@ const processExportByEpoch = async (
             argv.price,
             address,
             priceTime,
+            argv.time_zone,
           );
 
           await sleep(100);

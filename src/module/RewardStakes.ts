@@ -210,11 +210,15 @@ export const getAdditionalDataForCommissionReward = (
   price: string,
   validator_address: string,
   priceTime: Date,
+  timeZone?: string, // Timezone parameter is optional
 ): {
   rowData: string[][];
   totalStakeData: TotalStakeData;
 } => {
   const { epoch, block, timestamp } = timeData;
+
+  // Fallback to UTC if timeZone is not provided or invalid
+  const effectiveTimeZone = moment.tz.zone(timeZone) ? timeZone : moment.tz.guess();
 
   let prices = [];
   if (oasPrices) {
@@ -246,11 +250,11 @@ export const getAdditionalDataForCommissionReward = (
         validator_address,
         epoch,
         block,
-        timestamp.format('YYYY/MM/DD HH:mm:ss'),
+        moment(timestamp).tz(effectiveTimeZone).format('YYYY/MM/DD HH:mm:ss'), // Use effective timezone
         utils.formatEther(validatorTotalStake).toString(),
         utils.formatEther(stake.dailyCommission).toString(),
         ...prices,
-        priceTime && moment(priceTime).utc().format('YYYY/MM/DD HH:mm:ss'),
+        priceTime && moment(priceTime).tz(effectiveTimeZone).format('YYYY/MM/DD HH:mm:ss'), // Use effective timezone
       ];
     });
 
@@ -272,10 +276,14 @@ export const getAdditionalDataForStakerReward = (
   price: string,
   address: string,
   priceTime: Date,
+  timeZone?: string, // Timezone parameter is optional
 ): {
   rowData: string[][];
 } => {
   const { epoch, block, timestamp } = timeData;
+
+  // Fallback to UTC if timeZone is not provided or invalid
+  const effectiveTimeZone = moment.tz.zone(timeZone) ? timeZone : moment.tz.guess();
 
   let prices = [];
   if (oasPrices) {
@@ -292,11 +300,11 @@ export const getAdditionalDataForStakerReward = (
       address,
       epoch,
       block,
-      timestamp.format('YYYY/MM/DD HH:mm:ss'),
+      moment(timestamp).tz(effectiveTimeZone).format('YYYY/MM/DD HH:mm:ss'), // Use effective timezone
       utils.formatEther(stakeData.totalStake).toString(),
       utils.formatEther(stakeData.stakerReward).toString(),
       ...prices,
-      priceTime && moment(priceTime).utc().format('YYYY/MM/DD HH:mm:ss'),
+      priceTime && moment(priceTime).tz(effectiveTimeZone).format('YYYY/MM/DD HH:mm:ss'), // Use effective timezone
     ],
   ];
   return {
