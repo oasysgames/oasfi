@@ -1,0 +1,15 @@
+{
+  "name": "oasfi-web-api",
+  "version": "1.0.0",
+  "description": "An API to run the oasfi export script using Bull",
+  "main": "app.js",
+  "scripts": {
+    "start": "node app.js"
+  },
+  "dependencies": {
+    "aws-sdk": "^2.1692.0",
+    "bull": "^4.0.2",
+    "dotenv": "^16.4.7",
+    "express": "^4.18.2"
+  }
+}
