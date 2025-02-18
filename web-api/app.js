@@ -261,6 +261,7 @@ app.post("/api/export-validator-reward", async (req, res) => {
 
 // ジョブの進捗状況を確認するAPI
 app.get("/api/job-status/:id", async (req, res) => {
+  // ジョブを Redis キューから取得
   const job = await scriptQueue.getJob(req.params.id);
 
   if (!job) {
@@ -270,14 +271,17 @@ app.get("/api/job-status/:id", async (req, res) => {
     });
   }
 
-  const jobStatus = await job.getState(); // ジョブの状態を取得
-  const progress = job.progress();       // 進捗状況を取得（必要に応じて設定可能）
+  // ジョブの状態と進捗を取得
+  const jobStatus = await job.getState(); // ジョブの状態
+  const progress = job.progress();       // ジョブの進捗状況
+  const s3FileName = job.data.s3FileName; // ジョブデータから S3 ファイル名を取得
 
   res.json({
     status: "success",
     job_id: job.id,
     job_status: jobStatus,
-    progress: progress
+    progress: progress,
+    s3_file_name: s3FileName // S3 ファイル名をレスポンスに含める
   });
 });
 

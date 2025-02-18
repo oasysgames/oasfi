@@ -50,7 +50,7 @@
 curl -X POST http://localhost:3000/api/export-staker-reward \
 -H "Content-Type: application/json" \
 -d '{
-  "staker_addresses": "0x123456789abcdef",
+  "staker_addresses": "0x272d6bd040c2b8454f4f6f43115758fbe318ee2c,0x4e5e774d3837bd9302b83cad94a112575411f07b",
   "from_date": "2023-01-01",
   "to_date": "2023-01-31",
   "time_zone": "UTC"
@@ -63,15 +63,13 @@ curl -X POST http://localhost:3000/api/export-validator-reward \
 -H "Content-Type: application/json" \
 -d '{
   "validator_addresses": "0x272d6bd040c2b8454f4f6f43115758fbe318ee2c",
-  "from_epoch": 1,
-  "to_epoch": 10,
   "from_date": "2023-01-01",
   "to_date": "2023-01-31",
   "time_zone": "UTC"
 }'
 ```
 
-#### **2. リクエスト例**
+#### **リクエスト例**
 以下のようにクエリパラメータで `filename` を指定してリクエストを送信します。
 
 ```bash
