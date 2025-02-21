@@ -5,6 +5,7 @@ const path = require("path");
 const fs = require("fs");
 const AWS = require("aws-sdk");
 const Queue = require("bull");
+const cheerio = require('cheerio');
 
 require("dotenv").config();
 
@@ -43,6 +44,44 @@ scriptQueue.on("ready", () => {
 function generateHash(data) {
   return crypto.createHash("sha256").update(JSON.stringify(data)).digest("hex");
 }
+
+const parseCountryData = (htmlContent) => {
+  const $ = cheerio.load(htmlContent);
+  const countryData = [];
+
+  $('table.default tbody tr').each((index, element) => {
+      const countryCode = $(element).find('td').eq(0).text().trim();
+      const countryName = $(element).find('td').eq(1).text().trim();
+      const timeZone = $(element).find('td').eq(2).text().trim();
+      const gmtOffset = $(element).find('td').eq(3).text().trim();
+
+      if (countryCode && countryName && timeZone && gmtOffset) {
+          countryData.push({
+              countryCode,
+              countryName,
+              timeZone,
+              gmtOffset,
+          });
+      }
+  });
+
+  return countryData;
+};
+
+app.get('/api/timezones', (req, res) => {
+  const htmlFilePath = './resource/countries.html'; 
+
+  fs.readFile(htmlFilePath, 'utf8', (err, data) => {
+    if (err) {
+        console.error('Lỗi khi đọc file HTML:', err);
+        return res.status(500).json({ error: 'Internal Server Error' });
+    }
+
+    const countryList = parseCountryData(data);
+
+    res.json(countryList);
+  });
+});
 
 // 空のCSVファイルをS3にアップロード
 async function uploadEmptyCsvToS3(fileName) {
