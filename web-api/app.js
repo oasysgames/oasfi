@@ -185,18 +185,6 @@ app.post("/api/export-staker-reward", async (req, res) => {
   });
   const s3FileName = `staker-reward_${requestHash}.csv`;
 
-  try {
-    // 空のCSVファイルをS3にアップロード
-    await uploadEmptyCsvToS3(s3FileName);
-    console.log(`Empty CSV file successfully uploaded to S3: ${s3FileName}`);
-  } catch (error) {
-    console.error("Failed to upload empty CSV file to S3:", error);
-    return res.status(500).json({
-      status: "error",
-      message: "Failed to upload empty CSV file to S3.",
-    });
-  }
-
   // コマンドを構築
   let command = `/app/oasfi export-staker-reward ${staker_addresses}`;
   if (chain) command += ` --chain=${chain}`;
@@ -259,18 +247,6 @@ app.post("/api/export-validator-reward", async (req, res) => {
     export_csv_online,
   });
   const s3FileName = `validator-reward_${requestHash}.csv`;
-
-  try {
-    // 空のCSVファイルをS3にアップロード
-    await uploadEmptyCsvToS3(s3FileName);
-    console.log(`Empty CSV file successfully uploaded to S3: ${s3FileName}`);
-  } catch (error) {
-    console.error("Failed to upload empty CSV file to S3:", error);
-    return res.status(500).json({
-      status: "error",
-      message: "Failed to upload empty CSV file to S3.",
-    });
-  }
 
   // コマンドを構築
   let command = `/app/oasfi export-validator-reward ${validator_addresses}`;
