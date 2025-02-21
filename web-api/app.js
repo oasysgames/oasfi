@@ -73,7 +73,7 @@ app.get('/api/timezones', (req, res) => {
 
   fs.readFile(htmlFilePath, 'utf8', (err, data) => {
     if (err) {
-        console.error('Lỗi khi đọc file HTML:', err);
+        console.error('Error:', err);
         return res.status(500).json({ error: 'Internal Server Error' });
     }
 
