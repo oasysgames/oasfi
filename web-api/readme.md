@@ -17,7 +17,7 @@
    コンテナを起動します。
 
    ```bash
-   docker run -d --name oasfi-web-api --link redis:redis -p 3000:3000 oasfi-web-api
+   docker run -d --name oasfi-web-api --link redis:redis -p 4000:3000 oasfi-web-api
    
    or 
    docker compose up -d
@@ -28,7 +28,7 @@
 
    - リクエスト例（`curl` を使用）:
      ```bash
-     curl -X POST http://localhost:3000/api/export-staker-reward \
+     curl -X POST http://localhost:4000/api/export-staker-reward \
         -H "Content-Type: application/json" \
         -d '{
         "staker_addresses": "0x272d6bd040c2b8454f4f6f43115758fbe318ee2c,0x4e5e774d3837bd9302b83cad94a112575411f07b",
@@ -38,7 +38,7 @@
         }'
 
     
-    curl http://localhost:3000/api/job-status/<job_id>
+    curl http://localhost:4000/api/job-status/<job_id>
 
      ```
 
@@ -47,7 +47,7 @@
 
 #### **リクエスト例 (Staker Reward)**
 ```bash
-curl -X POST http://localhost:3000/api/export-staker-reward \
+curl -X POST http://localhost:4000/api/export-staker-reward \
 -H "Content-Type: application/json" \
 -d '{
   "staker_addresses": "0x272d6bd040c2b8454f4f6f43115758fbe318ee2c,0x4e5e774d3837bd9302b83cad94a112575411f07b",
@@ -59,7 +59,7 @@ curl -X POST http://localhost:3000/api/export-staker-reward \
 
 #### **リクエスト例 (Validator Reward)**
 ```bash
-curl -X POST http://localhost:3000/api/export-validator-reward \
+curl -X POST http://localhost:4000/api/export-validator-reward \
 -H "Content-Type: application/json" \
 -d '{
   "validator_addresses": "0x272d6bd040c2b8454f4f6f43115758fbe318ee2c",
@@ -69,11 +69,11 @@ curl -X POST http://localhost:3000/api/export-validator-reward \
 }'
 ```
 
-#### **リクエスト例**
+#### **リクエスト例(download-csv)**
 以下のようにクエリパラメータで `filename` を指定してリクエストを送信します。
 
 ```bash
-curl -X GET "http://localhost:3000/api/download-csv?filename=staker-reward_7a5fd5f967b77a481c92743d1668b8089b3a840e2e637b2156320227424203be.csv" -o output.csv
+curl -X GET "http://localhost:4000/api/download-csv?filename=staker-reward_7a5fd5f967b77a481c92743d1668b8089b3a840e2e637b2156320227424203be.csv" -o output.csv
 ```
 
 - **`filename`**: S3 に保存されているファイル名を指定します。
@@ -90,7 +90,7 @@ S3 にファイルが存在する場合、指定したファイルがレスポ�
 リクエスト:
 
 ```bash
-curl -X GET "http://localhost:3000/api/download-csv"
+curl -X GET "http://localhost:4000/api/download-csv"
 ```
 
 レスポンス:
@@ -106,7 +106,7 @@ curl -X GET "http://localhost:3000/api/download-csv"
 リクエスト:
 
 ```bash
-curl -X GET "http://localhost:3000/api/download-csv?filename=non-existent-file.csv"
+curl -X GET "http://localhost:4000/api/download-csv?filename=non-existent-file.csv"
 ```
 
 レスポンス:
@@ -118,4 +118,4 @@ curl -X GET "http://localhost:3000/api/download-csv?filename=non-existent-file.c
 }
 ```
 
-
+4

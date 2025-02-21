@@ -4,7 +4,7 @@ services:
     image: redis
     container_name: redis
     ports:
-      - "6379:6379"
+      - "6380:6379"
 
   api:
     build:
@@ -12,7 +12,7 @@ services:
       dockerfile: Dockerfile
     container_name: oasfi-api
     ports:
-      - "3000:3000"
+      - "4000:3000"
     depends_on:
       - redis
     environment:
